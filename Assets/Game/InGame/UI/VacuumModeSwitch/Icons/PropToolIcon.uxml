@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="tool-template-root" picking-mode="Ignore">
+        <ui:VisualElement class="tool-art prop-tool" picking-mode="Ignore">
+            <ui:VisualElement class="tool-sticker-shadow prop-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="prop-body-outline" picking-mode="Ignore">
+                <ui:VisualElement class="prop-body" picking-mode="Ignore" />
+                <ui:VisualElement class="prop-roller" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement class="prop-handle" picking-mode="Ignore" />
+            <ui:VisualElement class="prop-handle-cutout" picking-mode="Ignore" />
+            <ui:VisualElement class="prop-side-button" picking-mode="Ignore" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

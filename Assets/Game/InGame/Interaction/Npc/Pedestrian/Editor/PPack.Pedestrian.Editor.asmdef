@@ -1,0 +1,24 @@
+{
+    "name": "PPack.Pedestrian.Editor",
+    "rootNamespace": "PPack",
+    "references": [
+        "PPack.InGame",
+        "PPack.Npc.BehaviorDesigner",
+        "PPack.Pedestrian.BehaviorDesigner",
+        "Opsive.BehaviorDesigner.Runtime",
+        "Opsive.BehaviorDesigner.Runtime.Tasks.Composites",
+        "Opsive.BehaviorDesigner.Runtime.Tasks.Decorators",
+        "Opsive.GraphDesigner.Runtime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

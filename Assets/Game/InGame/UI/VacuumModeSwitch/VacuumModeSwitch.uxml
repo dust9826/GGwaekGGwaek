@@ -1,0 +1,23 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="VacuumModeSwitch.uss" />
+    <ui:VisualElement name="hud-root" class="hud-root" picking-mode="Ignore">
+        <ui:VisualElement name="mode-switch" class="mode-switch" picking-mode="Ignore">
+            <ui:VisualElement name="rotate-arrow" class="orbit-ring" picking-mode="Ignore" />
+
+            <ui:VisualElement name="next-slot" class="tool-slot tool-slot-next" picking-mode="Ignore">
+                <ui:VisualElement name="next-icon-host" class="tool-icon-host" picking-mode="Ignore" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="active-slot" class="tool-slot tool-slot-active" picking-mode="Ignore">
+                <ui:VisualElement name="active-icon-host" class="tool-icon-host" picking-mode="Ignore" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="keycap-shadow" picking-mode="Ignore">
+                <ui:VisualElement name="keycap" class="keycap" picking-mode="Ignore">
+                    <ui:VisualElement class="keycap-highlight" picking-mode="Ignore" />
+                    <ui:Label text="R" class="keycap-label" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

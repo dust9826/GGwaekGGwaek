@@ -1,0 +1,56 @@
+.lobby-card {
+    width: 1160px;
+}
+
+.lobby-layout {
+    margin-top: 22px;
+}
+
+.code-panel {
+    width: 390px;
+    height: 390px;
+    margin-right: 28px;
+    align-items: center;
+    justify-content: center;
+    rotate: -1deg;
+}
+
+.code-caption {
+    margin-top: 20px;
+}
+
+.lobby-code {
+    margin-top: 4px;
+    margin-bottom: 18px;
+}
+
+.player-panel {
+    width: 500px;
+    height: 390px;
+    rotate: 1deg;
+}
+
+.player-row {
+    height: 58px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-left: 18px;
+    color: #428478;
+    font-size: 20px;
+    letter-spacing: 1px;
+    background-color: #dff7f2;
+    border-left-width: 8px;
+    border-left-color: #8dcfc2;
+    border-radius: 5px;
+    -unity-text-align: middle-left;
+}
+
+.player-ready {
+    color: #173d59;
+    background-color: #ffe68f;
+    border-left-color: #f1444d;
+}
+
+.lobby-actions {
+    margin-top: 8px;
+}

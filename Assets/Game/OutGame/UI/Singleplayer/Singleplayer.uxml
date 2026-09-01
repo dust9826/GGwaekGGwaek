@@ -1,0 +1,44 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../Shared/OutGameFlow.uss" />
+    <Style src="Singleplayer.uss" />
+    <Style src="../Shared/SnowRemovalTheme.uss" />
+    <ui:VisualElement name="singleplayer" class="flow-screen">
+        <ui:VisualElement class="float-shape decor-coral" />
+        <ui:VisualElement class="float-shape decor-yellow" />
+        <ui:VisualElement class="float-shape decor-ring" />
+        <ui:VisualElement class="stripe" />
+        <ui:VisualElement class="float-shape clean-gleam-cluster">
+            <ui:VisualElement class="clean-gleam gleam-large" />
+            <ui:VisualElement class="clean-gleam gleam-small-a" />
+            <ui:VisualElement class="clean-gleam gleam-small-b" />
+        </ui:VisualElement>
+        <ui:VisualElement class="float-shape lower-clean-sparkle" />
+        <ui:VisualElement name="flow-card-shadow" class="flow-card-shadow solo-card">
+            <ui:VisualElement class="flow-card">
+                <ui:VisualElement name="title-banner" class="title-banner">
+                    <ui:Label text="SINGLEPLAYER" class="title-text" />
+                    <ui:Label text="ONE DRIVER. ONE WINTER ROUTE." class="title-kicker" />
+                </ui:VisualElement>
+                <ui:VisualElement class="content-row solo-options">
+                    <ui:VisualElement class="paper-panel option-card tilt-option-left">
+                        <ui:Label text="PRACTICE" class="section-title" />
+                        <ui:Label text="No timer pressure" class="option-value" />
+                        <ui:Label text="Learn tools and movement at your pace." class="support-copy" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="paper-panel option-card tilt-option-right selected-option">
+                        <ui:Label text="STANDARD" class="section-title" />
+                        <ui:Label text="One complete snow route" class="option-value" />
+                        <ui:Label text="The default preview choice." class="support-copy" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:TextField name="nickname-input" label="DRIVER NAME" value="DRIVER" max-length="16" class="field" />
+                <ui:VisualElement class="button-row solo-actions">
+                    <ui:Button name="action-single-start" text="DEPLOY SNOWPLOW" class="flow-button wide-button secondary tilt-left" />
+                    <ui:Button name="scene-MainMenu" text="BACK" class="flow-button compact-button danger tilt-right" />
+                </ui:VisualElement>
+                <ui:Label name="status-label" text="STANDARD MODE SELECTED" class="status-label" />
+                <ui:Label text="GAMEPLAY START DELIBERATELY DISCONNECTED" class="footer-note" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

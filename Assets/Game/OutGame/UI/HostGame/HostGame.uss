@@ -1,0 +1,15 @@
+.host-card {
+    width: 940px;
+}
+
+.code-ticket {
+    width: 590px;
+    margin-top: 16px;
+    margin-bottom: 12px;
+    align-items: center;
+    rotate: -1deg;
+}
+
+.host-actions {
+    margin-top: 14px;
+}

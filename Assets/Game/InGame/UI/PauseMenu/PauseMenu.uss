@@ -1,0 +1,143 @@
+/* 게임 위에 얹는 카드 오버레이. 같은 성격의 화면인 StageOutro 와 같은 조형·색을 쓴다 —
+   그림자 카드 + 흰 아웃라인 + 옅은 청록 면 + 왼쪽 붉은 액센트.
+
+   OutGame 테마(SnowRemovalTheme.uss)를 참조하지 않는다. 어셈블리는 코드만 막지만 에셋 경계도
+   손으로 지키는 규칙이고(루트 AGENTS.md), 여기 필요한 값은 StageOutro 와 같은 것뿐이라
+   그 값을 이 파일에 둔다. */
+
+.pause-root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    /* 인게임 UI 공통 서체. StageHUD·StageOutro·StageIntro 가 모두 루트에 같은 줄을 둔다. */
+    -unity-font-definition: url("../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+}
+
+.backdrop {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    /* StageOutro 와 같은 값. 뒤가 비쳐야 "멈춘 게임 위" 로 읽힌다. */
+    background-color: rgba(16, 44, 65, 0.64);
+}
+
+.pause-card {
+    width: 560px;
+}
+
+.card-shadow {
+    position: absolute;
+    left: 11px;
+    right: -11px;
+    top: 15px;
+    bottom: -15px;
+    background-color: rgba(10, 35, 52, 0.92);
+    border-radius: 22px;
+}
+
+.card-outline {
+    padding: 7px;
+    background-color: #f9ffff;
+    border-width: 3px;
+    border-color: #173247;
+    border-bottom-width: 9px;
+    border-bottom-color: #9fbfc6;
+    border-radius: 22px;
+}
+
+.card-face {
+    align-items: center;
+    padding: 42px 46px 30px 46px;
+    background-color: #eef5f4;
+    border-width: 2px;
+    border-color: #c9dfe3;
+    border-radius: 15px;
+}
+
+.card-accent {
+    position: absolute;
+    left: 0;
+    top: 20px;
+    bottom: 20px;
+    width: 9px;
+    background-color: #c73542;
+}
+
+.pause-label {
+    color: #557381;
+    font-size: 20px;
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+}
+
+.pause-title {
+    margin-top: -4px;
+    color: #173247;
+    font-size: 56px;
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+}
+
+.divider {
+    width: 420px;
+    height: 3px;
+    margin-top: 13px;
+    margin-bottom: 18px;
+    background-color: #c9dfe3;
+    border-radius: 3px;
+}
+
+/* 버튼은 세로로 쌓는다 — 설정 행이 나중에 이 컨테이너에 그대로 들어온다. */
+.pause-actions {
+    width: 100%;
+    align-items: center;
+}
+
+.pause-button {
+    width: 380px;
+    height: 66px;
+    margin-bottom: 14px;
+    color: #ffffff;
+    border-width: 3px;
+    border-color: #ffffff;
+    border-bottom-width: 8px;
+    border-radius: 10px;
+    font-size: 25px;
+}
+
+.pause-button:active {
+    border-bottom-width: 4px;
+    translate: 0 4px;
+}
+
+.pause-button-primary {
+    background-color: #2f7c66;
+    border-bottom-color: #1d5647;
+}
+
+.pause-button-primary:hover {
+    background-color: #3d967d;
+}
+
+.pause-button-secondary {
+    background-color: #c73542;
+    border-bottom-color: #8f2330;
+}
+
+.pause-button-secondary:hover {
+    background-color: #df4b57;
+}
+
+.pause-hint {
+    margin-top: 4px;
+    color: #557381;
+    font-size: 16px;
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+}

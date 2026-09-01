@@ -1,0 +1,54 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../Shared/OutGameFlow.uss" />
+    <Style src="Settings.uss" />
+    <Style src="../Shared/SnowRemovalTheme.uss" />
+    <ui:VisualElement name="settings" class="flow-screen">
+        <ui:VisualElement class="float-shape decor-coral" />
+        <ui:VisualElement class="float-shape decor-yellow" />
+        <ui:VisualElement class="float-shape decor-ring" />
+        <ui:VisualElement class="stripe" />
+        <ui:VisualElement class="float-shape clean-gleam-cluster">
+            <ui:VisualElement class="clean-gleam gleam-large" />
+            <ui:VisualElement class="clean-gleam gleam-small-a" />
+            <ui:VisualElement class="clean-gleam gleam-small-b" />
+        </ui:VisualElement>
+        <ui:VisualElement class="float-shape lower-clean-sparkle" />
+        <ui:VisualElement name="flow-card-shadow" class="flow-card-shadow settings-card">
+            <ui:VisualElement class="flow-card">
+                <ui:VisualElement name="title-banner" class="title-banner">
+                    <ui:Label text="SETTINGS" class="title-text" />
+                    <ui:Label text="TUNE YOUR WINTER SHIFT" class="title-kicker" />
+                </ui:VisualElement>
+                <ui:VisualElement class="settings-list">
+                    <ui:VisualElement class="paper-panel setting-row">
+                        <ui:VisualElement class="setting-copy">
+                            <ui:Label text="UI SOUND" class="setting-title" />
+                            <ui:Label text="Hover and menu feedback" class="support-copy setting-help" />
+                        </ui:VisualElement>
+                        <ui:Label name="sound-value" text="ON" class="setting-value" />
+                        <ui:Button name="action-sound" text="TOGGLE" class="flow-button compact-button secondary tilt-left" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="paper-panel setting-row">
+                        <ui:VisualElement class="setting-copy">
+                            <ui:Label text="QUALITY" class="setting-title" />
+                            <ui:Label text="Cycle available Unity quality levels" class="support-copy setting-help" />
+                        </ui:VisualElement>
+                        <ui:Label name="quality-value" text="DEFAULT" class="setting-value" />
+                        <ui:Button name="action-quality" text="CHANGE" class="flow-button compact-button yellow tilt-right" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="paper-panel setting-row">
+                        <ui:VisualElement class="setting-copy">
+                            <ui:Label text="FULLSCREEN" class="setting-title" />
+                            <ui:Label text="Toggle the player window mode" class="support-copy setting-help" />
+                        </ui:VisualElement>
+                        <ui:Label name="fullscreen-value" text="OFF" class="setting-value" />
+                        <ui:Button name="action-fullscreen" text="TOGGLE" class="flow-button compact-button tilt-left" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Button name="scene-MainMenu" text="BACK" class="flow-button secondary wide-button tilt-right settings-back" />
+                <ui:Label name="status-label" text="SETTINGS ARE APPLIED IMMEDIATELY" class="status-label" />
+                <ui:Label text="UI SOUND PREFERENCE IS PERSISTED" class="footer-note" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

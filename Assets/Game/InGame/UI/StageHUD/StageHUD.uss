@@ -1,0 +1,459 @@
+/* Compact order slips: gift color and time first, navigation only while carrying a matching gift. */
+.stage-hud-root {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    -unity-font-definition: url("../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+}
+
+.quest-board {
+    position: absolute;
+    left: 0;
+    top: 24px;
+    width: 730px;
+}
+
+.quest-board-heading {
+    height: 35px;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 7px;
+}
+
+.quest-board-title {
+    height: 32px;
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-top: 3px;
+    color: rgb(248, 245, 234);
+    background-color: rgb(21, 57, 80);
+    border-width: 3px;
+    border-color: rgb(255, 255, 255);
+    border-radius: 5px;
+    font-size: 18px;
+    letter-spacing: 1px;
+    -unity-text-align: middle-center;
+}
+
+.order-stack {
+    height: 160px;
+    flex-direction: row;
+    align-items: flex-start;
+    overflow: visible;
+}
+
+.order-ticket {
+    position: relative;
+    width: 170px;
+    height: 106px;
+    flex-shrink: 0;
+    overflow: visible;
+}
+
+.order-ticket-overlap { margin-left: -8px; }
+.order-ticket-offset { margin-top: 3px; }
+.order-ticket-navigation-visible { height: 154px; }
+
+.order-ticket-shadow {
+    position: absolute;
+    left: 5px;
+    right: -5px;
+    top: 6px;
+    bottom: -5px;
+    background-color: rgba(11, 38, 56, 0.88);
+    border-radius: 6px;
+}
+
+.order-ticket-paper {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgb(250, 247, 238);
+    border-width: 3px;
+    border-color: rgb(255, 255, 255);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.order-ticket-frame {
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    top: 5px;
+    bottom: 5px;
+    border-width: 2px;
+    border-color: rgba(21, 57, 80, 0.16);
+    border-radius: 2px;
+}
+
+.ticket-gift-color {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 9px;
+    background-color: rgb(241, 91, 98);
+}
+
+.ticket-summary {
+    height: 100px;
+    padding-left: 23px;
+    padding-right: 16px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ticket-gift-icon {
+    position: relative;
+    width: 52px;
+    height: 52px;
+}
+
+.ticket-gift-body {
+    position: absolute;
+    left: 6px;
+    top: 22px;
+    width: 40px;
+    height: 27px;
+    background-color: rgb(241, 91, 98);
+    border-width: 3px;
+    border-color: rgb(21, 57, 80);
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.ticket-gift-lid {
+    position: absolute;
+    left: 3px;
+    top: 16px;
+    width: 46px;
+    height: 11px;
+    background-color: rgb(241, 91, 98);
+    border-width: 3px;
+    border-color: rgb(21, 57, 80);
+    border-radius: 4px;
+}
+
+.ticket-gift-bow-left,
+.ticket-gift-bow-right {
+    position: absolute;
+    top: 6px;
+    width: 16px;
+    height: 11px;
+    background-color: rgb(250, 247, 238);
+    border-width: 3px;
+    border-color: rgb(21, 57, 80);
+    border-radius: 50%;
+}
+
+.ticket-gift-bow-left { left: 11px; rotate: 24deg; }
+.ticket-gift-bow-right { right: 11px; rotate: -24deg; }
+
+.ticket-gift-knot {
+    position: absolute;
+    left: 20px;
+    top: 8px;
+    width: 12px;
+    height: 12px;
+    background-color: rgb(250, 247, 238);
+    border-width: 3px;
+    border-color: rgb(21, 57, 80);
+    border-radius: 50%;
+}
+
+.ticket-time-block {
+    height: 64px;
+    flex-grow: 1;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.order-time { color: rgb(21, 57, 80); font-size: 29px; letter-spacing: 1px; }
+.order-time-warning { color: rgb(241, 91, 98); }
+/* 만료 직전. 시계의 위급색과 같은 값을 써서 두 경고가 같은 말로 읽히게 한다. */
+.order-time-critical { color: rgb(214, 62, 68); }
+
+.ticket-navigation {
+    height: 48px;
+    margin-left: 9px;
+    background-color: rgba(185, 213, 218, 0.18);
+}
+
+.receipt-perforation {
+    height: 7px;
+    margin-left: 12px;
+    margin-right: 12px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.receipt-dash {
+    width: 12px;
+    height: 3px;
+    background-color: rgba(21, 57, 80, 0.28);
+    border-radius: 2px;
+}
+
+.ticket-route-row {
+    height: 38px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.order-direction-plate {
+    width: 34px;
+    height: 34px;
+    margin-right: 10px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(185, 213, 218, 0.72);
+    border-radius: 8px;
+}
+
+.order-direction { position: relative; width: 21px; height: 21px; }
+
+.direction-arrow-head {
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 13px;
+    height: 13px;
+    border-top-width: 5px;
+    border-right-width: 5px;
+    border-top-color: rgb(21, 57, 80);
+    border-right-color: rgb(21, 57, 80);
+    rotate: -45deg;
+}
+
+.direction-arrow-stem {
+    position: absolute;
+    left: 8px;
+    top: 7px;
+    width: 5px;
+    height: 14px;
+    background-color: rgb(21, 57, 80);
+    border-radius: 2px;
+}
+
+.order-distance { color: rgb(21, 57, 80); font-size: 20px; }
+
+.order-ticket-fold {
+    position: absolute;
+    right: -9px;
+    top: -9px;
+    width: 22px;
+    height: 22px;
+    rotate: 45deg;
+    background-color: rgb(225, 218, 200);
+    border-left-width: 2px;
+    border-bottom-width: 2px;
+    border-left-color: rgba(21, 57, 80, 0.18);
+    border-bottom-color: rgba(21, 57, 80, 0.18);
+}
+
+.waiting-ticket { position: relative; width: 230px; height: 56px; margin-left: 3px; }
+.waiting-ticket-shadow { position: absolute; left: 5px; right: -5px; top: 6px; bottom: -6px; background-color: rgba(11, 38, 56, 0.88); border-radius: 6px; }
+.waiting-ticket-face { position: absolute; left: 0; right: 0; top: 0; bottom: 0; align-items: center; justify-content: center; background-color: rgb(250, 247, 238); border-width: 3px; border-color: rgb(255, 255, 255); border-radius: 5px; }
+.waiting-ticket-label { color: rgba(21, 57, 80, 0.65); font-size: 18px; }
+
+/* 화면 가운데 위 남은 시간. 주문 보드와 같은 종이·잉크 팔레트를 쓴다. */
+.stage-clock {
+    position: absolute;
+    top: 18px;
+    left: 0;
+    right: 0;
+    align-items: center;
+}
+
+.stage-clock-shadow {
+    position: absolute;
+    left: 50%;
+    width: 168px;
+    height: 60px;
+    top: 6px;
+    margin-left: -79px;
+    background-color: rgba(11, 38, 56, 0.88);
+    border-radius: 8px;
+}
+
+.stage-clock-face {
+    width: 168px;
+    height: 60px;
+    background-color: rgb(250, 247, 238);
+    border-width: 3px;
+    border-color: rgb(255, 255, 255);
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+}
+
+.stage-clock-time {
+    color: rgb(21, 57, 80);
+    font-size: 34px;
+    letter-spacing: 1px;
+    -unity-text-align: middle-center;
+}
+
+/* 30초 아래로 떨어지면 주문 타이머와 같은 경고색을 쓴다. */
+.stage-clock-warning {
+    color: rgb(214, 62, 68);
+}
+
+/* 10초 아래는 글자만 반응한다. 종이까지 붉히면 화면이 시끄럽고 숫자가 오히려 덜 읽힌다. */
+.stage-clock-critical {
+    color: rgb(214, 62, 68);
+}
+
+/* 완료 보너스는 시계 아래에서 짧게 떠오른다. 평소에는 자리를 차지하지 않는다. */
+.stage-clock-gain {
+    position: absolute;
+    top: 62px;
+    color: rgb(38, 150, 88);
+    font-size: 24px;
+    -unity-text-align: middle-center;
+    opacity: 0;
+}
+
+/* 화면 오른쪽 위 현재 점수. 시계와 같은 종이·잉크 팔레트를 쓴다. 화면 아래쪽은 비워 둔다 —
+   체력 바가 앉을 자리다. */
+.score-chip {
+    position: absolute;
+    top: 18px;
+    right: 24px;
+    width: 178px;
+    height: 60px;
+}
+
+.score-chip-shadow {
+    position: absolute;
+    left: 5px;
+    right: -5px;
+    top: 6px;
+    bottom: -6px;
+    background-color: rgba(11, 38, 56, 0.88);
+    border-radius: 8px;
+}
+
+.score-chip-face {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(250, 247, 238);
+    border-width: 3px;
+    border-color: rgb(255, 255, 255);
+    border-radius: 8px;
+}
+
+.score-chip-title {
+    margin-right: 9px;
+    color: rgba(21, 57, 80, 0.65);
+    font-size: 18px;
+    letter-spacing: 1px;
+}
+
+.score-chip-value {
+    color: rgb(21, 57, 80);
+    font-size: 30px;
+    -unity-text-align: middle-center;
+}
+
+.blizzard-alert {
+    position: absolute;
+    top: 102px;
+    left: 50%;
+    width: 560px;
+    height: 64px;
+    margin-left: -280px;
+    opacity: 0;
+    display: none;
+}
+
+.blizzard-alert-shadow {
+    position: absolute;
+    left: 7px;
+    right: -7px;
+    top: 7px;
+    bottom: -7px;
+    background-color: rgba(11, 38, 56, 0.9);
+    border-radius: 9px;
+}
+
+.blizzard-alert-face {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(199, 53, 66);
+    border-width: 4px;
+    border-color: rgb(255, 255, 255);
+    border-radius: 9px;
+}
+
+.blizzard-alert-label {
+    color: rgb(255, 255, 255);
+    font-size: 25px;
+    -unity-font-definition: url("../MissionHUD/Fonts/NotoSansKR-Variable.ttf");
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+/* 좌하단 달리기 체력. 중하단은 상호작용 프롬프트가 쓰므로 왼쪽에 붙인다. */
+.stamina-bar {
+    position: absolute;
+    left: 24px;
+    bottom: 24px;
+    width: 264px;
+    height: 30px;
+}
+
+.stamina-bar-shadow {
+    position: absolute;
+    left: 5px;
+    right: -5px;
+    top: 6px;
+    bottom: -6px;
+    background-color: rgba(11, 38, 56, 0.88);
+    border-radius: 8px;
+}
+
+.stamina-bar-face {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 4px;
+    background-color: rgb(250, 247, 238);
+    border-width: 3px;
+    border-color: rgb(255, 255, 255);
+    border-radius: 8px;
+}
+
+/* 너비를 퍼센트로 준다 — 컨트롤러가 style.width 만 바꾼다. */
+.stamina-fill {
+    height: 100%;
+    width: 100%;
+    background-color: rgb(38, 150, 88);
+    border-radius: 4px;
+}
+
+/* 탈진 중에는 색으로 알린다. 문턱을 넘기 전엔 Shift 가 안 먹으므로, 바가 조금 차 있는데도
+   안 달려지는 구간을 설명해 줘야 한다. */
+.stamina-fill-exhausted {
+    background-color: rgb(214, 62, 68);
+}

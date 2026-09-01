@@ -1,0 +1,102 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../Shared/OutGameFlow.uss" />
+    <Style src="../Shared/SnowRemovalTheme.uss" />
+    <Style src="CharacterCustomization.uss" />
+
+    <ui:VisualElement name="character-customization" class="character-customization-screen">
+        <ui:VisualElement class="customization-background" picking-mode="Ignore">
+            <ui:VisualElement class="wind-line wind-line-a" />
+            <ui:VisualElement class="wind-line wind-line-b" />
+            <ui:VisualElement class="snow-bank snow-bank-left" />
+            <ui:VisualElement class="snow-bank snow-bank-right" />
+            <ui:VisualElement class="snow-speck snow-speck-c" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="customization-header">
+            <ui:Label text="NORTH POLE CREW FITTING" class="customization-kicker" />
+            <ui:Label text="BUILD YOUR SNOW CREW" class="customization-title" />
+            <ui:Label text="Choose a practical winter look before the first route." class="customization-copy" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="preview-column">
+            <ui:VisualElement class="preview-frame" picking-mode="Ignore">
+                <ui:Label text="CREW PREVIEW" class="preview-label" />
+                <ui:VisualElement class="preview-floor-line" />
+            </ui:VisualElement>
+            <ui:VisualElement name="preview-drag-zone" class="preview-drag-zone" tooltip="Drag to rotate character" />
+            <ui:VisualElement class="turn-controls">
+                <ui:Button name="action-turn-left" text="‹" class="turn-button" />
+                <ui:Label text="DRAG TO TURN" class="turn-copy" />
+                <ui:Button name="action-turn-right" text="›" class="turn-button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement class="customization-panel-shadow">
+            <ui:VisualElement class="customization-panel">
+                <ui:VisualElement class="panel-heading">
+                    <ui:Label text="WINTER UNIFORM" class="panel-title" />
+                    <ui:Label text="MIX &amp; MATCH" class="panel-chip" />
+                </ui:VisualElement>
+
+                <ui:ScrollView class="slot-list" vertical-scroller-visibility="Auto">
+                    <ui:VisualElement class="slot-row">
+                        <ui:Label text="BODY" class="slot-name" />
+                        <ui:Button name="previous-body" text="‹" class="slot-arrow" />
+                        <ui:Label name="value-body" text="01 / 16" class="slot-value" />
+                        <ui:Button name="next-body" text="›" class="slot-arrow" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="slot-row">
+                        <ui:Label text="FACE" class="slot-name" />
+                        <ui:Button name="previous-face" text="‹" class="slot-arrow" />
+                        <ui:Label name="value-face" text="01 / 08" class="slot-value" />
+                        <ui:Button name="next-face" text="›" class="slot-arrow" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="slot-row">
+                        <ui:Label text="HAIR" class="slot-name" />
+                        <ui:Button name="previous-hair" text="‹" class="slot-arrow" />
+                        <ui:Label name="value-hair" text="01 / 11" class="slot-value" />
+                        <ui:Button name="next-hair" text="›" class="slot-arrow" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="slot-row">
+                        <ui:Label text="TOP" class="slot-name" />
+                        <ui:Button name="previous-top" text="‹" class="slot-arrow" />
+                        <ui:Label name="value-top" text="01 / 10" class="slot-value" />
+                        <ui:Button name="next-top" text="›" class="slot-arrow" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="slot-row">
+                        <ui:Label text="COAT" class="slot-name" />
+                        <ui:Button name="previous-coat" text="‹" class="slot-arrow" />
+                        <ui:Label name="value-coat" text="NONE" class="slot-value" />
+                        <ui:Button name="next-coat" text="›" class="slot-arrow" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="slot-row">
+                        <ui:Label text="PANTS" class="slot-name" />
+                        <ui:Button name="previous-pants" text="‹" class="slot-arrow" />
+                        <ui:Label name="value-pants" text="01 / 14" class="slot-value" />
+                        <ui:Button name="next-pants" text="›" class="slot-arrow" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="slot-row">
+                        <ui:Label text="SHOES" class="slot-name" />
+                        <ui:Button name="previous-shoes" text="‹" class="slot-arrow" />
+                        <ui:Label name="value-shoes" text="01 / 21" class="slot-value" />
+                        <ui:Button name="next-shoes" text="›" class="slot-arrow" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="slot-row">
+                        <ui:Label text="HAT" class="slot-name" />
+                        <ui:Button name="previous-hat" text="‹" class="slot-arrow" />
+                        <ui:Label name="value-hat" text="NONE" class="slot-value" />
+                        <ui:Button name="next-hat" text="›" class="slot-arrow" />
+                    </ui:VisualElement>
+                </ui:ScrollView>
+
+                <ui:Button name="action-randomize" text="SURPRISE ME" class="flow-button yellow randomize-button" />
+                <ui:VisualElement class="confirm-row">
+                    <ui:Button name="action-skip-character" text="SKIP" class="flow-button compact-button danger" />
+                    <ui:Button name="action-confirm-character" text="READY" class="flow-button secondary confirm-button" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:Label name="customization-status" text="DRAG TO TURN  ·  CHOOSE YOUR WINTER CREW LOOK" class="customization-status" />
+    </ui:VisualElement>
+</ui:UXML>

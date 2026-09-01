@@ -1,0 +1,65 @@
+.tutorial-card {
+    width: 1210px;
+}
+
+.tutorial-steps {
+    margin-top: 34px;
+}
+
+.step-card {
+    width: 310px;
+    height: 330px;
+    margin-left: 10px;
+    margin-right: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.step-one {
+    rotate: -1.5deg;
+}
+
+.step-two {
+    border-color: #ffd96b;
+    rotate: 1deg;
+}
+
+.step-three {
+    rotate: -0.5deg;
+}
+
+.step-number {
+    width: 76px;
+    height: 76px;
+    margin-bottom: 16px;
+    color: #ffffff;
+    font-size: 43px;
+    background-color: #f1444d;
+    border-width: 7px;
+    border-color: #ffffff;
+    border-radius: 999px;
+    -unity-text-align: middle-center;
+}
+
+.step-copy {
+    color: #428478;
+    font-size: 18px;
+    white-space: normal;
+    -unity-text-align: middle-center;
+}
+
+.tutorial-back {
+    margin-top: 22px;
+}
+
+.tutorial-actions {
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 22px;
+}
+
+.tutorial-action {
+    width: 280px;
+    margin-left: 8px;
+    margin-right: 8px;
+}

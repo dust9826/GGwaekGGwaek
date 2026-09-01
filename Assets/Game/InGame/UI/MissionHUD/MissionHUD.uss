@@ -1,0 +1,206 @@
+/* Required mission HUD: UI Toolkit shapes only, matching the in-game sticker visual language. */
+.mission-hud-root {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    -unity-font-definition: url("Fonts/NotoSansKR-Variable.ttf");
+}
+
+.mission-card {
+    position: absolute;
+    top: 146px;
+    right: 30px;
+    width: 448px;
+    padding-right: 8px;
+    padding-bottom: 10px;
+}
+
+.mission-card-shadow {
+    position: absolute;
+    left: 8px;
+    right: 0;
+    top: 10px;
+    bottom: 0;
+    background-color: rgba(11, 38, 56, 0.90);
+    border-radius: 22px;
+}
+
+.mission-card-outline {
+    position: relative;
+    background-color: rgb(255, 255, 255);
+    border-radius: 22px;
+    padding: 5px;
+}
+
+.mission-card-face {
+    position: relative;
+    background-color: rgb(248, 245, 234);
+    border-width: 3px;
+    border-color: rgb(21, 57, 80);
+    border-radius: 17px;
+    overflow: hidden;
+}
+
+.mission-header {
+    height: 64px;
+    padding-left: 16px;
+    padding-right: 14px;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgb(99, 214, 193);
+    border-bottom-width: 3px;
+    border-bottom-color: rgb(21, 57, 80);
+}
+
+.required-chip {
+    height: 29px;
+    min-width: 90px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-right: 11px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(241, 91, 98);
+    border-width: 3px;
+    border-color: rgb(21, 57, 80);
+    border-radius: 15px;
+}
+
+.required-label {
+    -unity-font-definition: url("../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+    font-size: 15px;
+    color: rgb(255, 255, 255);
+    -unity-text-align: middle-center;
+    letter-spacing: 0.8px;
+}
+
+.mission-title {
+    flex-grow: 1;
+    font-size: 25px;
+    -unity-font-style: bold;
+    color: rgb(21, 57, 80);
+    -unity-text-align: middle-left;
+}
+
+.overall-progress {
+    min-width: 55px;
+    font-size: 22px;
+    -unity-font-style: bold;
+    color: rgb(21, 57, 80);
+    -unity-text-align: middle-right;
+}
+
+.mission-list {
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+.mission-row {
+    min-height: 58px;
+    margin-left: 9px;
+    margin-right: 9px;
+    padding-left: 7px;
+    padding-right: 7px;
+    flex-direction: row;
+    align-items: center;
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(21, 57, 80, 0.12);
+}
+
+.mission-row-last {
+    border-bottom-width: 0;
+}
+
+.mission-status {
+    position: relative;
+    width: 34px;
+    height: 34px;
+    margin-right: 10px;
+    flex-shrink: 0;
+    background-color: rgb(255, 255, 255);
+    border-width: 3px;
+    border-color: rgb(21, 57, 80);
+    border-radius: 17px;
+}
+
+.mission-status-dot {
+    position: absolute;
+    left: 9px;
+    top: 9px;
+    width: 10px;
+    height: 10px;
+    background-color: rgb(255, 211, 90);
+    border-radius: 5px;
+}
+
+.mission-check-short,
+.mission-check-long {
+    position: absolute;
+    display: none;
+    background-color: rgb(255, 255, 255);
+    border-radius: 3px;
+}
+
+.mission-check-short {
+    left: 5px;
+    top: 15px;
+    width: 11px;
+    height: 5px;
+    rotate: 44deg;
+}
+
+.mission-check-long {
+    left: 12px;
+    top: 12px;
+    width: 18px;
+    height: 5px;
+    rotate: -48deg;
+}
+
+.mission-description {
+    flex-grow: 1;
+    white-space: normal;
+    font-size: 19px;
+    -unity-font-style: bold;
+    color: rgb(21, 57, 80);
+    -unity-text-align: middle-left;
+}
+
+.mission-progress {
+    width: 62px;
+    height: 34px;
+    margin-left: 9px;
+    padding-left: 6px;
+    padding-right: 6px;
+    background-color: rgb(47, 131, 207);
+    border-width: 3px;
+    border-color: rgb(21, 57, 80);
+    border-radius: 17px;
+    font-size: 18px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    -unity-text-align: middle-center;
+}
+
+.mission-row-complete .mission-status {
+    background-color: rgb(49, 180, 120);
+}
+
+.mission-row-complete .mission-status-dot {
+    display: none;
+}
+
+.mission-row-complete .mission-check-short,
+.mission-row-complete .mission-check-long {
+    display: flex;
+}
+
+.mission-row-complete .mission-description {
+    color: rgb(32, 132, 87);
+}
+
+.mission-row-complete .mission-progress {
+    background-color: rgb(49, 180, 120);
+}

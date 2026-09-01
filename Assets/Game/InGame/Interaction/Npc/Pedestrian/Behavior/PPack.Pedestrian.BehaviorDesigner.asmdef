@@ -1,0 +1,19 @@
+{
+    "name": "PPack.Pedestrian.BehaviorDesigner",
+    "rootNamespace": "PPack",
+    "references": [
+        "PPack.InGame",
+        "Opsive.BehaviorDesigner.Runtime",
+        "Opsive.GraphDesigner.Runtime",
+        "Opsive.Shared.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

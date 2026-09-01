@@ -1,0 +1,14 @@
+{
+    "name": "PPack.InGame",
+    "rootNamespace": "PPack.InGame",
+    "references": ["PPack.Core", "Unity.InputSystem", "Unity.Cinemachine", "Unity.TextMeshPro", "MoreMountains.Tools", "Unity.RenderPipelines.Core.Runtime", "Unity.RenderPipelines.Universal.Runtime", "Unity.VisualEffectGraph.Runtime", "Fusion.Addons.Physics", "Unity.Splines", "Unity.Mathematics"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

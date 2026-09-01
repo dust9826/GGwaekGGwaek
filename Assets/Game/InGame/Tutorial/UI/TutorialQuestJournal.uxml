@@ -1,0 +1,31 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="TutorialQuestJournal.uss" />
+    <ui:VisualElement class="quest-screen" picking-mode="Ignore">
+        <ui:VisualElement name="quest-journal" class="quest-journal" picking-mode="Ignore">
+            <ui:VisualElement class="quest-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="quest-paper" picking-mode="Ignore">
+                <ui:VisualElement class="quest-header" picking-mode="Ignore">
+                    <ui:Label class="quest-stamp" text="NORTH POLE POST" picking-mode="Ignore" />
+                    <ui:Label name="quest-counter" class="quest-counter" text="DELIVERY LOG  01 / 08" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Label name="quest-current-title" class="quest-current-title" text="마을길 걷기" picking-mode="Ignore" />
+                <ui:Label name="quest-current-hint" class="quest-current-hint" text="WASD · 마을길을 걸어 보세요." picking-mode="Ignore" />
+                <ui:VisualElement class="quest-rule" picking-mode="Ignore" />
+                <ui:VisualElement class="quest-list" picking-mode="Ignore">
+                    <ui:VisualElement class="quest-row"><ui:Label name="quest-mark-0" class="quest-mark" text="●" /><ui:Label name="quest-label-0" class="quest-label" text="마을길 걷기" /></ui:VisualElement>
+                    <ui:VisualElement class="quest-row"><ui:Label name="quest-mark-1" class="quest-mark" text="○" /><ui:Label name="quest-label-1" class="quest-label" text="달려서 이동하기" /></ui:VisualElement>
+                    <ui:VisualElement class="quest-row"><ui:Label name="quest-mark-2" class="quest-mark" text="○" /><ui:Label name="quest-label-2" class="quest-label" text="눈길 슬라이딩" /></ui:VisualElement>
+                    <ui:VisualElement class="quest-row"><ui:Label name="quest-mark-3" class="quest-mark" text="○" /><ui:Label name="quest-label-3" class="quest-label" text="눈덩이 굴리기" /></ui:VisualElement>
+                    <ui:VisualElement class="quest-row"><ui:Label name="quest-mark-4" class="quest-mark" text="○" /><ui:Label name="quest-label-4" class="quest-label" text="제작기에 눈 넣기" /></ui:VisualElement>
+                    <ui:VisualElement class="quest-row"><ui:Label name="quest-mark-5" class="quest-mark" text="○" /><ui:Label name="quest-label-5" class="quest-label" text="우편 단말기로 보내기" /></ui:VisualElement>
+                    <ui:VisualElement class="quest-row"><ui:Label name="quest-mark-6" class="quest-mark" text="○" /><ui:Label name="quest-label-6" class="quest-label" text="창고에서 택배 꺼내기" /></ui:VisualElement>
+                    <ui:VisualElement class="quest-row"><ui:Label name="quest-mark-7" class="quest-mark" text="○" /><ui:Label name="quest-label-7" class="quest-label" text="옆집 앞마당에 배달하기" /></ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement class="quest-progress-track" picking-mode="Ignore">
+                    <ui:VisualElement name="quest-progress-fill" class="quest-progress-fill" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Label name="quest-progress-text" class="quest-progress-text" text="0.0 / 5 m" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

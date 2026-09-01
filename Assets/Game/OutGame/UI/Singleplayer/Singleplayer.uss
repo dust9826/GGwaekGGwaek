@@ -1,0 +1,40 @@
+.solo-card {
+    width: 1040px;
+}
+
+.solo-options {
+    margin-top: 20px;
+    margin-bottom: 14px;
+}
+
+.option-card {
+    width: 390px;
+    height: 220px;
+    margin-left: 14px;
+    margin-right: 14px;
+    align-items: center;
+    justify-content: center;
+}
+
+.tilt-option-left {
+    rotate: -1deg;
+}
+
+.tilt-option-right {
+    rotate: 1deg;
+}
+
+.selected-option {
+    border-color: #ffd96b;
+    border-width: 8px;
+}
+
+.option-value {
+    color: #f1444d;
+    font-size: 22px;
+    letter-spacing: 1px;
+}
+
+.solo-actions {
+    margin-top: 10px;
+}

@@ -1,0 +1,777 @@
+.single-menu-screen {
+    flex-grow: 1;
+}
+
+.menu-view {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-view-hidden {
+    display: none;
+}
+
+.menu-view-active {
+    display: flex;
+}
+
+.ui-effect-layer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+.transition-curtain {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: none;
+    opacity: 0;
+    background-color: #173a59;
+}
+
+.snow-effect {
+    position: absolute;
+}
+
+.snow-effect-glint {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    rotate: 45deg;
+}
+
+.snow-effect-ice {
+    background-color: #c9edf3;
+}
+
+.snow-effect-white {
+    background-color: rgba(255, 255, 255, 0.94);
+}
+
+/* Sparse night-snow backdrop. The large lower forms read as snow banks, not bubbles. */
+.menu-background-decor {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+.menu-bg-orb,
+.menu-bg-ring,
+.menu-bg-swoosh,
+.menu-bg-stripes,
+.menu-bg-sparkle,
+.menu-bg-dot {
+    position: absolute;
+}
+
+.menu-bg-orb {
+    left: 19%;
+    top: -22%;
+    width: 62%;
+    height: 66%;
+    background-color: rgba(79, 139, 160, 0.13);
+    border-radius: 9999px;
+}
+
+.menu-bg-ring {
+    border-width: 0;
+    border-radius: 9999px;
+}
+
+.menu-bg-ring-a {
+    left: -9%;
+    bottom: -20%;
+    width: 50%;
+    height: 36%;
+    background-color: #edf6f7;
+    rotate: 3deg;
+}
+
+.menu-bg-ring-b {
+    right: -13%;
+    bottom: -22%;
+    width: 62%;
+    height: 40%;
+    background-color: #d8eaee;
+    rotate: -4deg;
+}
+
+.menu-bg-ring-c {
+    left: 27%;
+    bottom: -29%;
+    width: 50%;
+    height: 40%;
+    background-color: #f8fcfb;
+}
+
+.menu-bg-ring-d {
+    right: 7%;
+    top: 8%;
+    width: 54px;
+    height: 54px;
+    background-color: #f1c969;
+    border-width: 5px;
+    border-color: rgba(255, 255, 255, 0.84);
+}
+
+.menu-bg-swoosh {
+    width: 520px;
+    height: 120px;
+    border-radius: 9999px;
+    rotate: -9deg;
+}
+
+.menu-bg-swoosh-a {
+    left: -92px;
+    top: 19%;
+    border-top-width: 8px;
+    border-top-color: rgba(205, 235, 241, 0.2);
+}
+
+.menu-bg-swoosh-b {
+    right: -130px;
+    top: 38%;
+    border-top-width: 5px;
+    border-top-color: rgba(230, 247, 249, 0.14);
+}
+
+.menu-bg-stripes {
+    width: 176px;
+    height: 70px;
+    rotate: -9deg;
+}
+
+.menu-bg-stripes-a {
+    left: 8%;
+    top: 11%;
+}
+
+.menu-bg-stripes-b {
+    right: 9%;
+    top: 29%;
+    scale: 0.82 0.82;
+}
+
+.menu-bg-stripes-c {
+    left: 12%;
+    bottom: 25%;
+    scale: 0.68 0.68;
+}
+
+.menu-bg-stripe {
+    position: absolute;
+    left: 0;
+    width: 150px;
+    height: 5px;
+    background-color: rgba(214, 239, 244, 0.2);
+    border-radius: 999px;
+}
+
+.menu-bg-stripe-0 {
+    top: 0;
+}
+
+.menu-bg-stripe-1 {
+    top: 18px;
+    left: 28px;
+    width: 112px;
+}
+
+.menu-bg-stripe-2 {
+    top: 36px;
+    left: 8px;
+    width: 132px;
+}
+
+.menu-bg-stripe-3 {
+    top: 54px;
+    left: 48px;
+    width: 86px;
+}
+
+.menu-bg-sparkle {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    rotate: 45deg;
+    background-color: rgba(244, 251, 251, 0.88);
+}
+
+.menu-bg-sparkle-a {
+    left: 18%;
+    top: 18%;
+    width: 8px;
+    height: 8px;
+}
+
+.menu-bg-sparkle-b {
+    right: 19%;
+    top: 21%;
+    width: 11px;
+    height: 11px;
+}
+
+.menu-bg-sparkle-c {
+    right: 7%;
+    top: 54%;
+    width: 7px;
+    height: 7px;
+    opacity: 0.66;
+}
+
+.menu-bg-sparkle-d {
+    left: 6%;
+    top: 43%;
+    width: 12px;
+    height: 12px;
+    opacity: 0.72;
+}
+
+.menu-bg-dot {
+    border-radius: 999px;
+}
+
+.menu-bg-dot-a {
+    left: 4.5%;
+    top: 56%;
+    width: 16px;
+    height: 16px;
+    background-color: #f1c969;
+    border-width: 3px;
+    border-color: rgba(255, 255, 255, 0.72);
+}
+
+.menu-bg-dot-b {
+    right: 12%;
+    bottom: 25%;
+    width: 13px;
+    height: 13px;
+    background-color: rgba(239, 249, 250, 0.8);
+}
+
+.main-card {
+    width: 960px;
+}
+
+.mode-list {
+    width: 88%;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+.mode-group {
+    width: 100%;
+    height: 196px;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    align-items: center;
+    justify-content: center;
+}
+
+.mode-label {
+    color: #173247;
+    font-size: 28px;
+    letter-spacing: 3px;
+    -unity-text-align: middle-center;
+}
+
+.mode-copy {
+    margin-top: -3px;
+    margin-bottom: 7px;
+    color: #557381;
+    font-size: 14px;
+    letter-spacing: 1px;
+    -unity-text-align: middle-center;
+}
+
+.mode-buttons {
+    width: 100%;
+}
+
+.mode-button {
+    width: 320px;
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.utility-actions {
+    margin-top: 5px;
+}
+
+.menu-view .field {
+    flex-shrink: 0;
+}
+
+@media (max-width: 1100px) {
+    .main-card {
+        width: 860px;
+    }
+
+    .mode-button {
+        width: 285px;
+    }
+}
+
+/* Penguin identity layer. MainMenu.uss loads last, so these rules replace the former Santa palette
+   without changing the shared OutGame flow or button bindings. */
+.single-menu-screen {
+    background-color: #102f46;
+}
+
+.menu-bg-orb {
+    background-color: rgba(30, 104, 135, 0.22);
+}
+
+.menu-bg-ring-a {
+    background-color: #d9f2f4;
+}
+
+.menu-bg-ring-b {
+    background-color: #b8dfe5;
+}
+
+.menu-bg-ring-c {
+    background-color: #f4fbfa;
+}
+
+.flow-card-shadow {
+    background-color: #081e2d;
+}
+
+.flow-card {
+    background-color: #dff2f3;
+    border-color: #f9ffff;
+    border-bottom-color: #94c6cf;
+}
+
+.flow-card .title-banner {
+    background-color: #176b8d;
+    border-color: #ffffff;
+    border-bottom-color: #0d4867;
+}
+
+.flow-card .title-kicker {
+    color: #ffd18a;
+}
+
+.paper-panel,
+.mode-group,
+.setting-row {
+    background-color: rgba(246, 252, 251, 0.96);
+    border-color: #b8dce1;
+    border-bottom-color: #8ebac3;
+}
+
+.online-group {
+    border-left-color: #2ca6c7;
+}
+
+.solo-group {
+    border-left-color: #f5a340;
+}
+
+.mode-label,
+.section-title,
+.setting-title,
+.screen-copy,
+.field,
+.field .unity-base-field__label {
+    color: #102f46;
+}
+
+.mode-copy,
+.support-copy,
+.step-copy {
+    color: #4e7180;
+}
+
+.flow-button {
+    background-color: #238db5;
+    border-color: #ffffff;
+    border-bottom-color: #165d7a;
+}
+
+.flow-button:hover,
+.flow-button:focus {
+    background-color: #35a7cc;
+}
+
+.flow-button.secondary {
+    background-color: #397984;
+    border-bottom-color: #23505b;
+}
+
+.flow-button.secondary:hover,
+.flow-button.secondary:focus {
+    background-color: #4b929d;
+}
+
+.flow-button.yellow {
+    color: #102f46;
+    background-color: #f5a340;
+    border-bottom-color: #b96a24;
+}
+
+.flow-button.yellow:hover,
+.flow-button.yellow:focus {
+    background-color: #ffc05c;
+}
+
+.flow-button.danger {
+    background-color: #40586b;
+    border-bottom-color: #293a49;
+}
+
+.flow-button.danger:hover,
+.flow-button.danger:focus {
+    background-color: #566f82;
+}
+
+.field .unity-text-input {
+    color: #102f46;
+    background-color: #ffffff;
+    border-color: #4d9cb5;
+}
+
+.chip {
+    background-color: #238db5;
+}
+
+.big-value,
+.option-value,
+.setting-value {
+    color: #e8842f;
+}
+
+.status-label {
+    color: #355f70;
+    background-color: rgba(123, 188, 200, 0.2);
+}
+
+.player-row {
+    color: #4e7180;
+    background-color: #e2f2f3;
+    border-left-color: #65adbd;
+}
+
+.player-ready {
+    color: #102f46;
+    background-color: #fff0d5;
+    border-left-color: #f5a340;
+}
+
+.step-number {
+    background-color: #238db5;
+}
+
+.stage-world-header {
+    border-left-color: #f5a340;
+}
+
+.stage-world-kicker {
+    color: #ffd18a;
+}
+
+.stage-world-node-button.stage-node-selected,
+.stage-world-actions .stage-world-start {
+    background-color: #238db5;
+    border-bottom-color: #165d7a;
+}
+
+.stage-world-node-button.stage-node-selected:hover,
+.stage-world-node-button.stage-node-selected:focus,
+.stage-world-actions .stage-world-start:hover,
+.stage-world-actions .stage-world-start:focus {
+    background-color: #35a7cc;
+}
+
+.stage-world-threat {
+    background-color: #e8842f;
+}
+
+/* Layered low-poly pines sit behind the penguins and disappear into the foreground snow banks. */
+.tree-cluster,
+.winter-pine,
+.pine-trunk,
+.pine-tier {
+    position: absolute;
+}
+
+.tree-cluster {
+    bottom: 38px;
+    width: 340px;
+    height: 310px;
+    opacity: 0.78;
+}
+
+.tree-cluster-left {
+    left: -18px;
+}
+
+.tree-cluster-right {
+    right: -18px;
+}
+
+.winter-pine {
+    width: 110px;
+    height: 235px;
+}
+
+.tree-cluster-left .winter-pine-a,
+.tree-cluster-right .winter-pine-c {
+    left: 6px;
+    bottom: 5px;
+    scale: 0.78 0.78;
+}
+
+.tree-cluster-left .winter-pine-b,
+.tree-cluster-right .winter-pine-b {
+    left: 112px;
+    bottom: 16px;
+    scale: 1 1;
+}
+
+.tree-cluster-left .winter-pine-c,
+.tree-cluster-right .winter-pine-a {
+    right: 3px;
+    bottom: -6px;
+    scale: 0.66 0.66;
+}
+
+.pine-trunk {
+    left: 47px;
+    bottom: 0;
+    width: 16px;
+    height: 76px;
+    background-color: #173646;
+    border-radius: 7px;
+}
+
+.pine-tier {
+    background-color: #1b5668;
+    border-top-width: 8px;
+    border-left-width: 5px;
+    border-color: #d9f2f4;
+    border-radius: 8px;
+    rotate: 45deg;
+}
+
+.pine-tier-bottom {
+    left: 9px;
+    top: 105px;
+    width: 92px;
+    height: 92px;
+    background-color: #17495b;
+}
+
+.pine-tier-middle {
+    left: 20px;
+    top: 60px;
+    width: 70px;
+    height: 70px;
+}
+
+.pine-tier-top {
+    left: 31px;
+    top: 23px;
+    width: 48px;
+    height: 48px;
+    background-color: #287287;
+}
+
+/* Crisp UI Toolkit snowmen replace the former raster penguins. */
+.snowman-mascot {
+    position: absolute;
+    bottom: 74px;
+    width: 182px;
+    height: 214px;
+    opacity: 0.94;
+}
+
+.snowman-mascot-left {
+    left: 3.4%;
+    rotate: -3deg;
+}
+
+.snowman-mascot-right {
+    right: 3.4%;
+    rotate: 3deg;
+    scale: 0.86 0.86;
+}
+
+.snowman-body,
+.snowman-head {
+    position: absolute;
+    background-color: #eef8fa;
+    border-left-width: 3px;
+    border-right-width: 3px;
+    border-top-width: 3px;
+    border-bottom-width: 3px;
+    border-left-color: #b9d5da;
+    border-right-color: #b9d5da;
+    border-top-color: #f9ffff;
+    border-bottom-color: #8ebbc6;
+    border-top-left-radius: 999px;
+    border-top-right-radius: 999px;
+    border-bottom-left-radius: 999px;
+    border-bottom-right-radius: 999px;
+}
+
+.snowman-body {
+    left: 31px;
+    top: 88px;
+    width: 120px;
+    height: 120px;
+}
+
+.snowman-head {
+    left: 45px;
+    top: 17px;
+    width: 92px;
+    height: 92px;
+}
+
+.snowman-eye,
+.snowman-button,
+.snowman-smile {
+    position: absolute;
+    background-color: #17384c;
+    border-top-left-radius: 999px;
+    border-top-right-radius: 999px;
+    border-bottom-left-radius: 999px;
+    border-bottom-right-radius: 999px;
+}
+
+.snowman-eye {
+    top: 30px;
+    width: 10px;
+    height: 12px;
+}
+
+.snowman-eye-left {
+    left: 23px;
+}
+
+.snowman-eye-right {
+    right: 23px;
+}
+
+.snowman-carrot {
+    position: absolute;
+    left: 39px;
+    top: 46px;
+    width: 31px;
+    height: 10px;
+    background-color: #f2a020;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    rotate: 7deg;
+}
+
+.snowman-smile {
+    top: 65px;
+    width: 6px;
+    height: 6px;
+}
+
+.snowman-smile-left {
+    left: 32px;
+}
+
+.snowman-smile-middle {
+    left: 43px;
+    top: 69px;
+}
+
+.snowman-smile-right {
+    left: 54px;
+}
+
+.snowman-scarf-band,
+.snowman-scarf-tail {
+    position: absolute;
+    background-color: #4da7c4;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.snowman-scarf-band {
+    left: 39px;
+    top: 94px;
+    width: 104px;
+    height: 22px;
+}
+
+.snowman-scarf-tail {
+    left: 111px;
+    top: 107px;
+    width: 22px;
+    height: 55px;
+    rotate: -5deg;
+}
+
+.snowman-button {
+    left: 85px;
+    width: 12px;
+    height: 12px;
+}
+
+.snowman-button-top {
+    top: 131px;
+}
+
+.snowman-button-middle {
+    top: 156px;
+}
+
+.snowman-button-bottom {
+    top: 181px;
+}
+
+.snowman-arm {
+    position: absolute;
+    top: 122px;
+    width: 48px;
+    height: 7px;
+    background-color: #6d4b2d;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.snowman-arm-left {
+    left: 2px;
+    rotate: -25deg;
+}
+
+.snowman-arm-right {
+    right: 2px;
+    rotate: 25deg;
+}
+
+@media (max-width: 1250px) {
+    .snowman-mascot,
+    .tree-cluster {
+        display: none;
+    }
+}

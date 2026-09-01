@@ -1,0 +1,19 @@
+.join-card {
+    width: 950px;
+}
+
+.join-form {
+    width: 660px;
+    margin-top: 28px;
+    margin-bottom: 24px;
+    align-items: center;
+    rotate: 1deg;
+}
+
+.join-actions {
+    margin-top: 4px;
+}
+
+.code-field .unity-text-input {
+    letter-spacing: 6px;
+}

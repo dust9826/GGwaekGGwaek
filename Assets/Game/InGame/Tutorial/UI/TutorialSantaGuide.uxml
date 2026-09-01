@@ -1,0 +1,19 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="TutorialSantaGuide.uss" />
+    <ui:VisualElement class="santa-guide-screen" picking-mode="Ignore">
+        <ui:VisualElement name="santa-guide" class="santa-guide" picking-mode="Ignore">
+            <ui:VisualElement class="santa-guide-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="santa-guide-body" picking-mode="Ignore">
+                <ui:VisualElement name="santa-portrait" class="santa-portrait" picking-mode="Ignore">
+                    <ui:VisualElement class="santa-portrait-ring" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement class="santa-copy" picking-mode="Ignore">
+                    <ui:Label name="santa-eyebrow" class="santa-eyebrow" text="SANTA'S GUIDE" picking-mode="Ignore" />
+                    <ui:Label name="santa-title" class="santa-title" text="마을길을 걸어 보자" picking-mode="Ignore" />
+                    <ui:Label name="santa-message" class="santa-message" text="호호, 먼저 천천히 마을길을 걸어 보렴." picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement class="santa-tail" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

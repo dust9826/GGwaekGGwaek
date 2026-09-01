@@ -1,0 +1,27 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="AugmentSelect.uss" />
+    <ui:VisualElement name="augment-select-root" class="augment-select-root">
+        <ui:VisualElement name="veil" class="veil" picking-mode="Ignore" />
+
+        <!-- 머리말도 카드와 같은 3단 깊이를 쓴다(그림자 → 흰 외곽 → 크림 면).
+             딤 위에 글자만 얹으면 InGame/UI/AGENTS.md 가 금지한 "값싼 도형 모음" 이 된다. -->
+        <ui:VisualElement name="header" class="header" picking-mode="Ignore">
+            <ui:VisualElement class="plaque-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="plaque-outline" picking-mode="Ignore">
+                <ui:VisualElement class="plaque-face" picking-mode="Ignore">
+                    <ui:Label name="day-label" text="DAY 2" class="day-label" picking-mode="Ignore" />
+                    <ui:Label name="header-title" text="CHOOSE AN AUGMENT" class="header-title" picking-mode="Ignore" />
+                    <ui:Label name="header-note" text="THE GAME IS PAUSED WHILE YOU CHOOSE" class="header-note" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="vote-timer" class="vote-timer" picking-mode="Ignore">
+                <ui:VisualElement class="vote-timer-shadow" picking-mode="Ignore" />
+                <ui:VisualElement class="vote-timer-face" picking-mode="Ignore">
+                    <ui:Label name="vote-timer-label" text="20" class="vote-timer-label" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="card-row" class="card-row" />
+    </ui:VisualElement>
+</ui:UXML>

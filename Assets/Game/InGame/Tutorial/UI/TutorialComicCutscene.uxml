@@ -1,0 +1,54 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="TutorialComicCutscene.uss" />
+    <ui:VisualElement name="cutscene-root" class="cutscene-root" picking-mode="Position">
+        <ui:VisualElement name="comic-stage" class="comic-stage" picking-mode="Position">
+            <ui:VisualElement name="comic-card-0" class="comic-card comic-card--left" picking-mode="Ignore" />
+            <ui:VisualElement name="comic-card-1" class="comic-card comic-card--right" picking-mode="Ignore" />
+            <ui:VisualElement name="comic-card-2" class="comic-card comic-card--left" picking-mode="Ignore" />
+            <ui:VisualElement name="comic-card-3" class="comic-card comic-card--right" picking-mode="Ignore" />
+            <ui:VisualElement name="comic-card-4" class="comic-card comic-card--left" picking-mode="Ignore" />
+            <ui:VisualElement name="comic-card-5" class="comic-card comic-card--right" picking-mode="Ignore" />
+            <ui:VisualElement name="comic-card-6" class="comic-card comic-card--left" picking-mode="Ignore" />
+            <ui:VisualElement name="comic-card-7" class="comic-card comic-card--right" picking-mode="Ignore" />
+            <ui:VisualElement name="speech-bubble-left" class="speech-bubble speech-bubble--left" picking-mode="Ignore">
+                <ui:VisualElement name="speech-bubble-left-tail" class="speech-bubble-tail speech-bubble-tail--left" picking-mode="Ignore" />
+                <ui:VisualElement class="speech-bubble-accent" picking-mode="Ignore" />
+                <ui:Label name="speech-bubble-left-speaker" class="speech-bubble-speaker" picking-mode="Ignore" />
+                <ui:Label name="speech-bubble-left-text" class="speech-bubble-text" picking-mode="Ignore" />
+                <ui:VisualElement class="speech-bubble-shine speech-bubble-shine--one" picking-mode="Ignore" />
+                <ui:VisualElement class="speech-bubble-shine speech-bubble-shine--two" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement name="speech-bubble-right" class="speech-bubble speech-bubble--right" picking-mode="Ignore">
+                <ui:VisualElement name="speech-bubble-right-tail" class="speech-bubble-tail speech-bubble-tail--right" picking-mode="Ignore" />
+                <ui:VisualElement class="speech-bubble-accent" picking-mode="Ignore" />
+                <ui:Label name="speech-bubble-right-speaker" class="speech-bubble-speaker" picking-mode="Ignore" />
+                <ui:Label name="speech-bubble-right-text" class="speech-bubble-text" picking-mode="Ignore" />
+                <ui:VisualElement class="speech-bubble-shine speech-bubble-shine--one" picking-mode="Ignore" />
+                <ui:VisualElement class="speech-bubble-shine speech-bubble-shine--two" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement name="start-prompt" class="start-prompt" picking-mode="Ignore">
+                <ui:VisualElement class="start-prompt-shadow" picking-mode="Ignore" />
+                <ui:VisualElement name="start-prompt-face" class="start-prompt-face" picking-mode="Ignore">
+                    <ui:VisualElement class="start-accent" picking-mode="Ignore" />
+                    <ui:VisualElement class="start-mouse-icon" picking-mode="Ignore">
+                        <ui:VisualElement class="start-mouse-face" picking-mode="Ignore">
+                            <ui:VisualElement class="start-mouse-divider" picking-mode="Ignore" />
+                            <ui:VisualElement name="start-mouse-button" class="start-mouse-button" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="click-rays" picking-mode="Ignore">
+                        <ui:VisualElement class="click-ray click-ray--top" picking-mode="Ignore" />
+                        <ui:VisualElement class="click-ray click-ray--middle" picking-mode="Ignore" />
+                        <ui:VisualElement class="click-ray click-ray--bottom" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="start-copy-block" picking-mode="Ignore">
+                        <ui:Label class="start-kicker" text="CLICK" picking-mode="Ignore" />
+                        <ui:Label class="start-copy" text="START STORY" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Label name="next-hint" class="next-hint" text="CLICK  ▶  NEXT" picking-mode="Ignore" />
+            <ui:Label name="skip-hint" class="skip-hint" text="ESC  SKIP" picking-mode="Ignore" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

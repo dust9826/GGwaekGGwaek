@@ -1,0 +1,26 @@
+{
+    "name": "PPack.InGame.Cleanliness.Editor",
+    "rootNamespace": "PPack",
+    "references": [
+        "PPack.InGame",
+        "PPack.Core",
+        "PPack.InGame.Delivery.Editor",
+        "PPack.InGame.Snow.Editor",
+        "PPack.InGame.Interaction.Editor",
+        "Unity.AI.Navigation",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Fusion.Addons.Physics"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

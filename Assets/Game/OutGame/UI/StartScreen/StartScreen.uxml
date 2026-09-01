@@ -1,0 +1,45 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="StartScreen.uss?fileID=7433441132597879392&amp;guid=cfc8b9d34c2b342ec922c503908f13ca&amp;type=3#StartScreen" />
+    <Style src="../Shared/SnowRemovalTheme.uss" />
+    <ui:VisualElement name="start-screen" class="start-screen">
+        <ui:VisualElement name="blob-coral" class="float-shape blob blob-coral" />
+        <ui:VisualElement name="blob-cream" class="float-shape blob blob-cream" />
+        <ui:VisualElement name="ring-blue" class="float-shape ring ring-blue" />
+        <ui:VisualElement name="ring-yellow" class="float-shape ring ring-yellow" />
+        <ui:VisualElement class="stripe stripe-a" />
+        <ui:VisualElement class="stripe stripe-b" />
+        <ui:VisualElement class="stripe stripe-c" />
+        <ui:VisualElement class="float-shape clean-gleam-cluster">
+            <ui:VisualElement class="clean-gleam gleam-large" />
+            <ui:VisualElement class="clean-gleam gleam-small-a" />
+            <ui:VisualElement class="clean-gleam gleam-small-b" />
+        </ui:VisualElement>
+        <ui:VisualElement class="float-shape lower-clean-sparkle" />
+
+        <ui:VisualElement name="menu-card-shadow" class="menu-card-shadow">
+            <ui:VisualElement name="menu-card" class="menu-card">
+                <ui:VisualElement name="title-banner" class="title-banner">
+                    <ui:Label text="PPACK PPACK" class="title-text" />
+                    <ui:Label text="CLEAN IT. PACK IT. WIN IT!" class="title-kicker" />
+                </ui:VisualElement>
+
+                <ui:VisualElement name="subtitle" class="subtitle-block">
+                    <ui:Label text="READY TO OPEN THE WINTER ROADS?" class="subtitle" />
+                    <ui:Label text="Pick a button and jump right in." class="support-copy" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="button-stack">
+                    <ui:Button name="play-button" text="PLAY" class="menu-button menu-button-primary tilt-left" />
+                    <ui:Button name="settings-button" text="SETTINGS" class="menu-button menu-button-secondary tilt-right" />
+                    <ui:Button name="quit-button" text="QUIT" class="menu-button menu-button-danger tilt-left-small" />
+                </ui:VisualElement>
+
+                <ui:Label name="status-label" text="CHOOSE YOUR MOVE" class="status-label" />
+                <ui:VisualElement class="footer-row">
+                    <ui:Label text="UI TOOLKIT" class="footer-chip" />
+                    <ui:Label text="DOTWEEN" class="footer-chip footer-chip-blue" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,301 @@
+.hud-root {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+    -unity-font-definition: url("../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+}
+
+.mode-switch {
+    position: absolute;
+    right: 30px;
+    bottom: 24px;
+    width: 224px;
+    height: 166px;
+}
+
+.orbit-ring {
+    position: absolute;
+    left: 12px;
+    top: 22px;
+    width: 184px;
+    height: 120px;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 4px;
+    border-left-color: rgba(255, 255, 255, 0.14);
+    border-top-color: rgba(255, 255, 255, 0.42);
+    border-right-color: rgba(255, 255, 255, 0.50);
+    border-bottom-color: rgba(255, 255, 255, 0.24);
+    border-radius: 999px;
+    opacity: 0.72;
+    rotate: -8deg;
+    transform-origin: center;
+}
+
+.tool-slot {
+    position: absolute;
+    width: 112px;
+    height: 112px;
+    align-items: center;
+    justify-content: center;
+}
+
+.tool-slot-active {
+    left: -4px;
+    bottom: -2px;
+}
+
+.tool-slot-next {
+    right: 12px;
+    top: -4px;
+    opacity: 0.68;
+    scale: 0.68 0.68;
+}
+
+.tool-icon-host,
+.tool-template-root,
+.tool-art {
+    width: 112px;
+    height: 112px;
+    align-items: center;
+    justify-content: center;
+}
+
+.tool-template-root,
+.tool-art {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.tool-sticker-shadow {
+    position: absolute;
+    background-color: rgba(7, 28, 41, 0.84);
+}
+
+.dust-tool {
+    rotate: -16deg;
+}
+
+.dust-shadow {
+    left: 9px;
+    top: 35px;
+    width: 91px;
+    height: 48px;
+    border-radius: 24px;
+    translate: 5px 7px;
+}
+
+.dust-body-outline {
+    position: absolute;
+    left: 8px;
+    top: 33px;
+    width: 92px;
+    height: 49px;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    border-width: 3px;
+    border-color: #153950;
+    border-radius: 24px;
+}
+
+.dust-body {
+    width: 80px;
+    height: 37px;
+    background-color: #2f83cf;
+    border-bottom-width: 6px;
+    border-bottom-color: #1c62a5;
+    border-radius: 19px;
+}
+
+.dust-panel {
+    position: absolute;
+    right: 11px;
+    top: 8px;
+    width: 32px;
+    height: 15px;
+    background-color: #f8f5ea;
+    border-radius: 8px;
+}
+
+.dust-handle-outline {
+    position: absolute;
+    left: 49px;
+    top: 20px;
+    width: 32px;
+    height: 22px;
+    background-color: #ffffff;
+    border-width: 3px;
+    border-color: #153950;
+    border-radius: 12px;
+}
+
+.dust-handle-cutout {
+    position: absolute;
+    left: 57px;
+    top: 26px;
+    width: 16px;
+    height: 8px;
+    background-color: #153950;
+    border-radius: 5px;
+}
+
+.dust-nozzle-outline {
+    position: absolute;
+    left: 0;
+    top: 46px;
+    width: 30px;
+    height: 24px;
+    background-color: #ffffff;
+    border-width: 3px;
+    border-color: #153950;
+    border-radius: 12px 6px 6px 12px;
+}
+
+.dust-nozzle {
+    position: absolute;
+    left: 5px;
+    top: 52px;
+    width: 20px;
+    height: 12px;
+    background-color: #cdebe7;
+    border-radius: 7px 3px 3px 7px;
+}
+
+.prop-tool {
+    rotate: 12deg;
+}
+
+.prop-shadow {
+    left: 15px;
+    top: 24px;
+    width: 80px;
+    height: 70px;
+    border-radius: 15px;
+    translate: 5px 7px;
+}
+
+.prop-body-outline {
+    position: absolute;
+    left: 14px;
+    top: 22px;
+    width: 81px;
+    height: 70px;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 8px;
+    background-color: #ffffff;
+    border-width: 3px;
+    border-color: #153950;
+    border-radius: 15px;
+}
+
+.prop-body {
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    top: 5px;
+    bottom: 5px;
+    background-color: #ffd35a;
+    border-bottom-width: 7px;
+    border-bottom-color: #d89522;
+    border-radius: 10px;
+}
+
+.prop-handle {
+    position: absolute;
+    left: 29px;
+    top: 10px;
+    width: 31px;
+    height: 16px;
+    background-color: #f15b62;
+    border-width: 3px;
+    border-color: #153950;
+    border-radius: 5px;
+}
+
+.prop-handle-cutout {
+    position: absolute;
+    left: 36px;
+    top: 14px;
+    width: 17px;
+    height: 6px;
+    background-color: #8c313c;
+    border-radius: 3px;
+}
+
+.prop-roller {
+    position: absolute;
+    left: 25px;
+    bottom: 12px;
+    width: 45px;
+    height: 17px;
+    background-color: #153950;
+    border-width: 3px;
+    border-color: #ffffff;
+    border-radius: 9px;
+}
+
+.prop-side-button {
+    position: absolute;
+    right: 7px;
+    top: 31px;
+    width: 10px;
+    height: 18px;
+    background-color: #f15b62;
+    border-width: 2px;
+    border-color: #153950;
+    border-radius: 5px;
+}
+
+.keycap-shadow {
+    position: absolute;
+    right: 0;
+    bottom: 2px;
+    width: 48px;
+    height: 54px;
+    background-color: rgba(7, 28, 41, 0.9);
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.38);
+    border-radius: 12px;
+    translate: 3px 4px;
+}
+
+.keycap {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 48px;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f5ea;
+    border-width: 3px;
+    border-color: rgba(255, 255, 255, 0.95);
+    border-bottom-width: 7px;
+    border-bottom-color: #a9a79f;
+    border-radius: 10px;
+    translate: -3px -7px;
+    transform-origin: center bottom;
+    overflow: hidden;
+}
+
+.keycap-highlight {
+    position: absolute;
+    left: 7px;
+    right: 7px;
+    top: 5px;
+    height: 3px;
+    background-color: rgba(255, 255, 255, 0.82);
+    border-radius: 3px;
+}
+
+.keycap-label {
+    margin-top: -1px;
+    color: #153950;
+    font-size: 27px;
+    -unity-text-align: middle-center;
+}

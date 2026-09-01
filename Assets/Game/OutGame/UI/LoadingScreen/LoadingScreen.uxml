@@ -1,0 +1,78 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="LoadingScreen.uss?fileID=7433441132597879392&amp;guid=ac9da1a8c5ae74daebe44b753dcca3e6&amp;type=3#LoadingScreen" />
+    <ui:VisualElement name="loading-screen" class="loading-screen">
+        <ui:VisualElement name="background-decor" class="background-decor" picking-mode="Ignore">
+            <ui:VisualElement class="decor-orb decor-orb-glow" />
+            <ui:VisualElement class="decor-ring decor-ring-a" />
+            <ui:VisualElement class="decor-ring decor-ring-b" />
+            <ui:VisualElement class="decor-ring decor-ring-c" />
+            <ui:VisualElement class="decor-ring decor-ring-d" />
+            <ui:VisualElement class="decor-ring decor-ring-e" />
+            <ui:VisualElement class="decor-swoosh decor-swoosh-a" />
+            <ui:VisualElement class="decor-swoosh decor-swoosh-b" />
+            <ui:VisualElement class="decor-stripes decor-stripes-a">
+                <ui:VisualElement class="decor-stripe decor-stripe-0" />
+                <ui:VisualElement class="decor-stripe decor-stripe-1" />
+                <ui:VisualElement class="decor-stripe decor-stripe-2" />
+                <ui:VisualElement class="decor-stripe decor-stripe-3" />
+            </ui:VisualElement>
+            <ui:VisualElement class="decor-stripes decor-stripes-b">
+                <ui:VisualElement class="decor-stripe decor-stripe-0" />
+                <ui:VisualElement class="decor-stripe decor-stripe-1" />
+                <ui:VisualElement class="decor-stripe decor-stripe-2" />
+                <ui:VisualElement class="decor-stripe decor-stripe-3" />
+            </ui:VisualElement>
+            <ui:VisualElement class="decor-stripes decor-stripes-c">
+                <ui:VisualElement class="decor-stripe decor-stripe-0" />
+                <ui:VisualElement class="decor-stripe decor-stripe-1" />
+                <ui:VisualElement class="decor-stripe decor-stripe-2" />
+            </ui:VisualElement>
+            <ui:VisualElement class="decor-sparkle decor-sparkle-a" />
+            <ui:VisualElement class="decor-sparkle decor-sparkle-b" />
+            <ui:VisualElement class="decor-sparkle decor-sparkle-c" />
+            <ui:VisualElement class="decor-sparkle decor-sparkle-d" />
+            <ui:VisualElement class="decor-dot decor-dot-a" />
+            <ui:VisualElement class="decor-dot decor-dot-b" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="animation-stage" class="animation-stage">
+            <ui:VisualElement name="cleaned-floor" class="cleaned-floor cleared-road">
+                <ui:VisualElement class="cleared-road-mark" />
+                <ui:VisualElement name="clean-sheen" class="clean-sheen" />
+                <ui:VisualElement name="clean-glint-0" class="clean-glint clean-glint-a" />
+                <ui:VisualElement name="clean-glint-1" class="clean-glint clean-glint-b" />
+                <ui:VisualElement name="clean-glint-2" class="clean-glint clean-glint-c" />
+            </ui:VisualElement>
+            <ui:VisualElement name="dust-line" class="dust-line snow-bank-line">
+                <ui:VisualElement class="snow-ridge snow-ridge-a" />
+                <ui:VisualElement class="snow-ridge snow-ridge-b" />
+                <ui:VisualElement class="snow-ridge snow-ridge-c" />
+            </ui:VisualElement>
+            <ui:VisualElement name="snow-spray" class="snow-spray">
+                <ui:VisualElement name="snow-arc-0" class="snow-arc snow-arc-a" />
+                <ui:VisualElement name="snow-arc-1" class="snow-arc snow-arc-b" />
+                <ui:VisualElement name="snow-arc-2" class="snow-arc snow-arc-c" />
+                <ui:VisualElement name="snow-chip-0" class="snow-chip snow-chip-a" />
+                <ui:VisualElement name="snow-chip-1" class="snow-chip snow-chip-b" />
+                <ui:VisualElement name="snow-chip-2" class="snow-chip snow-chip-c" />
+                <ui:VisualElement name="snow-chip-3" class="snow-chip snow-chip-d" />
+                <ui:VisualElement name="slide-pulse" class="slide-pulse" />
+            </ui:VisualElement>
+            <ui:VisualElement name="snowball-shadow" class="snowball-shadow" />
+            <ui:VisualElement name="snowball" class="snowball">
+                <ui:VisualElement class="snowball-patch snowball-patch-a" />
+                <ui:VisualElement class="snowball-patch snowball-patch-b" />
+                <ui:VisualElement class="snowball-patch snowball-patch-c" />
+                <ui:VisualElement class="snowball-highlight" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement class="loading-hud">
+            <ui:Label text="SNOWBALL EXPRESS" class="loading-kicker" />
+            <ui:VisualElement class="loading-title-row">
+                <ui:Label name="loading-title-base" text="ROLLING TO THE ROUTE" class="loading-title" />
+                <ui:Label name="loading-dots" text="..." class="loading-title loading-title-dots" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

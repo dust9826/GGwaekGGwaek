@@ -1,0 +1,21 @@
+{
+    "name": "PPack.Npc.BehaviorDesigner",
+    "rootNamespace": "PPack",
+    "references": [
+        "PPack.InGame",
+        "Fusion.Unity",
+        "Opsive.BehaviorDesigner.Runtime",
+        "Opsive.GraphDesigner.Runtime",
+        "Opsive.Shared.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
+

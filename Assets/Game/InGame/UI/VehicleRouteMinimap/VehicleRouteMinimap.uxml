@@ -1,0 +1,45 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="VehicleRouteMinimap.uss" />
+    <ui:VisualElement name="hud-root" class="hud-root" picking-mode="Ignore">
+        <ui:VisualElement name="minimap-backdrop" class="minimap-backdrop" picking-mode="Ignore" />
+        <ui:VisualElement name="minimap-shell" class="minimap-shell" picking-mode="Ignore">
+            <ui:VisualElement class="map-badge-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="map-badge" picking-mode="Ignore">
+                <ui:VisualElement class="badge-sheen" picking-mode="Ignore" />
+                <ui:Label name="map-title" text="CLEAN ROUTE" class="map-title" picking-mode="Ignore" />
+                <ui:Label name="route-progress" text="0%" class="map-progress" picking-mode="Ignore" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="route-canvas" class="route-canvas" picking-mode="Ignore">
+                <ui:Image name="minimap-background" class="minimap-background" picking-mode="Ignore" />
+                <ui:VisualElement class="minimap-shade" picking-mode="Ignore" />
+                <ui:VisualElement class="map-grid-line map-grid-horizontal" picking-mode="Ignore" />
+                <ui:VisualElement class="map-grid-line map-grid-vertical" picking-mode="Ignore" />
+                <ui:VisualElement name="world-markers" class="world-markers" picking-mode="Ignore" />
+
+                <ui:VisualElement name="vehicle-marker" class="vehicle-marker" picking-mode="Ignore">
+                    <ui:VisualElement class="vehicle-shadow" picking-mode="Ignore" />
+                    <ui:VisualElement class="vehicle-outline" picking-mode="Ignore">
+                        <ui:VisualElement class="vehicle-body" picking-mode="Ignore">
+                            <ui:VisualElement class="vehicle-window" picking-mode="Ignore" />
+                            <ui:VisualElement class="vehicle-brush" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement class="map-legend" picking-mode="Ignore">
+                <ui:VisualElement class="legend-car" picking-mode="Ignore" />
+                <ui:Label text="YOU" class="legend-text" picking-mode="Ignore" />
+                <ui:VisualElement class="legend-dirt" picking-mode="Ignore" />
+                <ui:Label name="legend-task" text="TRASH" class="legend-text" picking-mode="Ignore" />
+                <ui:VisualElement class="legend-cleaned" picking-mode="Ignore" />
+                <ui:Label text="DONE" class="legend-text" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement class="map-tab-hint" picking-mode="Ignore">
+                <ui:Label text="TAB" class="map-tab-key" picking-mode="Ignore" />
+                <ui:Label text="HOLD TO VIEW MAP" class="map-tab-copy" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

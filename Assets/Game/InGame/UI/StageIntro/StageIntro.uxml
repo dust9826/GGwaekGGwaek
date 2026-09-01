@@ -1,0 +1,134 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="StageIntro.uss" />
+    <ui:VisualElement name="stage-intro-root" class="stage-intro-root" picking-mode="Ignore">
+        <ui:VisualElement name="backdrop" class="backdrop" picking-mode="Ignore">
+            <ui:VisualElement class="snow-glow snow-glow-left" picking-mode="Ignore" />
+            <ui:VisualElement class="snow-glow snow-glow-right" picking-mode="Ignore" />
+            <ui:VisualElement class="snow-mark snow-mark-a" picking-mode="Ignore" />
+            <ui:VisualElement class="snow-mark snow-mark-b" picking-mode="Ignore" />
+            <ui:VisualElement class="snow-mark snow-mark-c" picking-mode="Ignore" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="intro-card" class="intro-card" picking-mode="Ignore">
+            <ui:VisualElement class="card-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="card-outline" picking-mode="Ignore">
+                <ui:VisualElement class="card-face" picking-mode="Ignore">
+                    <ui:VisualElement class="card-accent" picking-mode="Ignore" />
+                    <ui:VisualElement class="stage-tab-shadow" picking-mode="Ignore" />
+                    <ui:VisualElement name="stage-tab" class="stage-tab" picking-mode="Ignore">
+                        <ui:Label name="stage-label" text="DELIVERY RUN" class="stage-label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="courier-stamp" picking-mode="Ignore">
+                        <ui:VisualElement class="stamp-penguin-head" picking-mode="Ignore">
+                            <ui:VisualElement class="stamp-face" picking-mode="Ignore" />
+                            <ui:VisualElement class="stamp-eye stamp-eye-left" picking-mode="Ignore" />
+                            <ui:VisualElement class="stamp-eye stamp-eye-right" picking-mode="Ignore" />
+                            <ui:VisualElement class="stamp-beak" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:Label text="PENGUIN POST" class="courier-stamp-label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+
+                    <ui:Label name="stage-title" text="PENGUIN EXPRESS" class="stage-title" picking-mode="Ignore" />
+                    <ui:Label name="stage-subtitle" text="ROLL OUT • DELIVER THE GIFTS" class="stage-subtitle" picking-mode="Ignore" />
+                    <ui:VisualElement class="divider" picking-mode="Ignore" />
+
+                    <ui:VisualElement name="objective-row" class="objective-row" picking-mode="Ignore">
+                        <ui:VisualElement name="floor-chip" class="objective-chip objective-chip-roll" picking-mode="Ignore">
+                            <ui:VisualElement class="chip-icon roll-icon" picking-mode="Ignore">
+                                <ui:VisualElement class="roll-trail roll-trail-a" picking-mode="Ignore" />
+                                <ui:VisualElement class="roll-trail roll-trail-b" picking-mode="Ignore" />
+                                <ui:VisualElement class="roll-ball" picking-mode="Ignore" />
+                            </ui:VisualElement>
+                            <ui:Label text="ROLL" class="chip-label" picking-mode="Ignore" />
+                        </ui:VisualElement>
+
+                        <ui:VisualElement name="trash-chip" class="objective-chip objective-chip-gifts" picking-mode="Ignore">
+                            <ui:VisualElement class="chip-icon gift-icon" picking-mode="Ignore">
+                                <ui:VisualElement class="gift-box" picking-mode="Ignore" />
+                                <ui:VisualElement class="gift-ribbon-vertical" picking-mode="Ignore" />
+                                <ui:VisualElement class="gift-ribbon-horizontal" picking-mode="Ignore" />
+                                <ui:VisualElement class="gift-bow gift-bow-left" picking-mode="Ignore" />
+                                <ui:VisualElement class="gift-bow gift-bow-right" picking-mode="Ignore" />
+                            </ui:VisualElement>
+                            <ui:Label text="GIFTS" class="chip-label" picking-mode="Ignore" />
+                        </ui:VisualElement>
+
+                        <ui:VisualElement name="perfect-chip" class="objective-chip objective-chip-deliver" picking-mode="Ignore">
+                            <ui:VisualElement class="chip-icon home-icon" picking-mode="Ignore">
+                                <ui:VisualElement class="home-roof" picking-mode="Ignore" />
+                                <ui:VisualElement class="home-body" picking-mode="Ignore" />
+                                <ui:VisualElement class="home-door" picking-mode="Ignore" />
+                                <ui:VisualElement class="home-gift" picking-mode="Ignore" />
+                            </ui:VisualElement>
+                            <ui:Label text="DELIVER" class="chip-label" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="countdown" class="countdown" picking-mode="Ignore">
+            <ui:VisualElement class="countdown-shadow" picking-mode="Ignore" />
+            <ui:VisualElement name="countdown-ring" class="countdown-ring" picking-mode="Ignore">
+                <ui:VisualElement name="countdown-face" class="countdown-face countdown-red" picking-mode="Ignore">
+                    <ui:VisualElement class="countdown-penguin" picking-mode="Ignore">
+                        <ui:VisualElement class="penguin-flipper penguin-flipper-left" picking-mode="Ignore" />
+                        <ui:VisualElement class="penguin-flipper penguin-flipper-right" picking-mode="Ignore" />
+                        <ui:VisualElement class="penguin-body" picking-mode="Ignore">
+                            <ui:VisualElement class="penguin-belly" picking-mode="Ignore" />
+                            <ui:VisualElement class="penguin-eye penguin-eye-left" picking-mode="Ignore" />
+                            <ui:VisualElement class="penguin-eye penguin-eye-right" picking-mode="Ignore" />
+                            <ui:VisualElement class="penguin-beak" picking-mode="Ignore" />
+                            <ui:VisualElement class="penguin-scarf" picking-mode="Ignore" />
+                            <ui:VisualElement class="penguin-scarf-tail" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="penguin-foot penguin-foot-left" picking-mode="Ignore" />
+                        <ui:VisualElement class="penguin-foot penguin-foot-right" picking-mode="Ignore" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="countdown-copy" picking-mode="Ignore">
+                        <ui:Label text="PENGUIN COURIER" class="countdown-kicker" picking-mode="Ignore" />
+                        <ui:VisualElement class="countdown-number-row" picking-mode="Ignore">
+                            <ui:Label name="countdown-label" text="3" class="countdown-label" picking-mode="Ignore" />
+                            <ui:VisualElement class="countdown-gift" picking-mode="Ignore">
+                                <ui:VisualElement class="countdown-gift-box" picking-mode="Ignore" />
+                                <ui:VisualElement class="countdown-gift-ribbon" picking-mode="Ignore" />
+                                <ui:VisualElement class="countdown-gift-lid" picking-mode="Ignore" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:Label text="READY TO ROLL" class="countdown-caption" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="ready-row" class="ready-row" picking-mode="Ignore">
+            <ui:VisualElement class="snow-puff snow-puff-small" picking-mode="Ignore" />
+            <ui:VisualElement class="snow-puff snow-puff-medium" picking-mode="Ignore" />
+            <ui:VisualElement class="snow-puff snow-puff-large" picking-mode="Ignore" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="clean-signal" class="clean-signal" picking-mode="Ignore">
+            <ui:VisualElement class="clean-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="clean-outline" picking-mode="Ignore">
+                <ui:VisualElement class="clean-face" picking-mode="Ignore">
+                    <ui:VisualElement class="signal-gift" picking-mode="Ignore">
+                        <ui:VisualElement class="signal-gift-box" picking-mode="Ignore" />
+                        <ui:VisualElement class="signal-gift-ribbon" picking-mode="Ignore" />
+                        <ui:VisualElement class="signal-gift-lid" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="signal-copy" picking-mode="Ignore">
+                        <ui:Label text="DELIVER!" class="clean-label" picking-mode="Ignore" />
+                        <ui:Label text="GIFTS ON THE MOVE" class="clean-caption" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="preview-hint" class="preview-hint" picking-mode="Ignore">
+            <ui:Label text="SPACE" class="preview-key" picking-mode="Ignore" />
+            <ui:Label text="REPLAY DELIVERY" class="preview-hint-label" picking-mode="Ignore" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

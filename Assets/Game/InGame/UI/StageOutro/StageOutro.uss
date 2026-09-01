@@ -1,0 +1,364 @@
+/* Winter District route result board. */
+.stage-outro-root {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+    -unity-font-definition: url("../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+}
+
+.backdrop {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+    background-color: rgba(16, 44, 65, 0.64);
+}
+
+.snow-glow {
+    position: absolute;
+    width: 620px;
+    height: 210px;
+    bottom: -126px;
+    background-color: rgba(237, 246, 247, 0.18);
+    border-radius: 999px;
+}
+
+.snow-glow-left {
+    left: -160px;
+    rotate: -5deg;
+}
+
+.snow-glow-right {
+    right: -180px;
+    rotate: 4deg;
+}
+
+.snow-mark {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: rgba(244, 251, 251, 0.76);
+    border-radius: 2px;
+    rotate: 45deg;
+}
+
+.snow-mark-a {
+    left: 11%;
+    top: 18%;
+}
+
+.snow-mark-b {
+    right: 13%;
+    top: 23%;
+    width: 7px;
+    height: 7px;
+}
+
+.snow-mark-c {
+    right: 8%;
+    bottom: 18%;
+    width: 6px;
+    height: 6px;
+    opacity: 0.55;
+}
+
+.result-card {
+    position: absolute;
+    left: 50%;
+    top: 105px;
+    width: 900px;
+    height: 760px;
+    margin-left: -450px;
+    transform-origin: center;
+}
+
+.card-shadow {
+    position: absolute;
+    left: 11px;
+    right: -11px;
+    top: 15px;
+    bottom: -15px;
+    background-color: rgba(10, 35, 52, 0.92);
+    border-radius: 22px;
+}
+
+.card-outline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 7px;
+    background-color: #f9ffff;
+    border-width: 3px;
+    border-color: #173247;
+    border-bottom-width: 9px;
+    border-bottom-color: #9fbfc6;
+    border-radius: 22px;
+}
+
+.card-face {
+    flex-grow: 1;
+    align-items: center;
+    padding: 55px 54px 34px 54px;
+    background-color: #eef5f4;
+    border-width: 2px;
+    border-color: #c9dfe3;
+    border-radius: 15px;
+}
+
+.card-accent {
+    position: absolute;
+    left: 0;
+    top: 20px;
+    bottom: 20px;
+    width: 9px;
+    background-color: #c73542;
+    border-radius: 0 6px 6px 0;
+}
+
+.result-tab-shadow {
+    position: absolute;
+    left: 50%;
+    top: -27px;
+    width: 310px;
+    height: 66px;
+    margin-left: -155px;
+    translate: 0 7px;
+    background-color: #8f2330;
+    border-radius: 12px;
+}
+
+.result-tab {
+    position: absolute;
+    left: 50%;
+    top: -27px;
+    width: 310px;
+    height: 60px;
+    margin-left: -155px;
+    align-items: center;
+    justify-content: center;
+    background-color: #c73542;
+    border-width: 4px;
+    border-color: #ffffff;
+    border-radius: 12px;
+}
+
+.result-tab-label {
+    color: #ffffff;
+    font-size: 27px;
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+}
+
+.stage-label {
+    color: #2f7c66;
+    font-size: 20px;
+    letter-spacing: 3px;
+    -unity-text-align: middle-center;
+}
+
+.stage-title {
+    margin-top: -4px;
+    color: #173247;
+    font-size: 56px;
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+}
+
+.result-subtitle {
+    margin-top: -4px;
+    color: #557381;
+    font-size: 20px;
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+}
+
+.divider {
+    width: 740px;
+    height: 3px;
+    margin-top: 13px;
+    margin-bottom: 8px;
+    background-color: #c9dfe3;
+    border-radius: 3px;
+}
+
+/* 별이 있던 자리와 같은 크기를 유지한다 — 카드 높이가 바뀌면 아래 통계·버튼이 전부 밀린다. */
+.score-block {
+    width: 620px;
+    height: 174px;
+    align-items: center;
+    justify-content: center;
+}
+
+.score-title {
+    margin-bottom: -6px;
+    color: #557381;
+    font-size: 24px;
+    letter-spacing: 3px;
+    -unity-text-align: middle-center;
+}
+
+/* 점등된 별이 쓰던 금색을 그대로 물려받는다. 카드에서 축하를 맡는 요소는 이제 이것 하나다. */
+.score-value {
+    color: #e9bd58;
+    font-size: 118px;
+    -unity-text-align: middle-center;
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: #9a6d22;
+    transform-origin: center;
+}
+
+.high-score {
+    margin-top: 0;
+    color: #173247;
+    font-size: 30px;
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+}
+
+/* 신기록일 때만 켠다. 평소에도 자리를 차지해야 켜질 때 카드가 흔들리지 않는다. */
+.new-record {
+    height: 34px;
+    margin-top: 2px;
+    padding-left: 16px;
+    padding-right: 16px;
+    align-items: center;
+    justify-content: center;
+    background-color: #c73542;
+    border-radius: 999px;
+    rotate: -2deg;
+    opacity: 0;
+    transform-origin: center;
+}
+
+.new-record-label {
+    color: #fff4dd;
+    font-size: 21px;
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+}
+
+.stats-row {
+    width: 680px;
+    height: 91px;
+    margin-top: 13px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.stat-chip {
+    width: 330px;
+    height: 86px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(249, 253, 252, 0.96);
+    border-width: 2px;
+    border-color: #c9dfe3;
+    border-bottom-width: 6px;
+    border-bottom-color: #a7c4ca;
+    border-radius: 11px;
+}
+
+.stat-chip-clear {
+    border-left-width: 7px;
+    border-left-color: #2f7c66;
+}
+
+.stat-chip-time {
+    border-left-width: 7px;
+    border-left-color: #e9bd58;
+}
+
+.stat-title {
+    color: #557381;
+    font-size: 16px;
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+}
+
+.stat-value {
+    margin-top: -2px;
+    color: #173247;
+    font-size: 34px;
+    -unity-text-align: middle-center;
+}
+
+.action-row {
+    width: 680px;
+    height: 70px;
+    margin-top: 16px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.result-button {
+    width: 330px;
+    height: 66px;
+    color: #ffffff;
+    border-width: 3px;
+    border-color: #ffffff;
+    border-bottom-width: 8px;
+    border-radius: 10px;
+    font-size: 25px;
+}
+
+.result-button-primary {
+    background-color: #c73542;
+    border-bottom-color: #8f2330;
+}
+
+.result-button-primary:hover {
+    background-color: #df4b57;
+}
+
+.result-button-secondary {
+    background-color: #2f7c66;
+    border-bottom-color: #1d5647;
+}
+
+.result-button-secondary:hover {
+    background-color: #3d967d;
+}
+
+.result-button:active {
+    border-bottom-width: 4px;
+}
+
+.preview-hint {
+    position: absolute;
+    right: 34px;
+    bottom: 28px;
+    height: 45px;
+    flex-direction: row;
+    align-items: center;
+    opacity: 0.88;
+}
+
+.preview-key {
+    min-width: 112px;
+    height: 42px;
+    margin-right: 10px;
+    padding: 4px 13px 0 13px;
+    color: #173247;
+    background-color: #eef5f4;
+    border-width: 3px;
+    border-color: #ffffff;
+    border-bottom-width: 7px;
+    border-bottom-color: #a7c4ca;
+    border-radius: 10px;
+    font-size: 20px;
+    -unity-text-align: middle-center;
+}
+
+.preview-hint-label {
+    color: #ffffff;
+    font-size: 22px;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: #173247;
+}

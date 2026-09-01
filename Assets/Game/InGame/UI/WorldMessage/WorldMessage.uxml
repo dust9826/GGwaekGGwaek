@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="WorldMessage.uss" />
+    <ui:VisualElement name="world-message-root" class="world-message-root" picking-mode="Ignore">
+        <ui:VisualElement name="world-message" class="world-message" picking-mode="Ignore">
+            <ui:Label name="world-message-label" text="" class="world-message-label" picking-mode="Ignore" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

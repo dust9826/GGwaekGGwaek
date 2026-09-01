@@ -1,0 +1,37 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../Shared/OutGameFlow.uss" />
+    <Style src="HostGame.uss" />
+    <Style src="../Shared/SnowRemovalTheme.uss" />
+    <ui:VisualElement name="host-game" class="flow-screen">
+        <ui:VisualElement class="float-shape decor-coral" />
+        <ui:VisualElement class="float-shape decor-yellow" />
+        <ui:VisualElement class="float-shape decor-ring" />
+        <ui:VisualElement class="stripe" />
+        <ui:VisualElement class="float-shape clean-gleam-cluster">
+            <ui:VisualElement class="clean-gleam gleam-large" />
+            <ui:VisualElement class="clean-gleam gleam-small-a" />
+            <ui:VisualElement class="clean-gleam gleam-small-b" />
+        </ui:VisualElement>
+        <ui:VisualElement class="float-shape lower-clean-sparkle" />
+        <ui:VisualElement name="flow-card-shadow" class="flow-card-shadow host-card">
+            <ui:VisualElement class="flow-card">
+                <ui:VisualElement name="title-banner" class="title-banner">
+                    <ui:Label text="HOST A ROOM" class="title-text" />
+                    <ui:Label text="OPEN A DEPOT. GATHER YOUR SNOW CREW." class="title-kicker" />
+                </ui:VisualElement>
+                <ui:Label text="YOUR ROOM CODE" class="screen-copy" />
+                <ui:VisualElement class="paper-panel code-ticket">
+                    <ui:Label name="room-preview-label" text="------" class="big-value" />
+                    <ui:Label text="The code stays with this preview lobby." class="support-copy" />
+                </ui:VisualElement>
+                <ui:TextField name="nickname-input" label="NICKNAME" value="DRIVER" max-length="16" class="field" />
+                <ui:VisualElement class="button-row host-actions">
+                    <ui:Button name="action-host-room" text="CREATE ROOM" class="flow-button secondary wide-button tilt-left" />
+                    <ui:Button name="scene-MainMenu" text="BACK" class="flow-button compact-button danger tilt-right" />
+                </ui:VisualElement>
+                <ui:Label name="status-label" text="READY TO OPEN THE DOORS" class="status-label" />
+                <ui:Label text="LOCAL PREVIEW / NO NETWORK SESSION" class="footer-note" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

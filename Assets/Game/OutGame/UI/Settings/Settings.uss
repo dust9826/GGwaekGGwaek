@@ -1,0 +1,45 @@
+.settings-card {
+    width: 1050px;
+}
+
+.settings-list {
+    width: 100%;
+    margin-top: 12px;
+}
+
+.setting-row {
+    width: 100%;
+    height: 125px;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.setting-copy {
+    width: 390px;
+}
+
+.setting-title {
+    color: #173d59;
+    font-size: 27px;
+    letter-spacing: 2px;
+}
+
+.setting-help {
+    -unity-text-align: middle-left;
+}
+
+.setting-value {
+    width: 165px;
+    color: #f1444d;
+    font-size: 25px;
+    letter-spacing: 1px;
+    -unity-text-align: middle-center;
+}
+
+.settings-back {
+    margin-top: 10px;
+}

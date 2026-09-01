@@ -1,0 +1,163 @@
+.quest-screen {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+    color: #18384a;
+    -unity-font-definition: url("../../UI/MissionHUD/Fonts/NotoSansKR-Variable.ttf");
+}
+
+.quest-journal {
+    position: absolute;
+    left: 24px;
+    top: 24px;
+    width: 346px;
+    height: 394px;
+}
+
+.quest-shadow,
+.quest-paper {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 8px;
+}
+
+.quest-shadow {
+    translate: 6px 7px;
+    background-color: rgba(8, 25, 38, 0.76);
+}
+
+.quest-paper {
+    padding: 16px 17px 14px 17px;
+    background-color: rgba(245, 240, 222, 0.94);
+    border-width: 3px;
+    border-color: rgba(255, 255, 255, 0.94);
+}
+
+.quest-header {
+    height: 25px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.quest-stamp,
+.quest-counter {
+    -unity-font-definition: url("../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+}
+
+.quest-stamp {
+    padding: 3px 7px 2px 7px;
+    color: #f8f2de;
+    background-color: #244c61;
+    border-radius: 3px;
+    font-size: 11px;
+    letter-spacing: 0.6px;
+}
+
+.quest-counter {
+    color: #377ea1;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+
+.quest-current-title {
+    height: 32px;
+    margin-top: 7px;
+    font-size: 22px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+}
+
+.quest-current-hint {
+    height: 41px;
+    color: #416173;
+    font-size: 12px;
+    white-space: normal;
+}
+
+.quest-rule {
+    height: 2px;
+    margin-top: 3px;
+    margin-bottom: 6px;
+    background-color: #a8c2c4;
+}
+
+.quest-list {
+    height: 202px;
+}
+
+.quest-row {
+    height: 25px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.quest-mark {
+    width: 25px;
+    color: #9aaeb2;
+    font-size: 16px;
+    -unity-text-align: middle-center;
+}
+
+.quest-mark--active {
+    color: #e4a522;
+}
+
+.quest-mark--done {
+    color: #2b9d72;
+}
+
+.quest-label {
+    flex-grow: 1;
+    color: #6d7c80;
+    font-size: 13px;
+}
+
+.quest-label--active {
+    color: #18384a;
+    -unity-font-style: bold;
+}
+
+.quest-label--done {
+    color: #638078;
+}
+
+.quest-progress-track {
+    height: 10px;
+    margin-top: 6px;
+    background-color: #cfdbd6;
+    border-width: 2px;
+    border-color: #244c61;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.quest-progress-fill {
+    width: 0%;
+    height: 100%;
+    background-color: #54c6a3;
+    transition-property: width;
+    transition-duration: 0.12s;
+}
+
+.quest-progress-text {
+    height: 22px;
+    color: #377ea1;
+    font-size: 12px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-right;
+}
+
+.quest-journal--complete .quest-paper {
+    background-color: rgba(238, 247, 228, 0.96);
+}
+
+.quest-journal--complete .quest-progress-fill {
+    background-color: #37af78;
+}

@@ -1,0 +1,30 @@
+{
+    "name": "PPack.Pedestrian.EditModeTests",
+    "rootNamespace": "PPack",
+    "references": [
+        "PPack.InGame",
+        "PPack.Pedestrian.BehaviorDesigner",
+        "Opsive.BehaviorDesigner.Runtime",
+        "Opsive.GraphDesigner.Runtime",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "Fusion.Runtime.dll",
+        "Opsive.BehaviorDesigner.Runtime.dll",
+        "Opsive.GraphDesigner.Runtime.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

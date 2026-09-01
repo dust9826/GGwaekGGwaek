@@ -1,0 +1,361 @@
+.hud-root {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+    -unity-font-definition: url("../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+}
+
+.minimap-backdrop {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: none;
+    background-color: rgba(7, 28, 41, 0.42);
+}
+
+.minimap-shell {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 760px;
+    height: 840px;
+    margin-left: -380px;
+    margin-top: -420px;
+    display: none;
+}
+
+.map-badge-shadow {
+    position: absolute;
+    left: 120px;
+    top: 0;
+    width: 520px;
+    height: 72px;
+    translate: 6px 7px;
+    background-color: rgba(7, 28, 41, 0.88);
+    border-radius: 24px;
+}
+
+.map-badge {
+    position: absolute;
+    left: 120px;
+    top: 0;
+    width: 520px;
+    height: 72px;
+    padding-left: 24px;
+    padding-right: 18px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(47, 131, 207, 0.96);
+    border-width: 5px;
+    border-color: #ffffff;
+    border-radius: 24px;
+}
+
+.badge-sheen {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    top: 7px;
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.28);
+    border-radius: 999px;
+}
+
+.map-title {
+    color: #ffffff;
+    font-size: 30px;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: #153950;
+}
+
+.map-progress {
+    min-width: 76px;
+    height: 44px;
+    padding-left: 8px;
+    padding-right: 8px;
+    color: #153950;
+    font-size: 28px;
+    -unity-text-align: middle-center;
+    background-color: #ffd35a;
+    border-width: 3px;
+    border-color: #ffffff;
+    border-radius: 14px;
+}
+
+.route-canvas {
+    position: absolute;
+    left: 40px;
+    top: 92px;
+    width: 680px;
+    height: 680px;
+    overflow: hidden;
+    background-color: #0b2638;
+    border-width: 5px;
+    border-color: #ffffff;
+    border-radius: 28px;
+}
+
+.minimap-background,
+.minimap-shade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.minimap-background {
+    opacity: 0.82;
+}
+
+.minimap-shade {
+    background-color: rgba(8, 31, 47, 0.20);
+}
+
+.map-grid-line {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.map-grid-horizontal {
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 2px;
+}
+
+.map-grid-vertical {
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+}
+
+.world-markers {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.trash-marker {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: #ffd35a;
+    border-width: 3px;
+    border-color: #ffffff;
+    border-radius: 5px;
+    rotate: 45deg;
+}
+
+.trash-marker-medium {
+    width: 19px;
+    height: 19px;
+    background-color: #f0a83f;
+}
+
+.trash-marker-large {
+    width: 23px;
+    height: 23px;
+    background-color: #f15b62;
+}
+
+.cleaned-target-marker {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: #63d6c1;
+    border-width: 3px;
+    border-color: #ffffff;
+    border-radius: 999px;
+}
+
+.obstacle-marker {
+    position: absolute;
+    min-width: 8px;
+    min-height: 5px;
+    background-color: rgba(241, 91, 98, 0.88);
+    border-width: 2px;
+    border-color: #ffffff;
+    border-radius: 4px;
+}
+
+.weather-event-marker {
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(114, 210, 255, 0.20);
+    border-width: 2px;
+    border-color: rgba(210, 244, 255, 0.82);
+    border-radius: 999px;
+}
+
+.weather-event-warning {
+    background-color: rgba(126, 220, 255, 0.14);
+    border-color: rgba(255, 224, 112, 0.96);
+}
+
+.weather-event-active {
+    background-color: rgba(102, 199, 255, 0.34);
+    border-color: rgba(235, 251, 255, 0.98);
+}
+
+.weather-event-recovery {
+    background-color: rgba(126, 220, 255, 0.12);
+    border-color: rgba(210, 244, 255, 0.55);
+}
+
+.weather-event-icon {
+    min-width: 30px;
+    height: 30px;
+    color: #ffffff;
+    background-color: rgba(21, 57, 80, 0.92);
+    border-width: 2px;
+    border-color: #e8faff;
+    border-radius: 999px;
+    font-size: 20px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.vehicle-marker {
+    position: absolute;
+    width: 46px;
+    height: 58px;
+    transform-origin: center;
+}
+
+.vehicle-shadow {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    width: 39px;
+    height: 50px;
+    translate: 4px 6px;
+    background-color: rgba(7, 28, 41, 0.90);
+    border-radius: 15px 15px 11px 11px;
+}
+
+.vehicle-outline {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    width: 40px;
+    height: 51px;
+    padding: 4px;
+    background-color: #ffffff;
+    border-width: 2px;
+    border-color: #153950;
+    border-radius: 15px 15px 11px 11px;
+}
+
+.vehicle-body {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    background-color: #f15b62;
+    border-bottom-width: 7px;
+    border-bottom-color: #be3944;
+    border-radius: 10px 10px 7px 7px;
+}
+
+.vehicle-window {
+    margin-top: 7px;
+    width: 24px;
+    height: 13px;
+    background-color: #63d6c1;
+    border-width: 2px;
+    border-color: #153950;
+    border-radius: 7px 7px 4px 4px;
+}
+
+.vehicle-brush {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    top: -5px;
+    height: 8px;
+    background-color: #cdebe7;
+    border-width: 2px;
+    border-color: #153950;
+    border-radius: 6px;
+}
+
+.map-legend {
+    position: absolute;
+    right: 40px;
+    bottom: 16px;
+    height: 36px;
+    padding-left: 9px;
+    padding-right: 9px;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(11, 38, 56, 0.78);
+    border-width: 3px;
+    border-color: rgba(255, 255, 255, 0.92);
+    border-radius: 14px;
+}
+
+.legend-car,
+.legend-dirt,
+.legend-cleaned {
+    width: 10px;
+    height: 10px;
+    margin-right: 4px;
+    border-radius: 999px;
+}
+
+.legend-car {
+    background-color: #f15b62;
+}
+
+.legend-dirt {
+    margin-left: 8px;
+    background-color: #ffd35a;
+}
+
+.legend-cleaned {
+    margin-left: 8px;
+    background-color: #63d6c1;
+}
+
+.legend-text {
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.map-tab-hint {
+    position: absolute;
+    left: 40px;
+    bottom: 14px;
+    height: 40px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.map-tab-key {
+    width: 54px;
+    height: 34px;
+    margin-right: 10px;
+    color: #ffffff;
+    background-color: #2f83cf;
+    border-width: 3px;
+    border-color: #ffffff;
+    border-radius: 11px;
+    font-size: 17px;
+    -unity-text-align: middle-center;
+}
+
+.map-tab-copy {
+    font-size: 17px;
+    color: #ffffff;
+    -unity-font-style: bold;
+}

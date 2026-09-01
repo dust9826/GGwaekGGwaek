@@ -1,0 +1,405 @@
+/* 증강 선택 화면 — InGame/UI/AGENTS.md 의 "두꺼운 스티커 UI" 문법을 따른다.
+   기준 구현은 StageIntro 다(펭귄 배달 명세표). 색·깊이·배지 처리를 거기서 그대로 가져왔다.
+
+   USS 에는 box-shadow 가 없다. 그래서 깊이는 규칙이 요구하는 대로 요소를 겹쳐 만든다 —
+   그림자 면 → 흰 스티커 외곽 → 크림 면 → 왼쪽 강조 바. StageIntro 의 .card-shadow /
+   .card-outline / .card-face / .card-accent 와 같은 순서다.
+
+   이득과 패널티는 같은 크기·같은 굵기로 그린다. "패널티가 있는 것이 정상" 이
+   문장을 읽기 전에 형태로 먼저 읽혀야 한다. 패널티를 흐리게 처리하지 않는다. */
+
+.augment-select-root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.veil {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(11, 38, 56, 0.82);
+}
+
+/* ── 머리말 명판 ───────────────────────────────────────────────────────
+   딤 위에 글자만 얹으면 규칙이 금지한 "값싼 도형 모음" 이 된다. 카드와 같은
+   3단 깊이를 주어 같은 세계의 물건으로 만든다. */
+
+.header {
+    position: relative;
+    margin-bottom: 42px;
+    width: 620px;
+    height: 132px;
+}
+
+.plaque-shadow {
+    position: absolute;
+    left: 9px;
+    right: -9px;
+    top: 11px;
+    bottom: -11px;
+    background-color: rgba(7, 30, 47, 0.92);
+    border-radius: 22px;
+}
+
+.plaque-outline {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    padding: 6px;
+    background-color: #ffffff;
+    border-width: 3px;
+    border-color: #153950;
+    border-bottom-width: 7px;
+    border-bottom-color: #9dbfcc;
+    border-radius: 21px;
+}
+
+.plaque-face {
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f5ea;
+    border-width: 2px;
+    border-color: #d2e3e7;
+    border-radius: 14px;
+}
+
+.day-label {
+    -unity-font-definition: url("../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+    font-size: 17px;
+    color: #f15b62;
+    letter-spacing: 3px;
+}
+
+.header-title {
+    -unity-font-definition: url("../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+    font-size: 40px;
+    color: #0b2638;
+    letter-spacing: 1px;
+    margin-top: -2px;
+}
+
+.header-note {
+    font-size: 13px;
+    -unity-font-style: bold;
+    color: #5c7f93;
+    letter-spacing: 1px;
+    margin-top: 2px;
+}
+
+/* ── 카드 줄 ───────────────────────────────────────────────────────── */
+
+.card-row {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* Button 의 기본 스킨을 전부 지운다. 이 요소는 이제 껍데기이고
+   보이는 것은 전부 자식(.card-shadow / .card-outline / ...)이다. */
+.augment-card {
+    position: relative;
+    width: 300px;
+    height: 318px;
+    margin: 0 14px;
+    padding: 0;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    border-radius: 0;
+    transition-property: scale;
+    transition-duration: 0.12s;
+}
+
+.augment-card:hover {
+    background-color: rgba(0, 0, 0, 0);
+    scale: 1.04;
+}
+
+.augment-card:active {
+    background-color: rgba(0, 0, 0, 0);
+    scale: 0.98;
+}
+
+.card-shadow {
+    position: absolute;
+    left: 10px;
+    right: -10px;
+    top: 13px;
+    bottom: -13px;
+    background-color: rgba(7, 30, 47, 0.92);
+    border-radius: 24px;
+}
+
+.card-outline {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    padding: 7px;
+    background-color: #ffffff;
+    border-width: 3px;
+    border-color: #153950;
+    border-bottom-width: 8px;
+    border-bottom-color: #9dbfcc;
+    border-radius: 23px;
+}
+
+.augment-card:hover .card-outline {
+    border-color: #2f83cf;
+}
+
+.card-face {
+    flex-grow: 1;
+    align-items: flex-start;
+    padding: 26px 22px 20px 26px;
+    background-color: #f8f5ea;
+    border-width: 2px;
+    border-color: #d2e3e7;
+    border-radius: 16px;
+}
+
+/* 왼쪽 강조 바. 색은 카드 순서대로 돌린다 — 세 장을 눈으로 가르는 유일한 신호다. */
+.card-accent {
+    position: absolute;
+    left: 0;
+    top: 20px;
+    bottom: 20px;
+    width: 10px;
+    border-radius: 0 7px 7px 0;
+}
+
+.card-accent-a { background-color: #2f83cf; }
+.card-accent-b { background-color: #f15b62; }
+.card-accent-c { background-color: #63d6c1; }
+
+/* ── 번호 배지 — 카드 위쪽 모서리에 겹쳐 얹는다 ───────────────────────
+   StageIntro 의 .stage-tab 과 같은 처리. 그림자를 별도 요소로 두고 7px 내린다. */
+
+.card-tab-shadow {
+    position: absolute;
+    left: 24px;
+    top: -19px;
+    width: 92px;
+    height: 46px;
+    background-color: #ae3644;
+    border-radius: 12px;
+    translate: 0 6px;
+}
+
+.card-tab {
+    position: absolute;
+    left: 24px;
+    top: -19px;
+    width: 92px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    background-color: #f15b62;
+    border-width: 4px;
+    border-color: #ffffff;
+    border-radius: 12px;
+}
+
+.card-tab__label {
+    -unity-font-definition: url("../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+    font-size: 18px;
+    color: #ffffff;
+    letter-spacing: 2px;
+}
+
+/* ── 카드 내용 ─────────────────────────────────────────────────────── */
+
+.augment-card__name {
+    -unity-font-definition: url("../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+    font-size: 27px;
+    color: #0b2638;
+    letter-spacing: 1px;
+    margin-top: 14px;
+    white-space: normal;
+}
+
+.augment-card__desc {
+    font-size: 13px;
+    -unity-font-style: bold;
+    color: #5c7f93;
+    white-space: normal;
+    -unity-text-align: upper-left;
+    width: 100%;
+    margin-top: 6px;
+}
+
+.card-divider {
+    height: 2px;
+    width: 100%;
+    background-color: #d8d2c2;
+    margin-top: 16px;
+    margin-bottom: 12px;
+}
+
+.augment-card__effects {
+    width: 100%;
+}
+
+/* 한 줄 = 화살표 · 이름 · 값. 값을 오른쪽 고정폭 칸에 넣어 세 카드가 세로로 정렬된다.
+   USS 에 tabular-nums 가 없으므로 폭을 직접 잡는 것이 유일한 방법이다. */
+.effect {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 7px;
+    width: 100%;
+}
+
+.effect__arrow {
+    font-size: 15px;
+    -unity-font-style: bold;
+    width: 18px;
+    -unity-text-align: middle-left;
+}
+
+.effect__label {
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: #24485c;
+    flex-grow: 1;
+    white-space: normal;
+    -unity-text-align: middle-left;
+}
+
+.effect__value {
+    font-size: 15px;
+    -unity-font-style: bold;
+    width: 62px;
+    -unity-text-align: middle-right;
+}
+
+.effect.is-benefit .effect__arrow,
+.effect.is-benefit .effect__value {
+    color: #31b478;
+}
+
+.effect.is-penalty .effect__arrow,
+.effect.is-penalty .effect__value {
+    color: #f15b62;
+}
+
+/* ── 표 배지 — 카드 오른쪽 위 모서리 ──────────────────────────────────
+   왼쪽 번호 탭과 같은 스티커 처리(그림자 요소 + 흰 외곽)이고 색만 중립 남색이다.
+   규칙이 한 컴포넌트의 핵심색을 셋으로 제한하므로 새 주색을 만들지 않는다 —
+   흰색과 남색은 외곽·텍스트용 중립색으로 본다. */
+
+.vote-group {
+    position: absolute;
+    right: 18px;
+    top: -16px;
+    width: 52px;
+    height: 44px;
+}
+
+.vote-badge-shadow {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: #071e2f;
+    border-radius: 12px;
+    translate: 0 6px;
+}
+
+.vote-badge {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: #153950;
+    border-width: 4px;
+    border-color: #ffffff;
+    border-radius: 12px;
+}
+
+.vote-badge__label {
+    -unity-font-definition: url("../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+    font-size: 20px;
+    color: #ffffff;
+}
+
+/* ── 내 표 / 결과 ────────────────────────────────────────────────────
+   투표 중에는 "내가 고른 것" 만 노란 테두리로 알린다. 결과가 나오면 그것을 끄고
+   이긴 카드만 남긴다 — 두 표시가 동시에 켜지면 무엇이 결과인지 흐려진다.
+   강조 노랑과 초록은 InGame/UI/AGENTS.md 의 토큰이라 새 색을 만들지 않았다. */
+
+.augment-card.is-mypick .card-outline {
+    border-color: #ffd35a;
+    border-bottom-color: #c9a33f;
+}
+
+.augment-card.is-winner .card-outline {
+    border-color: #31b478;
+    border-bottom-color: #208457;
+}
+
+.augment-card.is-winner {
+    scale: 1.06;
+}
+
+/* 진 카드는 지우지 않고 물러나게만 한다. 사라지면 무엇과 겨뤘는지가 같이 사라진다. */
+.augment-card.is-loser {
+    opacity: 0.42;
+}
+
+/* ── 투표 타이머 ─────────────────────────────────────────────────────
+   명판 오른쪽에 겹쳐 얹는 원형 배지. StageIntro 의 카운트다운과 같은 처리다.
+   전원이 표를 내면 권위가 이 숫자를 유예까지 당기고, 그 값은 복제되어 오므로
+   모든 화면이 같은 숫자를 센다. */
+
+.vote-timer {
+    position: absolute;
+    right: -34px;
+    top: 22px;
+    width: 88px;
+    height: 88px;
+}
+
+.vote-timer-shadow {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(7, 30, 47, 0.92);
+    border-radius: 44px;
+    translate: 0 7px;
+}
+
+.vote-timer-face {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: #2f83cf;
+    border-width: 5px;
+    border-color: #ffffff;
+    border-radius: 44px;
+}
+
+.vote-timer-label {
+    -unity-font-definition: url("../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+    font-size: 40px;
+    color: #ffffff;
+}

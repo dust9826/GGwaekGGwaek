@@ -1,0 +1,313 @@
+/* Diegetic stage-map presentation. The 3D diorama is rendered by MainMenu's camera;
+   UI Toolkit only supplies readable beacons and mission controls. */
+
+.flow-screen.stage-world-active {
+    background-color: rgba(5, 19, 36, 0);
+}
+
+.stage-world-active .menu-background-decor {
+    display: none;
+}
+
+#view-stage-select.stage-world-view {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    align-items: stretch;
+    justify-content: stretch;
+}
+
+.stage-world-hud {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.stage-world-header {
+    position: absolute;
+    left: 32px;
+    top: 26px;
+    width: 278px;
+    padding: 12px 17px 11px 17px;
+    background-color: rgba(13, 38, 55, 0.9);
+    border-left-width: 5px;
+    border-left-color: #c73542;
+    border-radius: 7px;
+}
+
+.stage-world-title {
+    color: #ffffff;
+    font-size: 24px;
+    letter-spacing: 2px;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgba(7, 25, 43, 0.8);
+}
+
+.stage-world-kicker {
+    margin-top: 0;
+    color: #f1c969;
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.stage-world-prompt {
+    display: none;
+}
+
+.stage-world-prompt-title {
+    color: #ffffff;
+    font-size: 20px;
+    letter-spacing: 2px;
+    white-space: nowrap;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: rgba(6, 22, 39, 0.85);
+}
+
+.stage-world-prompt-copy {
+    color: #d4f3ff;
+    font-size: 13px;
+    letter-spacing: 1px;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgba(6, 22, 39, 0.85);
+}
+
+.stage-world-pin {
+    position: absolute;
+    width: 140px;
+    align-items: center;
+}
+
+.stage-world-pin-01 {
+    left: 32.5%;
+    top: 49%;
+}
+
+.stage-world-pin-02 {
+    left: 50.5%;
+    top: 33%;
+}
+
+.stage-world-pin-03 {
+    left: 60.5%;
+    top: 16%;
+}
+
+.stage-world-pin-state {
+    display: none;
+}
+
+.stage-world-pin-state-ready {
+    color: #173247;
+    background-color: #f1c969;
+}
+
+.stage-world-node-button,
+.stage-world-node-locked {
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    min-height: 64px;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 22px;
+    background-color: #607888;
+    border-width: 4px;
+    border-color: #ffffff;
+    border-bottom-width: 6px;
+    border-bottom-color: #304b5d;
+    border-radius: 999px;
+}
+
+.stage-world-node-button.flow-button {
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    min-height: 64px;
+    margin: 0;
+    padding: 0;
+    font-size: 22px;
+    border-width: 4px;
+    border-bottom-width: 6px;
+    border-radius: 999px;
+}
+
+.stage-world-node-button.stage-node-selected {
+    color: #ffffff;
+    background-color: #c73542;
+    border-bottom-color: #8f2330;
+}
+
+.stage-world-node-button.stage-node-selected:hover,
+.stage-world-node-button.stage-node-selected:focus {
+    scale: 1.07 1.07;
+    background-color: #df4b57;
+    border-color: #ffffff;
+}
+
+.stage-world-node-locked {
+    opacity: 0.66;
+}
+
+.stage-world-node-number {
+    color: #d4e0e6;
+    font-size: 21px;
+    -unity-text-align: middle-center;
+}
+
+.stage-world-pin-name {
+    margin-top: 3px;
+    padding: 3px 8px;
+    color: #ffffff;
+    font-size: 11px;
+    letter-spacing: 1px;
+    background-color: rgba(7, 24, 42, 0.86);
+    border-radius: 6px;
+    -unity-text-align: middle-center;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgba(7, 24, 42, 0.75);
+}
+
+.stage-world-lock-copy {
+    display: none;
+}
+
+.stage-world-briefing {
+    position: absolute;
+    left: 32px;
+    bottom: 28px;
+    width: 320px;
+    padding: 13px 15px 12px 15px;
+    background-color: rgba(242, 248, 247, 0.93);
+    border-width: 3px;
+    border-color: #ffffff;
+    border-bottom-width: 5px;
+    border-bottom-color: #9cbec6;
+    border-radius: 9px;
+}
+
+.stage-world-brief-topline {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.stage-world-brief-index,
+.stage-world-threat {
+    padding: 3px 7px;
+    color: #ffffff;
+    font-size: 9px;
+    letter-spacing: 1px;
+    background-color: #2f7c66;
+    border-radius: 9px;
+}
+
+.stage-world-threat {
+    background-color: #c73542;
+}
+
+.stage-world-brief-title {
+    margin-top: 5px;
+    color: #173247;
+    font-size: 21px;
+    letter-spacing: 1px;
+}
+
+.stage-world-brief-copy {
+    margin-top: 0;
+    color: #557381;
+    font-size: 11px;
+    white-space: normal;
+}
+
+.stage-world-chip-row {
+    margin-top: 7px;
+    flex-direction: row;
+}
+
+.stage-world-chip {
+    margin-right: 5px;
+    padding: 3px 6px;
+    color: #ffffff;
+    font-size: 8px;
+    letter-spacing: 1px;
+    background-color: #2f7c66;
+    border-radius: 9px;
+}
+
+.stage-world-chip-blue {
+    background-color: #3f718d;
+}
+
+.stage-world-chip-yellow {
+    color: #173247;
+    background-color: #f1c969;
+}
+
+.stage-world-actions {
+    position: absolute;
+    right: 32px;
+    bottom: 28px;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+.stage-world-actions .flow-button {
+    margin: 0 0 0 8px;
+}
+
+.stage-world-back {
+    width: 100px;
+    height: 46px;
+    font-size: 16px;
+}
+
+.stage-world-actions .stage-world-start {
+    width: 230px;
+    height: 58px;
+    color: #ffffff;
+    font-size: 19px;
+    background-color: #c73542;
+    border-bottom-color: #8f2330;
+}
+
+.stage-world-actions .stage-world-start:hover,
+.stage-world-actions .stage-world-start:focus {
+    background-color: #df4b57;
+}
+
+.stage-world-status {
+    display: none;
+}
+
+@media (max-width: 1100px) {
+    .stage-world-header {
+        left: 20px;
+        top: 18px;
+    }
+
+    .stage-world-prompt {
+        right: 24px;
+        top: 24px;
+    }
+
+    .stage-world-briefing {
+        left: 20px;
+        bottom: 20px;
+        width: 300px;
+    }
+
+    .stage-world-actions {
+        right: 20px;
+        bottom: 20px;
+    }
+
+    .stage-world-pin-01 {
+        left: 29.5%;
+    }
+}

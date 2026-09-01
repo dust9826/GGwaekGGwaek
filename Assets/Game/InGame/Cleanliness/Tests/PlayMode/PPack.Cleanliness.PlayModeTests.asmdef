@@ -1,0 +1,26 @@
+{
+    "name": "PPack.Cleanliness.PlayModeTests",
+    "rootNamespace": "PPack",
+    "references": [
+        "PPack.InGame",
+        "Unity.InputSystem",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "PPack.Core",
+        "Fusion.Unity"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "Fusion.Runtime.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

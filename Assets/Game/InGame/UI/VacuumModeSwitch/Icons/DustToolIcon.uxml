@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="tool-template-root" picking-mode="Ignore">
+        <ui:VisualElement class="tool-art dust-tool" picking-mode="Ignore">
+            <ui:VisualElement class="tool-sticker-shadow dust-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="dust-body-outline" picking-mode="Ignore">
+                <ui:VisualElement class="dust-body" picking-mode="Ignore">
+                    <ui:VisualElement class="dust-panel" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="dust-handle-outline" picking-mode="Ignore" />
+            <ui:VisualElement class="dust-handle-cutout" picking-mode="Ignore" />
+            <ui:VisualElement class="dust-nozzle-outline" picking-mode="Ignore" />
+            <ui:VisualElement class="dust-nozzle" picking-mode="Ignore" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

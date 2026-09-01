@@ -1,0 +1,37 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../Shared/OutGameFlow.uss" />
+    <Style src="JoinGame.uss" />
+    <Style src="../Shared/SnowRemovalTheme.uss" />
+    <ui:VisualElement name="join-game" class="flow-screen">
+        <ui:VisualElement class="float-shape decor-coral" />
+        <ui:VisualElement class="float-shape decor-yellow" />
+        <ui:VisualElement class="float-shape decor-ring" />
+        <ui:VisualElement class="stripe" />
+        <ui:VisualElement class="float-shape clean-gleam-cluster">
+            <ui:VisualElement class="clean-gleam gleam-large" />
+            <ui:VisualElement class="clean-gleam gleam-small-a" />
+            <ui:VisualElement class="clean-gleam gleam-small-b" />
+        </ui:VisualElement>
+        <ui:VisualElement class="float-shape lower-clean-sparkle" />
+        <ui:VisualElement name="flow-card-shadow" class="flow-card-shadow join-card">
+            <ui:VisualElement class="flow-card">
+                <ui:VisualElement name="title-banner" class="title-banner">
+                    <ui:Label text="JOIN A ROOM" class="title-text" />
+                    <ui:Label text="ENTER THE CODE YOUR HOST SHARED" class="title-kicker" />
+                </ui:VisualElement>
+                <ui:VisualElement class="paper-panel join-form">
+                    <ui:Label text="CREW CHECK-IN" class="section-title" />
+                    <ui:TextField name="nickname-input" label="NICKNAME" value="DRIVER" max-length="16" class="field" />
+                    <ui:TextField name="room-code-input" label="ROOM CODE" value="" max-length="8" class="field code-field" />
+                    <ui:Label text="Codes are checked locally for this UI preview." class="support-copy" />
+                </ui:VisualElement>
+                <ui:VisualElement class="button-row join-actions">
+                    <ui:Button name="action-join-room" text="JOIN ROOM" class="flow-button secondary wide-button tilt-right" />
+                    <ui:Button name="scene-MainMenu" text="BACK" class="flow-button compact-button danger tilt-left" />
+                </ui:VisualElement>
+                <ui:Label name="status-label" text="ENTER A ROOM CODE" class="status-label" />
+                <ui:Label text="LOCAL PREVIEW / NO NETWORK LOOKUP" class="footer-note" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

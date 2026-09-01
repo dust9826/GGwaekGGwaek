@@ -1,0 +1,41 @@
+# Unity generated content
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+
+# IDE and generated project files
+.vs/
+.vscode/
+.idea/
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Local tools and working notes
+.DS_Store
+.omo/
+.omc/
+*.private
+*.private.meta
+
+# Credentials and service configuration
+Assets/Photon/Fusion/Resources/PhotonAppSettings.asset
+Assets/Photon/Fusion/Resources/PhotonAppSettings.asset.meta
+
+# Build outputs
+*.apk
+*.aab
+*.app
+*.unitypackage

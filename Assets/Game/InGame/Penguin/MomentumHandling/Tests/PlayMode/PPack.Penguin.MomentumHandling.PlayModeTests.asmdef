@@ -1,0 +1,24 @@
+{
+    "name": "PPack.Penguin.MomentumHandling.PlayModeTests",
+    "rootNamespace": "PPack",
+    "references": [
+        "PPack.InGame",
+        "PPack.Core",
+        "Fusion.Unity",
+        "UnityEngine.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "Fusion.Runtime.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

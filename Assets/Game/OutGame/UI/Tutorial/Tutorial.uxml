@@ -1,0 +1,45 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../Shared/OutGameFlow.uss" />
+    <Style src="Tutorial.uss" />
+    <Style src="../Shared/SnowRemovalTheme.uss" />
+    <ui:VisualElement name="tutorial" class="flow-screen">
+        <ui:VisualElement class="float-shape decor-coral" />
+        <ui:VisualElement class="float-shape decor-yellow" />
+        <ui:VisualElement class="float-shape decor-ring" />
+        <ui:VisualElement class="stripe" />
+        <ui:VisualElement class="float-shape clean-gleam-cluster">
+            <ui:VisualElement class="clean-gleam gleam-large" />
+            <ui:VisualElement class="clean-gleam gleam-small-a" />
+            <ui:VisualElement class="clean-gleam gleam-small-b" />
+        </ui:VisualElement>
+        <ui:VisualElement class="float-shape lower-clean-sparkle" />
+        <ui:VisualElement name="flow-card-shadow" class="flow-card-shadow tutorial-card">
+            <ui:VisualElement class="flow-card">
+                <ui:VisualElement name="title-banner" class="title-banner">
+                    <ui:Label text="HOW TO PLOW" class="title-text" />
+                    <ui:Label text="KEEP EVERY WINTER ROAD OPEN TOGETHER" class="title-kicker" />
+                </ui:VisualElement>
+                <ui:VisualElement class="content-row tutorial-steps">
+                    <ui:VisualElement class="paper-panel step-card step-one">
+                        <ui:Label text="1" class="step-number" />
+                        <ui:Label text="READ THE ROUTE" class="section-title" />
+                        <ui:Label text="Check blocked roads, snowfall warnings and the safest order to clear them." class="step-copy" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="paper-panel step-card step-two">
+                        <ui:Label text="2" class="step-number" />
+                        <ui:Label text="PUSH THE SNOW" class="section-title" />
+                        <ui:Label text="Angle the plow, keep moving and leave a wide lane behind your vehicle." class="step-copy" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="paper-panel step-card step-three">
+                        <ui:Label text="3" class="step-number" />
+                        <ui:Label text="HOLD THE LINE" class="section-title" />
+                        <ui:Label text="Fresh snow returns. Split the route and reopen every road before time runs out." class="step-copy" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Button name="scene-MainMenu" text="GOT IT!" class="flow-button secondary wide-button tilt-left tutorial-back" />
+                <ui:Label name="status-label" text="MORE TUTORIAL STEPS CAN BE ADDED HERE" class="status-label" />
+                <ui:Label text="OUTGAME TUTORIAL OVERVIEW" class="footer-note" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

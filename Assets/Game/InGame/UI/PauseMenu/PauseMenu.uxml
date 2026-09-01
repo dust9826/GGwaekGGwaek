@@ -1,0 +1,26 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="PauseMenu.uss" />
+    <ui:VisualElement name="pause-root" class="pause-root">
+        <ui:VisualElement name="backdrop" class="backdrop" picking-mode="Ignore" />
+
+        <ui:VisualElement name="pause-card" class="pause-card">
+            <ui:VisualElement class="card-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="card-outline">
+                <ui:VisualElement class="card-face">
+                    <ui:VisualElement class="card-accent" picking-mode="Ignore" />
+
+                    <ui:Label name="pause-label" text="SHIFT ON HOLD" class="pause-label" picking-mode="Ignore" />
+                    <ui:Label name="pause-title" text="PAUSED" class="pause-title" picking-mode="Ignore" />
+                    <ui:VisualElement class="divider" picking-mode="Ignore" />
+
+                    <ui:VisualElement name="pause-actions" class="pause-actions">
+                        <ui:Button name="action-resume" text="RESUME" class="pause-button pause-button-primary" />
+                        <ui:Button name="action-quit" text="QUIT TO MENU" class="pause-button pause-button-secondary" />
+                    </ui:VisualElement>
+
+                    <ui:Label name="pause-hint" text="PRESS ESC TO RESUME" class="pause-hint" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

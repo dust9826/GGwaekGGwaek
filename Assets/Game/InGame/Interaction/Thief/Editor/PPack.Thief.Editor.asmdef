@@ -1,0 +1,23 @@
+{
+    "name": "PPack.Thief.Editor",
+    "rootNamespace": "PPack",
+    "references": [
+        "PPack.InGame",
+        "PPack.Thief.BehaviorDesigner",
+        "Opsive.BehaviorDesigner.Runtime",
+        "Opsive.BehaviorDesigner.Runtime.Tasks.Composites",
+        "Opsive.BehaviorDesigner.Runtime.Tasks.Decorators",
+        "Opsive.GraphDesigner.Runtime",
+        "Fusion.Unity",
+        "Unity.AI.Navigation"
+    ],
+    "includePlatforms": ["Editor"],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

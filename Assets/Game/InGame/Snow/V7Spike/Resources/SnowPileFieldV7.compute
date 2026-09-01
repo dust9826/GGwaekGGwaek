@@ -1,0 +1,1661 @@
+// Variant B v7 - THE PILE. v6's height field, its activity-bounded dispatch, its repose relax, its CPU
+// mirror, its booked-deletion mass invariant, its baked lump-lobe layer and its raymarcher, with THE
+// BALL DELETED and replaced by a HEAP THAT ACCUMULATES IN FRONT OF A BLADE AND IS SHOVED FORWARD.
+//
+// THE ONE IDEA
+// ============
+// v6's load was a SPHERE MESH drawn beside the field, sized r = (3V/4pi)^(1/3) from a ledger. It read
+// as a ball ROLLING. v7's load is FIELD HEIGHT: the heap is written into the same height texture the
+// virgin slab lives in, so the existing raymarcher, the existing baked lump lobes and the existing
+// casual treatment render it for free, the drawn silhouette IS the collidable surface, and the thing
+// in front of the vehicle reads as a pile being pushed rather than a ball being rolled.
+//
+// WHAT THAT COSTS, AND HOW IT IS PAID
+// ===================================
+// A heap that lives in the field has to MOVE through the field every frame, and moving mass through a
+// height field is exactly where naive schemes leak. Per-texel advection (read behind, write ahead)
+// diffuses the crest into mush within a second and loses mass to the interpolation. So v7 does what
+// v6's DUMP already did conservatively, only continuously:
+//
+//   1. HeapErase   subtract the heap's PREVIOUS footprint from the field and credit it to the ledger.
+//   2. Push        cut the snow ahead of the blade at full depth; credit it to the ledger.
+//   3. Settle      take the deliberate loss out of the ledger and split it berm / bin.
+//   4. Deposit     lay the berm share down beside the cleared lane.
+//   5. HeapEmit    RE-EMIT the whole ledger at the blade's NEW pose: the shaped heap (RECORDED, so the
+//                  next erase can pick it up again) plus, when the heap is over capacity, side SPILL
+//                  (NOT recorded, so it becomes permanent field mass).
+//   6. Relax       repose, with the heap's own footprint held at a STEEPER limit - see THE GUARD.
+//
+// THE VERB GRAMMAR SITS ON TOP OF THOSE SIX PHASES AND ADDS NO SEVENTH.
+// =====================================================================
+//   blade DOWN / UP                      plough / transit
+//   blade angle LEFT / STRAIGHT / RIGHT  where the snow is thrown
+//   FORWARD / REVERSE                    accumulate / deposit
+//
+// Each verb is expressed in terms this file already had, which is why none of them costs a kernel:
+//
+//   blade UP        the C# side does not dispatch Push at all, so nothing is cut and nothing reaches
+//                   the ledger. There is no "is the blade up?" test anywhere in this file.
+//   blade ANGLE     _BladeAngleCos/_BladeAngleSin rotate the swept box's own frame, so the cut footprint
+//                   IS a rotated rectangle, and the CAST is ledger transport: a fraction of the ledger
+//                   is moved from _HeapFraction to _ReleaseFraction and emitted at the DISCHARGE END.
+//                   Nothing is pushed texel to texel, so there is nothing to diffuse and nothing to leak.
+//   REVERSE         _HeapReclaim 0. HeapErase retires the receipt instead of reclaiming it, so the heap
+//                   is left standing exactly where it was last emitted and the carried volume goes to
+//                   zero. No emit, no reshaping, no second emitter.
+//
+// THE FOOTPRINT IS RECORDED, NOT RECOMPUTED. This is the single decision that makes the invariant hold
+// across an erase-and-re-emit that now happens sixty times a second. _HeapTex holds, per texel, the
+// FIXED-POINT INTEGER COUNT that HeapEmit added there. HeapErase reads that integer back and subtracts
+// exactly its own float value. There is no second evaluation of the shape function at the old pose, no
+// pair of poses to keep in step, and no way for the erase and the emit to disagree about where the heap
+// was - because the erase does not have an opinion about where the heap was, it reads the receipt.
+//
+// THE ALGEBRA OF THE INVARIANT, stated so it can be checked line by line:
+//
+//     invariant = field + carried + deleted - initial   ==   0
+//
+//   HeapErase   RECLAIM: field -= CarryUnfixed(takeFixed)   carried += takeFixed     exact pair
+//               RETIRE:  field, carried and deleted ALL UNCHANGED - only _HeapTex is cleared, so the
+//                        deposit verb cannot move the invariant at all. This is the whole conservation
+//                        argument for reverse-deposit and for raising a loaded blade.
+//   Push        field -= CarryUnfixed(remFixed)    carried += remFixed           exact pair
+//   Settle      carried -= binnedFixed             deleted += binnedFixed        exact pair, SAME INT
+//   Deposit     field += CarryUnfixed(addFixed)    carried -= addFixed           exact pair
+//   HeapEmit    field += CarryUnfixed(totFixed)    carried -= totFixed           exact pair
+//   Relax       exactly antisymmetric per neighbour pair, so field is unchanged
+//
+// THE BERM USED TO BE THE ONE EXCEPTION AND IT WAS THE LEAK. Settle debited the ledger for a
+// PREDICTED berm volume `over` and trusted Deposit to place exactly that; Deposit placed
+// `over * (true cut / _Stats[0])` instead, and _Stats[0] is a round-to-nearest sum that over-reports
+// the cut by a mean +0.05 fixed units per cut texel - always in the same direction, because `rem` is
+// already snapped to the ledger's ten-times-finer grid, so one texel in ten lands exactly on the
+// half-integer that `(int)(x + 0.5)` rounds UP. The shortfall was destroyed and never booked: a
+// monotone negative invariant proportional to how many texels were under the blade. Deposit now
+// debits the ledger with THE SAME INTEGER it adds to the field, so the berm is an exact pair like
+// everything else and whatever the gather declines simply stays carried.
+//
+// Every term that leaves one side of the ledger arrives on the other as THE SAME INTEGER, and the float
+// the field moves is CarryUnfixed of precisely that integer. So the only residual is float32 drift in
+// the INSTRUMENT (the mirror is a float32 whose ULP at 3,960 m3 is 0.25 L, summed in double on the CPU),
+// not in the simulation.
+//
+// WHERE `carried` SITS, AND WHY IT READS NEAR ZERO
+// ===============================================
+// The pile IS field mass. It cannot also be ledger mass without being counted twice, so after HeapEmit
+// the ledger is empty except for fixed-point dust and whatever the capacity rule declined to place.
+// That is not the meter going slack: any unbooked creation or destruction anywhere still shows up in
+// `field` at full size. The PILE'S VOLUME is therefore published separately, from _Carry[3], which is
+// the sum of what HeapEmit actually wrote as heap - a GPU measurement, not a CPU prediction.
+//
+// CAPACITY AND OVERFLOW, AS A RATE
+// ===============================
+// The CPU solves the heap's peak height from the ledger, clamps it to a maximum, and hands down
+// _HeapFraction (what stays on the blade) and _ReleaseFraction (what curls off it) with the two summing
+// to 1. The release is NOT a threshold: it rises smoothly as the fill approaches capacity, so snow is
+// already coming off the blade ends before the heap is full, and above capacity the hard cap takes over
+// and pins the heap. The released share is NOT written to _HeapTex, so it is debited from the ledger and
+// never comes back: drive on and you leave a growing windrow behind you while the heap in front holds
+// still. A STRAIGHT blade releases to two cones, one off each end; an ANGLED blade releases to ONE, at
+// the discharge end, and the angled blade's CAST is added to the same fraction. One release channel, one
+// emitter, three reasons to use it.
+//
+// STATS SLOT MAP (16 ints, CLEARED EVERY STEP)
+//   [0]  removed vol            [1]  side-deposited vol     [9]  field crest
+//   [10] surviving berm         [11] TERRAIN cut            [12] release-deposited vol
+//   [13] heap RECLAIMED by the erase                        [14] heap EMITTED this step
+//   [2]  the cut as the EXACT integer Push handed the ledger (kCarryScale). Settle divides the berm
+//        share by THIS and not by [0]; see the Settle kernel for the half-integer rounding bias in
+//        [0] that made the old quotient leak.
+//   [3]  UNPLACED: fixed-point mass a placement kernel resolved for a texel it could not write
+//        (kCarryScale). STRUCTURALLY ZERO - see FieldWritable - and published as `unplaced=` beside
+//        the invariant so a future emit channel that normalises over the full footprint and writes
+//        only the in-field part reports itself in litres on the first frame it touches the edge,
+//        instead of showing up as a slow drift three minutes later.
+//   [4..8], [15] spare
+//
+// CARRY SLOT MAP (12 ints, PERSISTENT - never cleared except on a field reset)
+//   [0]  IN-FLIGHT volume, i.e. the ledger              (kCarryScale)
+//   [1]  SPARE (was: the last full dump, and v7 has no dump verb)
+//   [2]  RELEASE placed this step                       (kCarryScale)  cleared by HeapBegin
+//   [3]  HEAP placed this step == THE PILE'S VOLUME     (kCarryScale)  cleared by HeapBegin
+//   [4]  heap weight sum                                (kWeightScale) cleared by HeapBegin
+//   [5]  release weight sum                             (kWeightScale) cleared by HeapBegin
+//   [6]  CUMULATIVE deleted volume                      (kDeletedScale)
+//   [7]  deleted this step                              (kDeletedScale)
+//   [8]  berm gather fraction                           (kFracScale)   Settle writes, Deposit reads
+//   [9]  CUMULATIVE release volume, i.e. the walls      (kDeletedScale, see HeapFinish)
+//   [10] THE PILE'S VOLUME: the ledger as it stood when   (kCarryScale)
+//        Settle finished, i.e. BEFORE the emit spent it
+//   [11] DELETED REMAINDER, in LEDGER units (kCarryScale). [6] is ten times coarser than the
+//        ledger, so truncating the conversion would lose up to 9 ledger units every step, always
+//        downward. _Carry[6]*10 + _Carry[11] is exactly the sum of every debit ever booked, and the
+//        published total is short by a BOUNDED 9 units (0.9 uL) rather than by a growing amount.
+//
+// FIXED-POINT HEADROOM. Every accumulator here is an int32 and every one of them is now summed over
+// quantities an order of magnitude larger than v6's, because v7 moves the WHOLE HEAP every step instead
+// of one step's cut. Checked arithmetically at the shipped 12.5 cm cell rather than assumed:
+//
+//   accumulator                        worst case            fixed units    headroom
+//   _Carry[0]  ledger, shipped caps     7.62 m3               7.62e7          28x
+//   _Carry[0]  ledger, knob extremes   58.95 m3               5.90e8         3.6x   (maxH 3, maxHalfW 8)
+//   _Carry[4]  heap weight sum          6.17 m3-equiv         3.95e7          54x
+//   _Carry[4]  ", knob extremes        57.50 m3-equiv         3.68e8         5.8x
+//   _Carry[5]  release weight sum      20.11 m3-equiv (two 4 m cones) 1.29e8  16.6x
+//   _Carry[6]  deleted, 64 s course   137.8  m3               1.38e8          16x
+//   _Carry[9]  walls, 64 s course     140.8  m3               1.41e8          15x
+//   _Stats[0]  cut, hitched frame       1.45 m3               1.45e6        1482x
+//   _Stats[13] heap erased per step     6.17 m3               6.17e6         348x
+//   _Stats[14] heap emitted per step    6.17 m3               6.17e6         348x
+//   _Stats[2]  exact cut, hitched frame  1.45 m3               1.45e7         148x
+//   _Stats[2]  ", knob extremes         38.9  m3               3.89e8         5.5x
+//   _Stats[3]  unplaced                 0 by construction      0             none needed
+//
+// _Stats[2] IS THE SAME QUANTITY _Carry[0] TAKES IN ONE STEP, at the same scale, so it inherits the
+// ledger's own bound rather than needing a new one: it sums the very remFixed values Push hands the
+// ledger, over one step's blade footprint only. The knob-extreme row is an 8 m blade at a 1 m/frame sweep
+// biting the full 0.6 m pickup plus a 3 m free re-pickup, i.e. considerably worse than anything the
+// shipped Range attributes allow.
+//
+// The two tightest are at knob extremes far outside the shipped values. _Carry[5] got FOUR TIMES the
+// headroom it had in the dumping version, because deleting the dump verb deleted the 6 m cone with it:
+// the release radius is now the spill radius, whose knob range tops out at 4 m, and at most two cones
+// are ever emitted. Nothing here needs a cap that is not already a Range attribute.
+//
+// _HeapTex is the one FLOAT that has to hold an exact integer: float32 is exact to 2^24 units, i.e.
+// 1.678 m3 per texel, i.e. 107 m of height at 12.5 cm - but only 1.68 m at a 1 m cell, so the C# side
+// clamps the heap's maximum height against that bound and warns rather than leaving it to chance.
+//
+// KERNEL -> RESOURCE TABLE. THIS IS THE AUDIT, and the C# side binds FROM IT rather than beside it.
+// An RWStructuredBuffer or RWTexture a kernel reads but that was never bound to THAT kernel does not
+// fail the dispatch: the write lands wherever the slot happens to resolve. That cost this project a
+// 17.9 kL phantom leak once already. kKernelSpec in SnowPileFieldV7.cs is a transcription of this table
+// and nothing else binds anything, so the two cannot drift.
+//
+//   Init             _DstTex _RemovedDst _FloorTex _HeapTex
+//   ClearStats       _Stats
+//   HeapErase        _DstTex _HeapTex _Stats _Carry
+//   Push             _SrcTex _DstTex _RemovedDst _FloorTex _Stats _Carry
+//   Settle           _Stats _Carry
+//   Deposit          _SrcTex _DstTex _RemovedSrc _Stats _Carry
+//   HeapBegin        _Carry
+//   HeapScan         _Carry
+//   HeapEmit         _DstTex _HeapTex _Stats _Carry
+//   HeapFinish       _Carry
+//   Relax            _SrcTex _DstTex _HeapSrc
+//   CopyRect         _SrcTex _DstTex
+//   Downsample       _SrcTex _MirrorTex
+//   HeightMax        _SrcTex _Stats
+//   HeightDilate     _SrcTex _DilateDst
+//   CoarseMaxBlock   _SrcTex _CoarseDst _LumpBakeSrc
+//   CoarseMaxDilate  _CoarseSrc _CoarseDst
+//   LumpBake         _SrcTex _DilateSrc _LumpBakeDst
+//
+// Every non-void function here has exactly ONE return: the project convention for this variant. It is
+// CONSERVATIVE rather than the actual Metal constraint - see the METAL note in SnowCasualStyleV7.hlsl
+// for the real failure (an early return that leaves an out parameter unwritten) and why a clean
+// single-return audit is compliance rather than proof.
+#pragma kernel Init
+#pragma kernel ClearStats
+#pragma kernel HeapErase
+#pragma kernel Push
+#pragma kernel Settle
+#pragma kernel Deposit
+#pragma kernel HeapBegin
+#pragma kernel HeapScan
+#pragma kernel HeapEmit
+#pragma kernel HeapFinish
+#pragma kernel Relax
+#pragma kernel CopyRect
+#pragma kernel Downsample
+#pragma kernel HeightMax
+#pragma kernel HeightDilate
+#pragma kernel CoarseMaxBlock
+#pragma kernel CoarseMaxDilate
+#pragma kernel LumpBake
+
+#define SNOW_TG 8
+
+// THE LUMP LATTICE'S FORMULA, ITS GATES AND ITS 8-BIT ENCODING. The SAME file the raymarcher includes,
+// which is the point: LumpBake writes the texture and SnowMarchCoreV7.hlsl decodes it, so they cannot
+// drift. It declares the lattice uniforms (_LumpRadiusM and the seven knobs) and nothing else - no
+// textures and no field geometry - because this file and the marcher name those differently.
+#include "../Shaders/SnowLumpBakeV7.hlsl"
+
+// ---------------------------------------------------------------------------------------------
+// Bindings
+// ---------------------------------------------------------------------------------------------
+Texture2D<float>        _SrcTex;        // read-only height (metres of snow above ground)
+RWTexture2D<float>      _DstTex;        // write target height
+Texture2D<float>        _RemovedSrc;    // read-only per-texel removal recorded by Push
+RWTexture2D<float>      _RemovedDst;    // write target for Push's removal record
+RWTexture2D<float>      _MirrorTex;     // coarse CPU-mirror target
+RWTexture2D<float>      _FloorTex;      // terrain height under material the vehicle already owns, so
+                                        // Push can charge only the TERRAIN bite against the budget
+
+// THE HEAP'S RECEIPT, and the reason the invariant survives sixty erase-and-re-emit cycles a second.
+//
+// One value per texel: the FIXED-POINT INTEGER COUNT (kCarryScale units, i.e. 0.1 mL each) that
+// HeapEmit added to the field at that texel as HEAP. Stored in an RFloat texture as a float that
+// happens to hold an integer - exact for counts under 2^24, which at the shipped 12.5 cm texel is
+// 1.678 m3 per texel, i.e. 107 m of height. The C# side clamps the heap's maximum height against that
+// bound and warns, because at a 1 m cell the same bound is only 1.68 m.
+//
+// NONZERO ONLY INSIDE THE LAST EMIT WINDOW, by induction: Init zeroes the whole texture, HeapErase
+// zeroes the whole window recorded at emit time, and HeapEmit writes only inside the window it is
+// dispatched over. So erasing that recorded window is provably sufficient - which is what makes it
+// impossible for a stale receipt to survive and be counted twice.
+RWTexture2D<float>      _HeapTex;
+
+// The SAME texture as _HeapTex, bound as a read-only SRV, because Relax has to know which texels the
+// heap occupies in order to hold them at a steeper slope limit than the settled repose angle. Two views
+// of one resource, exactly the pattern _CoarseSrc / _CoarseDst below already uses.
+Texture2D<float>        _HeapSrc;
+
+RWStructuredBuffer<int> _Stats;         // 16 ints, see the slot map in the header
+RWStructuredBuffer<int> _Carry;         // 12 ints, PERSISTENT, see the slot map in the header
+
+// ---- THE BLADE -------------------------------------------------------------------------------
+//
+// THE CUT IS A SWEPT ORIENTED-BOX UNION, which is what a blade actually sweeps. v6 used a capsule union
+// because a ball is a disc; a plough blade is a line segment with a little thickness, so its swept volume
+// is an oriented BOX per sub-step and the union of those boxes over the step. One box is exact for a
+// translation; the tiling exists so a TURNING blade's arc is covered rather than chorded, which is v5's
+// reason for sub-poses and the only reason any remain.
+//
+// UNLIKE V6, THE WIDTH IS A CONSTANT. v6's clearing width was 2r and r came from the ledger, so the
+// stripe widened as the ball grew. A blade has a fixed width, and that is not a loss: what grows in v7
+// is the HEAP, in height and in crest length, and the crest can grow past the blade - which is exactly
+// what makes the overflow escape sideways instead of the stripe silently widening to swallow it.
+//
+// THE BOX IS NO LONGER SQUARE TO TRAVEL, because v7 has a BLADE ANGLE. The box's own frame is the travel
+// direction ROTATED BY THE BLADE ANGLE: axis 0 is the FACE NORMAL (half extent = half thickness) and
+// axis 1 is the BLADE LINE (half extent = half width). At angle 0 that frame IS the travel frame, so
+// the straight case is the same test it always was.
+#define SNOW_MAX_BLADE_SEG 8
+int    _BladeSegCount;
+float4 _BladeSeg[SNOW_MAX_BLADE_SEG];   // (a.x, a.y, b.x, b.y) world XZ of one sub-step's travel
+float  _BladeHalfWidth;                 // metres, half the blade's cutting width
+float  _BladeHalfDepth;                 // metres, half the blade's thickness along the face normal
+
+// THE BLADE ANGLE as a rotation, cos and sin of the signed yaw of the blade about its own centre. The
+// sign convention is the DISCHARGE SIDE: positive rotates the face normal toward +right, which drags the
+// right-hand end of the blade line BACKWARDS, which is what casts snow off to the right. 1,0 is STRAIGHT
+// and reproduces v7's original cut exactly.
+float  _BladeAngleCos;
+float  _BladeAngleSin;
+
+// The PRIMARY pose - the swept box's bounding rectangle at the end heading - which PushOffset's escape
+// geometry is expressed in, exactly as v5's and v6's was. Only the CUT uses the segments.
+float4 _BladeCenter;      // .xy, the sweep MIDPOINT
+float4 _BladeFwd;         // .xy, unit
+float4 _BladeRight;       // .xy, unit
+float4 _BladeHalf;        // .x = half extent along fwd, .y = half extent along right
+
+// The END pose, which THE HEAP is expressed in. Deliberately a separate frame from the primary pose
+// above: the primary pose is the sweep's midpoint because that is where a swept box is centred, but the
+// heap has to sit in front of where the blade IS NOW, not in front of where it was halfway through the
+// frame. Sharing one frame between the two would drag the heap backwards at speed by half a step.
+float4 _HeapCenter;       // .xy world XZ of the blade line's centre at the END pose
+float4 _HeapFwd;          // .xy, unit
+float4 _HeapRight;        // .xy, unit
+
+float  _MaxCutStep;       // per-step TERRAIN budget, already scaled from per-pass by the CPU
+float  _MaxPileStep;      // per-step cap on FREE re-pickup of material the vehicle already owns: its
+                          // own spill walls and its own dumped mounds. Uncapped, a two-metre mound
+                          // would enter the ledger in a single frame.
+float  _ScrapeHeight;     // height the blade scrapes down to (metres)
+
+// ---- THE HEAP'S SHAPE ------------------------------------------------------------------------
+//
+// A PLOUGH HEAP, NOT A SPHERE AND NOT A CONE. The profile is the positive part of a peak minus three
+// linear drops, which makes it a flat-topped RIDGE lying across the blade with a hipped end at each
+// side - the shape a blade full of snow actually has:
+//
+//     H(u,v) = max(0, peak - front/back drop along u - flank drop beyond the crest span in v)
+//
+//   * the LEADING face (u ahead of the crest) falls at _HeapTanFront, which is STEEPER than the repose
+//     angle, because it is being actively shoved and a shoved face stands steeper than a settled one;
+//   * the BACK face (u behind the crest, toward the blade) falls at _HeapTanBack, steeper still,
+//     because the blade is holding it;
+//   * the FLANKS (beyond +-_HeapHalfCrestM laterally) fall at _HeapTanFlank, which IS the repose angle,
+//     so the sides of the heap are exactly what a settled pile would be;
+//   * the crest sits _HeapCrestAheadM AHEAD of the blade line, far enough that the whole back face
+//     lands on uncut snow rather than hanging over the trench the blade just cut.
+//
+// Wider than it is tall by construction: the crest half-length starts at the blade's own half-width and
+// GROWS with the peak height, and the two hips add another peak/tan(repose) of half-width on each side.
+//
+// THE ABSOLUTE SCALE OF _HeapPeakM DOES NOT SET THE VOLUME. HeapScan sums this profile and HeapEmit
+// divides by that sum, so what is emitted is this SHAPE scaled to exactly the ledger. The CPU solves
+// the peak from the ledger so the scale factor lands near 1 and the aspect ratio is the authored one;
+// any error in that solve changes the height, never the mass.
+float  _HeapPeakM;
+float  _HeapHalfCrestM;
+float  _HeapCrestAheadM;
+float  _HeapTanFront;
+float  _HeapTanBack;
+float  _HeapTanFlank;
+
+// ---- THE EMIT'S TWO CHANNELS -----------------------------------------------------------------
+//
+// FRACTIONS OF THE LEDGER, not volumes, and for v6's reason: the CPU's copy of the ledger is several
+// frames stale over AsyncGPUReadback, and a volume computed from a stale ledger could exceed what the
+// simulation actually holds - at which point the field gains material the ledger never gave up, which
+// is creation, and the invariant would print LEAK. Reading _Carry[0] on the GPU makes that impossible
+// by construction. The two sum to 1 in normal operation, so the whole ledger is placed every frame.
+float  _HeapFraction;     // 0..1 placed as the RECORDED heap, i.e. still being carried
+float  _ReleaseFraction;  // 0..1 placed as UNRECORDED release: overflow, or the angled blade's CAST
+
+// THE RELEASE CONES. Up to three, combined with max() so overlapping cones do not double-weight.
+// A STRAIGHT blade uses two, one just outside each end of the swept width and slightly behind it so the
+// next frame's cut cannot reach them. An ANGLED blade uses ONE, at the DISCHARGE end, which is what turns
+// the release into a windrow on one side instead of two symmetric walls.
+#define SNOW_MAX_RELEASE 3
+int    _ReleaseCount;
+float4 _ReleaseCenter[SNOW_MAX_RELEASE];   // .xy world XZ
+float  _ReleaseRadius;                     // metres, shared by every cone this step
+
+float4 _HeapWindow;       // .xy = origin texel, .zw = size, covering heap AND release footprints
+float4 _HeapEraseWindow;  // .xy = origin texel, .zw = size, the window the LAST emit was dispatched over
+
+// THE ERASE'S MODE, and it is THE REVERSE-DEPOSIT VERB.
+//
+//   1  RECLAIM. Subtract the receipt from the field and credit it to the ledger - what every ordinary
+//      ploughing frame does, so the heap can be re-emitted at the new pose.
+//   0  RETIRE. Clear the receipt and TOUCH NOTHING ELSE. The mass stays exactly where it stands, as
+//      permanent field mass, and the ledger does not gain it - so the carried volume goes to zero and
+//      the pile is left behind unmoved and unreshaped.
+//
+// RETIRE IS THE WHOLE DEPOSIT. There is no second emitter and no reshaping pass: the heap the vehicle
+// was carrying already IS field height at the pose it was last emitted, so "leave it standing and drive
+// out from under it" is precisely "stop claiming it". Conservation is trivial rather than argued -
+// field, ledger and deleted are all three unchanged by a retire, so the invariant cannot move.
+//
+// The blade drives this: RECLAIM while the blade is DOWN and the vehicle is driving INTO the face,
+// RETIRE the moment it is not - blade raised, stopped, or reversing.
+float  _HeapReclaim;
+
+// ---- deposit / berms -------------------------------------------------------------------------
+float  _MaxPushDist;      // clamp on how far one texel of snow travels in a single step
+float  _PushMargin;       // extra distance past the footprint
+float  _PushSpread;       // 0 = every source lands right at its escape face, 1 = smeared out
+float  _SideSpillStart;   // fraction of the half-width where sideways spill starts
+float  _SideSpillFullAt;  // fraction of the half-width where the spill is FULLY sideways
+float  _SideSpillStrength;
+int    _DepositRadius;    // gather radius in texels, must cover _MaxPushDist
+float4 _Window;           // .xy = origin texel, .zw = size, for the Deposit gather
+
+// ---- deliberate, BOOKED loss -------------------------------------------------------------------
+float  _ConservedFraction; // fraction of each step's TERRAIN cut that reaches the ledger. 1 = conserving
+float  _BermShareOfLoss;   // of the DESTROYED share, how much is squeezed out sideways as berms
+                           // instead of being deleted. Berms therefore cost the pile's growth NOTHING.
+float  _PileShedTau;       // seconds for the pile to shed 1/e of itself with no inflow. 0 = OFF and 0
+                           // is the SHIPPED value: v7 already has a physical drain, the capacity
+                           // overflow, so an exponential one would be a second, invisible answer to
+                           // the same question. Kept purely as v5's A/B.
+float  _StepDt;
+
+// ---- cut noise ---------------------------------------------------------------------------------
+float  _CutNoiseAmp;
+float  _CutNoiseScale;
+
+// ---- field geometry -------------------------------------------------------------------------
+int    _ResX;
+int    _ResZ;
+float  _TexelSize;
+float  _InvTexelSize;
+float4 _PatchMin;
+float  _StartDepth;
+
+// ---- relax ------------------------------------------------------------------------------------
+float  _MaxDelta;
+float  _MaxDeltaDiag;
+
+// THE GUARD. The slope limit used for a neighbour pair whose BOTH texels are inside the heap's recorded
+// footprint. See the Relax kernel for why this exists and why it cannot break conservation.
+float  _MaxDeltaHeap;
+float  _MaxDeltaHeapDiag;
+float  _HeapGuardOn;      // 0 disables the guard exactly - the A/B that shows relax eating the face
+
+float  _RelaxRate;
+
+// ACTIVITY-BOUNDED RELAX, v5's verbatim. The window is a NO-FLUX WALL: the scheme conserves mass by
+// being exactly ANTISYMMETRIC per neighbour pair, so a naively windowed dispatch evaluates the inflow
+// of every boundary pair without its outflow and CREATES snow along the boundary. A neighbour outside
+// the window is skipped on BOTH sides of the pair, so conservation is exact at any window size.
+float4 _RelaxWindow;
+
+// ---- mirror -------------------------------------------------------------------------------------
+int    _MirrorBlock;
+int    _MirrorResX;
+int    _MirrorResZ;
+
+// THE PER-STEP VOLUME SCALE, and it is COARSER THAN V6'S 1e9 for a reason that is specific to v7.
+//
+// v6's _Stats volume slots only ever summed one step's CUT - a few hundredths of a cubic metre - so
+// 1e9 fixed units (1 nanolitre) left ample int32 headroom. v7's slots have to sum THE WHOLE HEAP,
+// twice, every single step: HeapErase lifts it off and HeapEmit puts it back, and a dump moves the
+// entire pile in one go. At 1e9 a 2.15 m3 heap saturates int32 and the telemetry wraps NEGATIVE - not
+// a simulation error, since none of these slots feeds the mass path, but a readout that lies exactly
+// when the pile gets interesting.
+//
+// 1e6 is 1 microlitre per unit, so int32 reaches 2147 m3 - larger than the field's entire 3,960 m3
+// could ever be in one step - and the resolution on a summed rate is a thousandth of a litre, which
+// is four orders of magnitude finer than the F4 the console prints.
+static const float kVolScale     = 1e6;
+static const float kHeightScale  = 1e5;
+static const float kCarryScale   = 1e7;   // the ledger, 0.1 microlitre resolution
+static const float kFracScale    = 1e6;
+static const float kDeletedScale = 1e6;   // cumulative, so coarser: int32 saturates at 2147 m3
+
+// 2^24, the largest integer a float32 holds exactly, and therefore the largest RECEIPT one _HeapTex texel
+// may carry. HeapEmit caps against this and books the excess as `unplaced`; see the note there.
+static const int   kReceiptExactMax = 16777216;
+
+// The emit's weight sums. FINER than v6's dump weight (1e4) because the heap's weight is a HEIGHT in
+// metres rather than a 0..1 cone taper, so its sum is the shape's volume over the texel area: 395 at
+// the shipped 6 m3 capacity and a 12.5 cm texel, i.e. 3.95e7 at this scale with 54x of int32 headroom.
+// The release cone's sum at the 6 m dump radius is 2412, i.e. 2.4e8 with 8.8x headroom, which is why
+// the C# side caps the dump radius rather than trusting the knob's own range.
+static const float kWeightScale  = 1e5;
+
+static const int2 kNeighbours[8] =
+{
+    int2( 1,  0), int2(-1,  0), int2( 0,  1), int2( 0, -1),
+    int2( 1,  1), int2(-1, -1), int2( 1, -1), int2(-1,  1)
+};
+
+// ---------------------------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------------------------
+float2 TexelCenterWorld(int2 t)
+{
+    return _PatchMin.xy + (float2(t) + 0.5) * _TexelSize;
+}
+
+// THE ONE WRITABILITY TEST, AND BOTH HALVES OF THE EMIT MUST GO THROUGH IT AND NOTHING ELSE.
+//
+// HeapScan sums a texel's weight into the normaliser IF AND ONLY IF this returns true, and HeapEmit
+// resolves a share for a texel IF AND ONLY IF this returns true. That identity is the whole reason the
+// emit places the WHOLE ledger over the texels it can actually write, instead of scaling the shape to a
+// sum that includes texels off the patch and then quietly holding the off-patch part back.
+//
+// The old rule was CONSERVING - the held-back share stayed on the ledger and the invariant counted it as
+// `carried` - but it was invisible, and "the sum includes texels nobody writes" is exactly the shape of
+// mistake a fifth emit channel would make. So the identity is now INSTRUMENTED rather than argued:
+// HeapEmit runs over the UNCLAMPED window, an off-patch thread resolves its share through this same
+// test, and whatever it resolves and cannot write goes to _Stats[3] (`unplaced=`). Today that is
+// structurally zero. A channel whose weight is scanned over the full footprint makes it nonzero in
+// litres on the first frame the footprint touches the patch edge.
+//
+// Single exit.
+bool FieldWritable(int2 t)
+{
+    return all(t >= int2(0, 0)) && all(t <= int2(_ResX - 1, _ResZ - 1));
+}
+
+// Blade-local coordinates of a world XZ point, against the PRIMARY (swept-box) pose. x = along
+// forward, y = right. Used by PushOffset only.
+float2 BladeLocal(float2 w)
+{
+    float2 d = w - _BladeCenter.xy;
+    return float2(dot(d, _BladeFwd.xy), dot(d, _BladeRight.xy));
+}
+
+// Heap-local coordinates against the END pose. x = ahead of the blade line, y = right.
+float2 HeapLocal(float2 w)
+{
+    float2 d = w - _HeapCenter.xy;
+    return float2(dot(d, _HeapFwd.xy), dot(d, _HeapRight.xy));
+}
+
+// THE CUT TEST. True when the world point is inside ANY of the swept oriented boxes the blade dragged
+// through this step. Each sub-segment carries its own frame, taken from its own direction of travel
+// ROTATED BY THE BLADE ANGLE, which is what makes a turn's arc covered rather than chorded and what makes
+// an ANGLED blade cut the rotated rectangle it actually is; a degenerate (zero length) segment falls back
+// to the end pose's forward, which is exactly right for a stationary blade.
+//
+// THE SWEEP IS EXACT, NOT TILED-AND-HOPED. A point is inside the box swept from a to b if and only if
+// there is some t in [0,1] with the point inside the box centred at a + t*ab. Per axis that is
+// |p_i - t d_i| <= h_i, i.e. t in an interval; the point is covered exactly when the two intervals and
+// [0,1] have a common point. So ONE sub-box is the whole swept parallelogram of a translation at ANY
+// blade angle, and the tiling is needed only for the arc - which is what keeps the stripe residual at
+// zero when the blade is angled, where a naive per-sub-pose box test would leave uncut diamonds between
+// consecutive poses.
+//
+// AT ANGLE 0 THIS IS THE OLD TEST, term for term: d = (len, 0), so axis 0 gives
+// t in [(p.x-hd)/len, (p.x+hd)/len] meeting [0,1] exactly when p.x is in [-hd, len+hd], and axis 1 has
+// d.y == 0 so it degenerates to |p.y| <= hw.
+//
+// Single exit, and the loop trip count is a uniform, so this is not divergence.
+bool InsideBlade(float2 world)
+{
+    bool inside = false;
+
+    int n = min(max(_BladeSegCount, 1), SNOW_MAX_BLADE_SEG);
+
+    float2 h = float2(_BladeHalfDepth, _BladeHalfWidth);
+
+    for (int k = 0; k < n; ++k)
+    {
+        float2 a  = _BladeSeg[k].xy;
+        float2 b  = _BladeSeg[k].zw;
+        float2 ab = b - a;
+
+        float  len  = length(ab);
+        float2 trav = (len > 1e-5) ? (ab / len) : _HeapFwd.xy;
+
+        // The blade's own frame: the FACE NORMAL is the travel direction yawed by the blade angle, and
+        // the BLADE LINE is its right-hand perpendicular. Identical to the travel frame at angle 0.
+        float2 fn = float2(trav.x * _BladeAngleCos + trav.y * _BladeAngleSin,
+                           trav.y * _BladeAngleCos - trav.x * _BladeAngleSin);
+        float2 fl = float2(fn.y, -fn.x);
+
+        float2 rel = world - a;
+        float2 p   = float2(dot(rel, fn), dot(rel, fl));
+        float2 d   = float2(dot(ab,  fn), dot(ab,  fl));
+
+        float tLo = 0.0;
+        float tHi = 1.0;
+        bool  ok  = true;
+
+        if (abs(d.x) > 1e-6)
+        {
+            float e0 = (p.x - h.x) / d.x;
+            float e1 = (p.x + h.x) / d.x;
+            tLo = max(tLo, min(e0, e1));
+            tHi = min(tHi, max(e0, e1));
+        }
+        else
+        {
+            ok = ok && (abs(p.x) <= h.x);
+        }
+
+        if (abs(d.y) > 1e-6)
+        {
+            float f0 = (p.y - h.y) / d.y;
+            float f1 = (p.y + h.y) / d.y;
+            tLo = max(tLo, min(f0, f1));
+            tHi = min(tHi, max(f0, f1));
+        }
+        else
+        {
+            ok = ok && (abs(p.y) <= h.y);
+        }
+
+        inside = inside || (ok && (tLo <= tHi));
+    }
+
+    return inside;
+}
+
+// THE HEAP'S PROFILE, in metres above whatever the field already holds at that texel. Zero outside the
+// heap, so the toe meets the surrounding snow continuously and relax finds no excess slope there -
+// which is why the guard below only ever has to protect the two faces that ARE deliberately steep.
+//
+// Purely geometric and purely a function of the uniforms, so HeapScan and HeapEmit compute bit-identical
+// values and the normalisation is exact.
+float HeapProfileM(float2 world)
+{
+    float2 p = HeapLocal(world);
+
+    float du = p.x - _HeapCrestAheadM;
+    float dv = max(0.0, abs(p.y) - _HeapHalfCrestM);
+
+    float drop = ((du > 0.0) ? (du * _HeapTanFront) : (-du * _HeapTanBack))
+               + dv * _HeapTanFlank;
+
+    return max(0.0, _HeapPeakM - drop);
+}
+
+// THE RELEASE PROFILE: up to three cones, combined with max(). Zero at each rim, so a released mound's
+// edge meets the field without a step for relax to have to chew through, and linear in radius, so a
+// cone of radius R and height H holds pi*R^2*H/3 - which is how the CPU picks R for a dump.
+//
+// Purely geometric, so HeapScan and HeapEmit agree exactly.
+float ReleaseWeight(float2 world)
+{
+    float w = 0.0;
+
+    int n = min(max(_ReleaseCount, 0), SNOW_MAX_RELEASE);
+    float invR = 1.0 / max(1e-4, _ReleaseRadius);
+
+    for (int k = 0; k < n; ++k)
+    {
+        float d = length(world - _ReleaseCenter[k].xy);
+        w = max(w, max(0.0, 1.0 - d * invR));
+    }
+
+    return w;
+}
+
+uint HashU(uint x)
+{
+    x ^= x >> 16;
+    x *= 0x7feb352du;
+    x ^= x >> 15;
+    x *= 0x846ca68bu;
+    x ^= x >> 16;
+    return x;
+}
+
+float TexelHash01(int2 s)
+{
+    uint h = HashU((uint)s.x * 0x9e3779b9u ^ (uint)s.y * 0x85ebca6bu);
+    return (float)(h & 0x00ffffffu) * (1.0 / 16777216.0);
+}
+
+// Smooth world-space value noise, one cell per _CutNoiseScale metres.
+float CutNoise(float2 world)
+{
+    float2 p = world / max(0.02, _CutNoiseScale);
+    float2 i = floor(p);
+    float2 f = p - i;
+    f = f * f * (3.0 - 2.0 * f);
+
+    int2 b = int2(i);
+    float a0 = TexelHash01(b);
+    float a1 = TexelHash01(b + int2(1, 0));
+    float a2 = TexelHash01(b + int2(0, 1));
+    float a3 = TexelHash01(b + int2(1, 1));
+
+    return lerp(lerp(a0, a1, f.x), lerp(a2, a3, f.x), f.y);
+}
+
+// How much snow the blade takes out of a texel, and how much of that came out of the TERRAIN.
+//
+// v5's and v6's split, verbatim in structure. _FloorTex records the terrain height under material the
+// vehicle already owns:
+//     pile        = h - min(floor, h)                  material it owns - its own spill walls, or a
+//                                                      mound it dumped - FREE to reclaim
+//     terrainBite = min(max(0, min(floor,h) - scrape), budget)   charged against the pass budget
+//
+// CUTTING ONLY WHERE THERE IS SNOW IS STRUCTURAL, not a special case: `available` is h - scrape, so on
+// ground the blade has already cleared both terms are zero, nothing is removed, nothing reaches the
+// ledger and the pile does not grow. There is no "is this bare?" test anywhere in the variant.
+//
+// V7 SETS THE BUDGET TO FULL DEPTH, which is the measured lesson from v6: v6 shaved a 4 cm SKIN so its
+// ball would grow slowly, and the consequence was that the world barely recorded the pass - the lane
+// looked driven over rather than cleared. A plough clears. The budget machinery is kept intact so the
+// skin is still one knob away.
+//
+// floorH is clamped at BOTH ends before use, exactly as in v5:
+//   min(., h)                    relax can move snow off a texel faster than the floor is updated,
+//                                leaving the recorded floor ABOVE the surface; without this, pile
+//                                goes negative.
+//   max(floorH, _ScrapeHeight)   a floor BELOW the scrape line would let the blade cut under its own
+//                                contact patch. Invisible at the shipped scrape of 0, live the moment
+//                                anyone touches that knob.
+// With both clamps, pile + bite <= h - scrape is an identity in every case, so the outer
+// min(available, ...) cannot bind - and it is KEPT, because in this file guards that looked redundant
+// have twice turned out to be load bearing.
+//
+// Single exit.
+float RemovedAmount(float h, float floorH, float2 world, out float terrainCut)
+{
+    float available = max(0.0, h - _ScrapeHeight);
+
+    float n      = (CutNoise(world) - 0.5) * 2.0;
+    float budget = _MaxCutStep * max(0.0, 1.0 + _CutNoiseAmp * n);
+
+    float f    = min(max(floorH, _ScrapeHeight), h);
+    float pile = min(h - f, _MaxPileStep);                    // >= 0, capped
+    float bite = min(max(0.0, f - _ScrapeHeight), budget);    // <= f - scrape
+
+    float carried = min(available, pile + bite);
+
+    terrainCut = min(bite, carried);
+    return carried;
+}
+
+// World-space XZ offset from a source texel to the point the BERM SHARE gets shoved to. Deterministic
+// in the source texel and its blade-local position alone, which is what lets Deposit's gather reproduce
+// it exactly and therefore conserve mass.
+//
+// v5's function with the blade's swept half extents. _SideSpillFullAt makes the escape saturate to
+// PURELY SIDEWAYS early, which for v7 is not the measured correction it was for v6's disc - it is what
+// a plough does. Anything thrown forward would land inside the heap's own footprint, where it would be
+// re-cut on the next frame as free pile: not a leak (every path is booked), but a recirculation that
+// buys nothing. 1.0 restores v5's blade blend exactly and is the A/B.
+float2 PushOffset(int2 s, float2 local)
+{
+    float spillStart = _BladeHalf.y * saturate(_SideSpillStart);
+    float spillFull  = _BladeHalf.y * max(saturate(_SideSpillFullAt), saturate(_SideSpillStart) + 1e-3);
+    float t = saturate((abs(local.y) - spillStart) / max(1e-5, spillFull - spillStart))
+            * _SideSpillStrength;
+
+    float fwdEscape  = _BladeHalf.x - local.x + _PushMargin;
+    float sideEscape = (local.y >= 0.0 ? 1.0 : -1.0)
+                     * (_BladeHalf.y - abs(local.y) + _PushMargin);
+
+    float2 offLocal = float2((1.0 - t) * fwdEscape, t * sideEscape);
+
+    float len    = length(offLocal);
+    float target = min(lerp(len, _MaxPushDist, saturate(_PushSpread * TexelHash01(s))), _MaxPushDist);
+    offLocal = (len > 1e-6) ? offLocal * (target / len) : float2(target, 0.0);
+
+    return _BladeFwd.xy * offLocal.x + _BladeRight.xy * offLocal.y;
+}
+
+// Fraction of a source's mass that lands on target texel `t`. Clamped identically on both sides so
+// nothing leaks off the patch edge.
+float DepositWeight(int2 t, float2 p)
+{
+    int2   i0 = int2(floor(p));
+    float2 f  = p - float2(i0);
+    int2   lo = int2(0, 0);
+    int2   hi = int2(_ResX - 1, _ResZ - 1);
+
+    float w = 0.0;
+    int2 c;
+    c = clamp(i0 + int2(0, 0), lo, hi); if (all(c == t)) w += (1.0 - f.x) * (1.0 - f.y);
+    c = clamp(i0 + int2(1, 0), lo, hi); if (all(c == t)) w += f.x * (1.0 - f.y);
+    c = clamp(i0 + int2(0, 1), lo, hi); if (all(c == t)) w += (1.0 - f.x) * f.y;
+    c = clamp(i0 + int2(1, 1), lo, hi); if (all(c == t)) w += f.x * f.y;
+    return w;
+}
+
+int VolumeFixed(float height)
+{
+    return (int)(height * _TexelSize * _TexelSize * kVolScale + 0.5);
+}
+
+// Floor, not round, for anything the field HANDS OVER to the ledger, and for anything the ledger hands
+// back. Rounding to nearest can quantise a transfer to slightly MORE than is available; the height then
+// goes a hair negative, relax clamps it back to zero with max(0, ...), and that clamp MANUFACTURES
+// snow - measured on the parent variant at a steady +0.38 L per pass.
+int CarryFixedFloor(float height)
+{
+    return (int)floor(height * _TexelSize * _TexelSize * kCarryScale);
+}
+
+// Exact inverse of CarryFixedFloor. Moving THIS rather than the raw float means the field loses
+// precisely what the ledger gains, and vice versa.
+float CarryUnfixed(int fixedVal)
+{
+    return (float)fixedVal / (_TexelSize * _TexelSize * kCarryScale);
+}
+
+// ---------------------------------------------------------------------------------------------
+// Kernels
+// ---------------------------------------------------------------------------------------------
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void Init(uint3 id : SV_DispatchThreadID)
+{
+    if (any(id.xy >= uint2(_ResX, _ResZ))) return;
+    _DstTex[id.xy]     = _StartDepth;
+    _RemovedDst[id.xy] = 0.0;
+    _FloorTex[id.xy]   = _StartDepth;   // the vehicle owns nothing yet, so the floor is the terrain
+    _HeapTex[id.xy]    = 0.0;           // no receipts outstanding
+}
+
+[numthreads(16, 1, 1)]
+void ClearStats(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x < 16u) _Stats[id.x] = 0;
+}
+
+// ---------------------------------------------------------------------------------------------
+// STEP 1: LIFT THE HEAP BACK OFF THE FIELD - OR LET GO OF IT.
+//
+// Read-modify-write on the CURRENT height texture, over the window the LAST emit was dispatched over.
+// Not ping-ponged, because this runs before Push and Push is what copies src -> dst over the whole
+// field; putting a ping-pong here would mean a second full-field copy for a window a thousandth its
+// size.
+//
+// TWO MODES, AND THE SECOND ONE IS THE REVERSE-DEPOSIT VERB. See _HeapReclaim.
+//
+//   RECLAIM (_HeapReclaim 1). Subtract the receipt and credit it to the ledger, so the heap can be
+//   re-emitted at the blade's new pose. Every ordinary ploughing frame.
+//
+//   RETIRE (_HeapReclaim 0). Clear the receipt and change NOTHING else - no height write, no ledger
+//   credit, no stat. The heap is left standing exactly where it was last emitted and becomes ordinary
+//   field mass; the ledger does not gain it, so the carried volume falls to zero and the vehicle drives
+//   out from under the pile. THE FIELD IS NOT TOUCHED, so this cannot move the invariant by one
+//   millilitre: field, carried and deleted are all three unchanged and only a CLAIM was discarded.
+//   _FloorTex is not touched either, which is what makes the abandoned pile free to pick up again.
+//
+// THE ONE SUBTLETY IN THE RECLAIM PATH, AND WHAT THE RECEIPT BECOMES WHEN IT CANNOT BE HONOURED. `take`
+// is min(receipt, height), not the receipt. Relax has had a frame to work on the heap, so a texel can
+// hold LESS than the receipt says was put there - the difference is mass relax pushed to a neighbour.
+//
+// THE RECEIPT BECOMES ZERO, AND IT BECOMES ZERO WHETHER OR NOT IT COULD BE HONOURED. That is the whole
+// answer to "the receipt is now a lie": it is not carried forward as a claim on mass that is no longer
+// under it, so there is nothing to accumulate frame over frame. After this kernel the receipt and the
+// ledger agree exactly - both hold takeFixed's worth and neither holds recFixed's worth - and the store
+// that clears it is the SAME store in both modes, so the induction "a receipt exists only inside the
+// last recorded window" is untouched.
+//
+// THE SHORTFALL IS NOT DEBITED. An earlier version of this comment said it was, and that was wrong:
+// nothing anywhere subtracts it. It is:
+//
+//   * NOT credited to the ledger. It has left the heap, so the vehicle stops claiming it - which is
+//     precisely the side-spill mechanism the Contract describes, and what makes an overfull pile leave a
+//     trail behind instead of growing without limit;
+//   * NOT destroyed and NOT booked as destroyed. It is still in the field, at the neighbour relax moved
+//     it to, and the invariant counts it there at full size. field -= CarryUnfixed(takeFixed) paired
+//     with carried += takeFixed is exact whatever the clamp does, which is why this path measures as
+//     EXACT rather than lossy.
+//
+// Taking min() also makes it impossible to drive the field negative, which matters because a negative
+// height would be clamped to zero by relax and that clamp manufactures snow.
+// ---------------------------------------------------------------------------------------------
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void HeapErase(uint3 gid : SV_DispatchThreadID)
+{
+    if (any(gid.xy >= uint2(_HeapEraseWindow.zw))) return;
+
+    int2 t = int2(_HeapEraseWindow.xy) + int2(gid.xy);
+    if (!FieldWritable(t)) return;
+
+    // The receipt, as the exact integer HeapEmit wrote. An RFloat texel holding an integer under 2^24
+    // round-trips bit for bit, so this is not a re-quantisation - it is the same number.
+    int recFixed = (int)_HeapTex[uint2(t)];
+    if (recFixed <= 0) return;
+
+    // RETIRE. The receipt is spent and nothing else happens. The clear is written before the reclaim
+    // path's arithmetic rather than after it so the two modes share one store and the induction "a
+    // receipt exists only inside the last recorded window" holds identically in both.
+    _HeapTex[uint2(t)] = 0.0;
+    if (_HeapReclaim < 0.5) return;
+
+    float h    = _DstTex[uint2(t)];
+    float recF = CarryUnfixed(recFixed);
+
+    // The common case is recF <= h and takeFixed == recFixed exactly, with no arithmetic at all. Only
+    // when relax has lowered the texel does the floor run, and then it can only ever take LESS.
+    int takeFixed = recFixed;
+    if (recF > h) takeFixed = min(recFixed, max(0, CarryFixedFloor(h)));
+
+    float take = CarryUnfixed(takeFixed);
+
+    _DstTex[uint2(t)] = h - take;       // >= 0 by construction
+
+    InterlockedAdd(_Carry[0], takeFixed);
+    InterlockedAdd(_Stats[13], VolumeFixed(take));
+}
+
+// ---------------------------------------------------------------------------------------------
+// STEP 2: CUT.
+//
+// Full-field pass. Copies src -> dst everywhere so dst is entirely valid, subtracts inside the swept
+// box union, and records the subtraction for Deposit to redistribute as berms.
+//
+// Deliberately NOT windowed, unlike the relax. Deposit gathers up to _DepositRadius OUTSIDE its own
+// window, so a windowed Push would leave stale _RemovedDst values in that ring and Deposit would
+// re-deposit last step's mass - a straight duplication.
+//
+// IT CANNOT DOUBLE-COUNT THE HEAP, and that is the first of the two guards this design needs. HeapErase
+// has already run, so by the time this kernel reads the field the heap is not in it; there is nothing
+// under the blade for the cut to re-credit. The second guard is _FloorTex, which HeapEmit deliberately
+// does not touch, so anything relax spilled off the heap counts as material the vehicle owns and is
+// free to reclaim - which is what makes the walls re-drivable rather than a one-way ratchet.
+// ---------------------------------------------------------------------------------------------
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void Push(uint3 id : SV_DispatchThreadID)
+{
+    if (any(id.xy >= uint2(_ResX, _ResZ))) return;
+
+    int2  t = int2(id.xy);
+    float h = _SrcTex[id.xy];
+
+    float2 world = TexelCenterWorld(t);
+
+    // Both initialised before the branch, so nothing downstream can read an uninitialised value. The
+    // branch is worth keeping rather than making the whole thing arithmetic: this kernel runs over the
+    // ENTIRE 845k-texel field and only the blade's footprint needs the floor tap and the cut noise.
+    float rem = 0.0;
+    float terrainCut = 0.0;
+    if (InsideBlade(world))
+    {
+        rem = RemovedAmount(h, _FloorTex[id.xy], world, terrainCut);
+    }
+
+    // Snapped down onto the ledger's fixed-point grid, so the field gives up exactly what the ledger
+    // receives and can never be driven negative.
+    int remFixed = 0;
+    if (rem > 0.0)
+    {
+        remFixed = CarryFixedFloor(rem);
+        float remQuant = min(CarryUnfixed(remFixed), h);
+
+        // The quantisation loss is charged to the TERRAIN share, not shared pro rata. Charging it to
+        // the pile share would delete a sliver of re-handled material on every step of every texel
+        // under the blade, and since the deletion budget is a fraction of the terrain cut that bias
+        // compounds instead of cancelling. Charging it to the terrain share only ever makes the budget
+        // smaller, i.e. it errs toward keeping snow.
+        terrainCut = max(0.0, terrainCut - (rem - remQuant));
+        rem = remQuant;
+    }
+
+    _DstTex[id.xy]     = h - rem;
+    _RemovedDst[id.xy] = rem;
+
+    if (rem > 0.0)
+    {
+        InterlockedAdd(_Stats[0], VolumeFixed(rem));
+        if (terrainCut > 0.0) InterlockedAdd(_Stats[11], VolumeFixed(terrainCut));
+
+        // THE SAME INTEGER, IN A SECOND PLACE, AND IT IS NOT A DUPLICATE READOUT. _Stats[0] is
+        // VolumeFixed(rem) summed, i.e. ROUNDED to kVolScale, and Settle used to divide the berm share
+        // by it. But `rem` is already snapped to the ledger's TEN TIMES FINER grid, so rem*area*kVolScale
+        // lands exactly on a half-integer for one texel in ten, and `(int)(x + 0.5)` rounds every one of
+        // those UP: _Stats[0] over-reports the cut by a mean +0.05 fixed units per cut texel, always in
+        // the same direction. Deposit then multiplied the too-small quotient by the TRUE sum of `rem`
+        // and the field received less than the ledger had been debited - the monotone leak. This slot is
+        // the exact sum Push handed over, so the quotient means what it says.
+        InterlockedAdd(_Stats[2], remFixed);
+
+        // Everything the blade cuts goes onto the ledger. Settle decides afterwards how much of the
+        // TERRAIN share has to be given up, and where it goes.
+        InterlockedAdd(_Carry[0], remFixed);
+        _FloorTex[id.xy] = h - rem;
+    }
+}
+
+// ---------------------------------------------------------------------------------------------
+// STEP 3: the deliberate loss.
+//
+// Single thread. Takes the deliberate loss out of the ledger and splits it between the berms and the
+// bin, now that Push has added this step's cut.
+//
+// THE BOOKKEEPING, stated so it can be checked by eye:
+//     ledger loses   binnedFixed                                    an exact integer
+//     booked gains   binnedFixed                                    THE SAME integer
+//     the berm share NEVER PASSES THROUGH HERE. It stays on the ledger and DEPOSIT debits it, one
+//     exact integer per texel, exactly the way Push and HeapEmit already do.
+//
+// THAT LAST LINE IS THE FIX FOR THE MONOTONE LEAK. This kernel used to debit the ledger `loss + leak`,
+// book `(loss - over) + leak`, and TRUST Deposit to put `over` on the field. Deposit actually put
+// `over * (true cut / _Stats[0])` there, and _Stats[0] over-reports the cut by +0.05 fixed units per cut
+// texel (see Push). The difference was destroyed without being booked, once per frame, in proportion to
+// how many texels were under the blade: measured at ~1.4 mL per step on a full-depth pass, i.e. the
+// 46 mL/s monotone negative drift the invariant meter caught. A prediction is now nowhere in the mass
+// path - every transfer is a measured integer.
+//
+// NOTE THE INTERACTION WITH THE HEAP THAT IS NEW IN V7. The ledger at this point holds the heap that
+// HeapErase just lifted off the field PLUS this step's cut, and the loss is charged on the TERRAIN CUT
+// ONLY. So re-emitting the heap sixty times a second costs it nothing: the heap is not "re-cut" every
+// frame, it is re-placed, and only genuinely new terrain pays the toll. Charging the loss on the ledger
+// or on the total removal would make the pile evaporate at 60 x 60% per second, which is the failure
+// this line is guarding against and the reason the split is worth stating twice.
+// ---------------------------------------------------------------------------------------------
+[numthreads(1, 1, 1)]
+void Settle(uint3 id : SV_DispatchThreadID)
+{
+    int   ledgerFixed = _Carry[0];
+    float ledger  = (float)ledgerFixed * (1.0 / kCarryScale);
+
+    // THE EXACT CUT, from Push's own remFixed sum, NOT from _Stats[0]. See Push.
+    float removed = (float)_Stats[2]  * (1.0 / kCarryScale);
+    float terrain = (float)_Stats[11] * (1.0 / kVolScale);
+
+    float loss = max(0.0, 1.0 - saturate(_ConservedFraction)) * terrain;
+    loss = min(loss, ledger);
+
+    // Of the destroyed share, a fraction is not destroyed at all: it is squeezed out sideways as the
+    // berms flanking the cleared lane. Taking it out of the LOSS rather than out of the ledger is what
+    // keeps the pile's growth rate exactly what the conserved fraction says with the berms on.
+    float over = saturate(_BermShareOfLoss) * loss;
+
+    // STILL LOAD BEARING, and for a smaller reason than before. `over` is no longer debited here, so a
+    // step where Deposit does not run can no longer lose it - it would simply stay carried. What this
+    // line still buys is that _Carry[8] is zero on such a step, so a stale berm fraction cannot be
+    // applied to a stale _RemovedSrc. No Push means _Stats[2] stays 0, so `removed` is 0.
+    if (removed <= 1e-9) over = 0.0;
+
+    // v5's leaky bucket, kept purely as an A/B and DEFAULT OFF. v7 has a physical drain already - the
+    // capacity overflow - so an exponential one would be a second, invisible answer to the same
+    // question. The leaked volume is booked deleted, so the invariant is untouched either way.
+    float leakFrac = (_PileShedTau > 1e-4) ? (1.0 - exp(-_StepDt / _PileShedTau)) : 0.0;
+    float leak     = max(0.0, ledger - loss) * leakFrac;
+
+    // WHAT IS GENUINELY DESTROYED, and it is the only thing this kernel takes off the ledger. Named
+    // `binned` rather than `deleted` because that is what it is: the share that goes in the bin, as
+    // opposed to the berm share, which is going onto the field and is Deposit's to debit.
+    float binned = (loss - over) + leak;
+
+    // ONE INTEGER OUT, THE SAME INTEGER IN. min() against the ledger so a float that rounded a hair high
+    // cannot drive it negative; max(0) so a denormal cannot make it a credit.
+    int binnedFixed = min(ledgerFixed, max(0, (int)(binned * kCarryScale + 0.5)));
+    _Carry[0] = ledgerFixed - binnedFixed;
+
+    // THE DELETED BOOK IS TEN TIMES COARSER THAN THE LEDGER (kCarryScale / kDeletedScale == 10), so
+    // converting with a truncation would throw away up to 9 ledger units EVERY step, always downward:
+    // 0.9 microlitres sixty times a second, which is a leak of exactly the kind this file exists to
+    // refuse. The remainder is carried in _Carry[11] instead, so _Carry[6]*10 + _Carry[11] is EXACTLY
+    // the sum of every binnedFixed ever taken and the published total is short by a BOUNDED 9 units.
+    int want   = binnedFixed + _Carry[11];
+    int booked = want / 10;
+    _Carry[6]  = _Carry[6] + booked;
+    _Carry[7]  = binnedFixed / 10;
+    _Carry[11] = want - booked * 10;
+
+    // FLOORED, not rounded, and against the EXACT cut. Deposit multiplies this fraction by the true sum
+    // of `rem`, so flooring is what makes sum(placed) <= over an IDENTITY rather than a hope - and
+    // therefore what makes it impossible for Deposit's per-texel debit to drive the ledger negative.
+    // Whatever the floor declines stays on the ledger and the emit places it the same step.
+    _Carry[8] = (int)(((removed > 1e-9) ? (over / removed) : 0.0) * kFracScale);
+
+    // THE PILE'S VOLUME, SNAPSHOT BEFORE THE EMIT SPENDS IT, and it closes a genuine deadlock rather
+    // than adding a readout.
+    //
+    // The CPU has to solve the heap's shape from the pile's volume, and the pile is FIELD MASS - after
+    // HeapEmit the ledger is empty, so there is nothing left to read. Reading what the emit PLACED
+    // (_Carry[3]) instead does not work either: on the first frames of a run nothing has been placed
+    // yet, so the CPU would solve a zero height, ComputeEmitWindow would find a degenerate footprint,
+    // the emit would be skipped, nothing would ever be placed, and the pile would never appear. A
+    // simulation that cannot start.
+    //
+    // THIS slot is the ledger at the one moment it is both complete and unspent: after the erase has
+    // credited the old heap, after the cut has credited new terrain, after the deliberate loss has been
+    // taken, and before the emit debits any of it. It is non-zero from the very first cut, so the CPU
+    // always has a volume to solve from, and it is a GPU measurement rather than a CPU integration, so
+    // it cannot drift away from what is actually on the field.
+    //
+    // Settle runs UNCONDITIONALLY every step, which is why the snapshot lives here rather than in
+    // HeapBegin: HeapBegin only runs when there is a window to emit into, so a snapshot there would be
+    // missing on exactly the frames the CPU needs it most.
+    // Net of the berm share, which is sitting on the ledger at this instant but belongs to the field, so
+    // that this slot keeps EXACTLY the meaning it had before Deposit took over the debit.
+    _Carry[10] = max(0, _Carry[0] - max(0, (int)(over * kCarryScale + 0.5)));
+
+    _Stats[10] = (int)(over * kVolScale + 0.5);
+}
+
+// STEP 4: windowed gather for the BERM share. _SrcTex is Push's output, _DstTex is the texture Push read
+// from - outside the window that texture already holds the correct untouched height.
+//
+// AND IT IS NOW THE KERNEL THAT DEBITS THE BERM, which is the fix for the monotone leak. Settle no
+// longer takes the berm share off the ledger on a prediction of what will land here; the share sits on
+// the ledger and THIS kernel removes exactly the integer it adds to the field. Three consequences, and
+// the third is the one that makes the class of bug impossible rather than merely absent:
+//
+//   1. The pair is exact. field += CarryUnfixed(addFixed), carried -= addFixed. Same integer, and the
+//      float the field moves is CarryUnfixed of precisely it.
+//   2. It cannot over-deliver. sum(add) == sideFraction * sum(rem), sideFraction is FLOORED against the
+//      EXACT cut (_Stats[2]), so sum(add) <= over <= what Settle left on the ledger for it - and the
+//      per-texel floor only reduces further. The ledger cannot be driven negative.
+//   3. Anything the gather declines - the floor's dust, or a berm whose escape landed on a target the
+//      window somehow failed to cover - STAYS CARRIED, where the invariant counts it and where HeapEmit
+//      spends it later the same step. A short window is now a visible change in where snow lands, not
+//      an invisible subtraction from the world.
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void Deposit(uint3 gid : SV_DispatchThreadID)
+{
+    if (any(gid.xy >= uint2(_Window.zw))) return;
+
+    int2 t = int2(_Window.xy) + int2(gid.xy);
+    if (any(t < int2(0, 0)) || any(t > int2(_ResX - 1, _ResZ - 1))) return;
+
+    // One scalar for the whole dispatch: the berm fraction Settle just computed.
+    float sideFraction = (float)_Carry[8] * (1.0 / kFracScale);
+
+    float add = 0.0;
+    int   k   = _DepositRadius;
+
+    for (int dy = -k; dy <= k; ++dy)
+    {
+        for (int dx = -k; dx <= k; ++dx)
+        {
+            int2 s = t + int2(dx, dy);
+            if (any(s < int2(0, 0)) || any(s > int2(_ResX - 1, _ResZ - 1))) continue;
+
+            float rem = _RemovedSrc[uint2(s)];
+            if (rem <= 0.0) continue;
+
+            float2 local = BladeLocal(TexelCenterWorld(s));
+            float2 p     = float2(s) + PushOffset(s, local) * _InvTexelSize;
+
+            float w = DepositWeight(t, p);
+            if (w > 0.0) add += rem * sideFraction * w;
+        }
+    }
+
+    // ONE INTEGER FOR THE FIELD, THE SAME INTEGER OFF THE LEDGER. Unconditional write: the window fully
+    // contains the footprint, so every texel whose height Push changed is rewritten here.
+    int   addFixed = (add > 0.0) ? max(0, CarryFixedFloor(add)) : 0;
+    float addQuant = CarryUnfixed(addFixed);
+
+    _DstTex[uint2(t)] = _SrcTex[uint2(t)] + addQuant;
+
+    if (addFixed > 0)
+    {
+        InterlockedAdd(_Carry[0], -addFixed);
+        InterlockedAdd(_Stats[1], VolumeFixed(addQuant));
+    }
+}
+
+// ---------------------------------------------------------------------------------------------
+// STEP 5: THE EMIT. Scan, then emit, then finish.
+//
+// Three dispatches rather than one because the emit has to normalise by weight sums no single texel can
+// know, and because the debit has to be the sum of what was ACTUALLY written rather than what was
+// intended. That is exactly the shape v6's dump had, for exactly the same reason, which is why v7 has
+// one emitter and not two: the continuous heap and the one-shot dump are the same three kernels with
+// different fractions and a different cone list.
+//
+// WHY IT CONSERVES, IN FOUR STEPS:
+//   1. HeapEmit reads the ledger from _Carry[0] on the GPU, not from a several-frames-stale CPU copy,
+//      so `total` can never exceed what the simulation holds.
+//   2. Each texel decides an INTEGER first - floor(raw * texelArea * kCarryScale) - adds exactly that
+//      integer to the accumulators, and adds CarryUnfixed of that same integer to the field. The
+//      field's gain and the debit therefore agree to the bit, not to a rounding.
+//   3. The sum of raw over each channel is total * (sum w / wsum) <= total, because HeapScan sums a
+//      texel's weight into wsum IF AND ONLY IF HeapEmit can write that texel - the SAME FieldWritable
+//      test, in both kernels - and each contribution is rounded UP. Flooring only ever reduces further.
+//      And _HeapFraction + _ReleaseFraction <= 1. Therefore _Carry[2] + _Carry[3] <= ledger, always.
+//   4. HeapFinish debits min(placed, ledger). By 3 the min never binds, and if a future change broke 3
+//      the min would NOT hide it: the field would still have gained the excess, so the invariant would
+//      print LEAK at full size rather than quietly absorbing it.
+//
+// STEP 3 USED TO SAY "wsum is the FULL weight INCLUDING texels that fall off the patch", and that was
+// conserving but silent: the off-patch share was simply not placed, stayed on the ledger, and near the
+// patch edge part of the pile was held back and never drawn. Now the normaliser and the writable set are
+// the same set, so the WHOLE ledger share lands on texels that exist, and the residual - the mass a
+// kernel resolves for a texel it cannot write - is reported in litres as `unplaced` (_Stats[3]) instead
+// of being an argument in a comment. See FieldWritable.
+// ---------------------------------------------------------------------------------------------
+
+[numthreads(1, 1, 1)]
+void HeapBegin(uint3 id : SV_DispatchThreadID)
+{
+    _Carry[2] = 0;   // release placed this step
+    _Carry[3] = 0;   // heap placed this step == the pile's volume
+    _Carry[4] = 0;   // heap weight sum
+    _Carry[5] = 0;   // release weight sum
+}
+
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void HeapScan(uint3 gid : SV_DispatchThreadID)
+{
+    if (any(gid.xy >= uint2(_HeapWindow.zw))) return;
+
+    // IN-BOUNDS ONLY, THROUGH THE SAME TEST HeapEmit USES. A normaliser that counts texels nobody writes
+    // scales the shape to a sum larger than the writable footprint, so the emit places less than the
+    // ledger authorised and the rest is held back - conserving, but invisible, and exactly the shape of
+    // mistake a fifth emit channel would make. With the two sets identical, sum(w over writable) / wsum
+    // is exactly 1 and nothing can fall off the edge.
+    int2 t = int2(_HeapWindow.xy) + int2(gid.xy);
+    if (!FieldWritable(t)) return;
+
+    float2 world = TexelCenterWorld(t);
+
+    // Rounded UP, both of them. A weight sum that reads even a hair LOW makes every texel's share read
+    // high, the emit exceeds the ledger, and HeapFinish's min() turns the excess into created snow.
+    float hw = HeapProfileM(world);
+    if (hw > 0.0) InterlockedAdd(_Carry[4], (int)ceil(hw * kWeightScale));
+
+    float rw = ReleaseWeight(world);
+    if (rw > 0.0) InterlockedAdd(_Carry[5], (int)ceil(rw * kWeightScale));
+}
+
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void HeapEmit(uint3 gid : SV_DispatchThreadID)
+{
+    if (any(gid.xy >= uint2(_HeapWindow.zw))) return;
+
+    int2 t = int2(_HeapWindow.xy) + int2(gid.xy);
+
+    // NOT AN EARLY OUT ANY MORE, AND THAT IS THE STANDING GUARD. An off-patch thread stays alive, walks
+    // the SAME arithmetic every in-patch thread walks, and reports whatever it resolves and cannot write
+    // to _Stats[3] (`unplaced=`). Because the share is gated on this identical test - the one HeapScan's
+    // normaliser is built from - it resolves ZERO and the counter stays at zero forever. A channel added
+    // below whose weight is scanned over the full footprint resolves a nonzero share here and reports
+    // itself in litres on the first frame the footprint touches the edge.
+    //
+    // Free when the window is entirely inside the patch, which is the ordinary case: there are no
+    // off-patch threads to run.
+    bool writable = FieldWritable(t);
+
+    int ledgerFixed = _Carry[0];
+    if (ledgerFixed <= 0) return;
+
+    float ledger  = (float)ledgerFixed * (1.0 / kCarryScale);
+    float invArea = 1.0 / (_TexelSize * _TexelSize);
+    float2 world  = TexelCenterWorld(t);
+
+    // ---- the RECORDED heap ---------------------------------------------------------------------
+    int heapFixed = 0;
+    int heapWsum  = _Carry[4];
+    if (heapWsum > 0 && _HeapFraction > 1e-6)
+    {
+        float w = writable ? HeapProfileM(world) : 0.0;
+        if (w > 0.0)
+        {
+            float total = ledger * saturate(_HeapFraction);
+            float wsum  = (float)heapWsum * (1.0 / kWeightScale);
+            heapFixed   = CarryFixedFloor(total * (w / wsum) * invArea);
+            heapFixed   = max(0, heapFixed);
+        }
+    }
+
+    // THE RECEIPT'S FLOAT32 EXACTNESS BOUND, ENFORCED IN THE KERNEL AND NOT ONLY WARNED ABOUT ON THE CPU.
+    //
+    // _HeapTex holds this count in a float32, which is exact only below 2^24 units; past that HeapErase
+    // reads back a DIFFERENT number than HeapEmit wrote and the difference is silently subtracted from the
+    // field on every frame - the leak this whole file is organised around refusing. The C# side clamps the
+    // AUTHORED heap height against the same bound, but an authored height is not the only way to get a
+    // large per-texel count: normalising over the writable texels only (see FieldWritable) concentrates
+    // the whole ledger share onto whatever is on the patch, so a footprint hanging almost entirely off the
+    // edge can raise a single texel's count without the authored height moving at all.
+    //
+    // The excess is NOT placed and NOT debited - it stays on the ledger, where the invariant counts it as
+    // carried - and it is reported as `unplaced`, because that is precisely what it is: mass this kernel
+    // resolved for a texel and could not put there. Unreachable at the shipped 12.5 cm cell, where the
+    // bound is 1.678 m3 in ONE texel.
+    if (heapFixed > kReceiptExactMax)
+    {
+        InterlockedAdd(_Stats[3], heapFixed - kReceiptExactMax);
+        heapFixed = kReceiptExactMax;
+    }
+
+    // ---- the UNRECORDED release: overflow, the angled blade's CAST, or an unattached blade ------
+    int relFixed = 0;
+    int relWsum  = _Carry[5];
+    if (relWsum > 0 && _ReleaseFraction > 1e-6)
+    {
+        float w = writable ? ReleaseWeight(world) : 0.0;
+        if (w > 0.0)
+        {
+            float total = ledger * saturate(_ReleaseFraction);
+            float wsum  = (float)relWsum * (1.0 / kWeightScale);
+            relFixed    = CarryFixedFloor(total * (w / wsum) * invArea);
+            relFixed    = max(0, relFixed);
+        }
+    }
+
+    int totFixed = heapFixed + relFixed;
+
+    // THE ZERO-FOREVER READOUT. `writable` gates every share above, so this is unreachable with a
+    // nonzero total today; it is here so that it STOPS being unreachable the moment a channel forgets.
+    if (!writable)
+    {
+        if (totFixed > 0) InterlockedAdd(_Stats[3], totFixed);
+        return;
+    }
+
+    if (totFixed <= 0) return;
+
+    // ONE float for the field, from ONE integer, and that is not tidiness. CarryUnfixed(a) +
+    // CarryUnfixed(b) can differ from CarryUnfixed(a + b) by a float32 ULP, and the debit is the
+    // integer sum - so adding the two floats separately would put an ULP of unbooked mass into the
+    // field on every texel of every frame.
+    float add = CarryUnfixed(totFixed);
+    _DstTex[uint2(t)] = _DstTex[uint2(t)] + add;
+
+    if (heapFixed > 0)
+    {
+        // THE RECEIPT. Written as the integer count, so the next HeapErase reads back exactly what was
+        // placed here rather than re-deriving it from a shape function and an old pose.
+        _HeapTex[uint2(t)] = (float)heapFixed;
+        InterlockedAdd(_Carry[3], heapFixed);
+        InterlockedAdd(_Stats[14], VolumeFixed(CarryUnfixed(heapFixed)));
+    }
+
+    if (relFixed > 0)
+    {
+        // NO RECEIPT, deliberately. This is the ledger debit the Contract describes: mass that ends up
+        // outside the emitted heap footprint leaves the ledger and becomes permanent field mass. It is
+        // what builds the two walls behind the vehicle, and what a dump is made of.
+        InterlockedAdd(_Carry[2], relFixed);
+        InterlockedAdd(_Stats[12], VolumeFixed(CarryUnfixed(relFixed)));
+    }
+}
+
+// Single thread, after HeapEmit. Debits EXACTLY what HeapEmit reported placing, never more.
+//
+// _FloorTex is deliberately NOT touched here, for v6's reason: leaving it below the placed material
+// makes that material count as something the vehicle already owns, so driving back into your own wall
+// or your own windrow or a pile it reversed out from under reclaims it for free rather than paying the
+// deliberate-loss toll a second time. That is what makes gather -> shove -> deposit a LOOP rather than a
+// one-way ratchet, and it is why _MaxPileStep exists.
+[numthreads(1, 1, 1)]
+void HeapFinish(uint3 id : SV_DispatchThreadID)
+{
+    int placed = min(_Carry[2] + _Carry[3], _Carry[0]);
+
+    _Carry[0] = _Carry[0] - placed;
+
+    // THE WALLS, CUMULATIVE, and rescaled down by exactly ten on the way in: kCarryScale / kDeletedScale
+    // = 10. The ledger's own 0.1 microlitre unit reaches int32 at 214.7 m3, and a long run windrows far
+    // more than that - 2.2 m3/s of overflow is 214 m3 in a hundred seconds - so a cumulative total kept
+    // at the ledger's resolution would wrap inside one lap. At kDeletedScale the same slot reaches
+    // 2147 m3, and one microlitre of resolution on a running total in cubic metres is not a loss.
+    _Carry[9] = _Carry[9] + _Carry[2] / 10;
+
+    // _Carry[1] IS SPARE. It used to carry "volume placed by the last FULL dump", and v7 has no dump
+    // verb: reversing with the blade down IS the deposit, and a deposit places nothing at all - it
+    // retires the receipt and leaves the pile where it stands. Nothing here to report.
+    //
+    // _Carry[11] IS NO LONGER SPARE: Settle keeps the deleted book's fixed-point remainder there, so the
+    // ten-to-one rescale from the ledger's unit to the deleted book's unit is exact rather than a
+    // 0.9 microlitre truncation sixty times a second. The truncation on _Carry[9] above is left alone
+    // deliberately - the walls total is a readout and feeds nothing in the mass path.
+}
+
+// ---------------------------------------------------------------------------------------------
+// STEP 6: slope-limited redistribution (talus / angle of repose). v5's kernel, with THE GUARD.
+//
+// For every neighbour pair the flow is rate * 0.5 * max(0, hHigh - hLow - maxDelta). Both texels of the
+// pair evaluate that identical expression, one as an outflow and one as an inflow, so the scheme is
+// exactly antisymmetric and therefore mass conserving. With 8 neighbours the total outflow fraction is
+// 8 * 0.5 * rate, so rate < 0.25 is unconditionally stable.
+//
+// _RelaxWindow is a NO-FLUX WALL: a pair that straddles the window edge is skipped from BOTH sides, or
+// its inflow would be evaluated without its outflow and the scheme would manufacture snow along the
+// boundary. With the window set to the whole field this is bit for bit the unbounded relax.
+//
+// THE GUARD, WHICH IS NEW IN V7 AND IS THE ANSWER TO "WHAT STOPS RELAX EATING THE LEADING FACE".
+//
+// v7's heap is field height, so relax sees it every frame - and the heap's leading face is DELIBERATELY
+// steeper than repose, because it is being shoved. Left alone, relax would attack it: at 65 degrees
+// against a 55 degree repose the excess is tan(65) - tan(55) = 0.71, i.e. 8.9 cm per 12.5 cm texel, and
+// four iterations at rate 0.22 move about 4 cm of that per frame. The face would slump as fast as the
+// emitter could rebuild it and the pile would bleed into the lane instead of accumulating.
+//
+// So a pair whose BOTH texels are inside the heap's recorded footprint uses _MaxDeltaHeap - the SHOVE
+// angle - instead of the repose angle. Three properties make this safe:
+//
+//   1. THE TEST IS SYMMETRIC IN THE PAIR. `both inside` does not depend on which texel is `c` and which
+//      is `n`, so the two halves of every pair still evaluate the identical expression and the scheme
+//      is still exactly antisymmetric. Conservation is untouched - this changes WHEN snow flows, never
+//      whether flow is balanced.
+//   2. IT DOES NOT FREEZE THE FLANKS. The flanks are emitted AT the repose angle, so there is no excess
+//      for relax to move there with either limit; what actually needs settling is the SPILL WALLS and
+//      the berms, and those carry no receipt, so they get the repose limit and slump normally. The
+//      guard protects the two faces that are deliberately out of equilibrium and nothing else.
+//   3. THE TOE IS NOT A CLIFF EITHER WAY. HeapProfileM goes to exactly zero at its own boundary and the
+//      emit ADDS to the field, so the heap meets the surrounding snow continuously and a straddling
+//      pair - which gets the repose limit, being not-both-inside - finds almost no excess slope.
+//
+// _HeapGuardOn 0 disables it exactly and is the A/B: with the guard off, the leading face slumps toward
+// repose within a few frames and the erase's min() debits the difference, which is visible as the pile
+// refusing to grow past a slab.
+// ---------------------------------------------------------------------------------------------
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void Relax(uint3 gid : SV_DispatchThreadID)
+{
+    if (any(gid.xy >= uint2(_RelaxWindow.zw))) return;
+
+    int2 lo = max(int2(_RelaxWindow.xy), int2(0, 0));
+    int2 hi = min(int2(_RelaxWindow.xy) + int2(_RelaxWindow.zw) - int2(1, 1),
+                  int2(_ResX - 1, _ResZ - 1));
+
+    int2 c = int2(_RelaxWindow.xy) + int2(gid.xy);
+    if (any(c < lo) || any(c > hi)) return;
+
+    float h   = _SrcTex[uint2(c)];
+    float net = 0.0;
+    float half_rate = _RelaxRate * 0.5;
+
+    bool guard = (_HeapGuardOn > 0.5);
+    bool cHeap = guard && (_HeapSrc[uint2(c)] > 0.0);
+
+    [unroll]
+    for (int i = 0; i < 8; ++i)
+    {
+        int2 o = kNeighbours[i];
+        int2 n = c + o;
+
+        if (any(n < lo) || any(n > hi)) continue;
+
+        float hn = _SrcTex[uint2(n)];
+
+        bool diag  = (o.x != 0 && o.y != 0);
+        bool inner = cHeap && (_HeapSrc[uint2(n)] > 0.0);
+
+        float maxD = inner ? (diag ? _MaxDeltaHeapDiag : _MaxDeltaHeap)
+                           : (diag ? _MaxDeltaDiag     : _MaxDelta);
+
+        net -= half_rate * max(0.0, h  - hn - maxD);   // outflow
+        net += half_rate * max(0.0, hn - h  - maxD);   // inflow
+    }
+
+    _DstTex[uint2(c)] = max(0.0, h + net);
+}
+
+// Copies _RelaxWindow from src to dst. The windowed relax only writes inside the window, so the usual
+// ping-pong swap would promote a destination whose OUTSIDE is a copy of the field from two iterations
+// ago. Copying the window back instead keeps heightA authoritative over the whole field at all times.
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void CopyRect(uint3 gid : SV_DispatchThreadID)
+{
+    if (any(gid.xy >= uint2(_RelaxWindow.zw))) return;
+
+    int2 t = int2(_RelaxWindow.xy) + int2(gid.xy);
+    if (any(t < int2(0, 0)) || any(t > int2(_ResX - 1, _ResZ - 1))) return;
+
+    _DstTex[uint2(t)] = _SrcTex[uint2(t)];
+}
+
+// Exact box average, so the mean of the mirror equals the mean of the full field and the CPU can use it
+// as a volume check.
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void Downsample(uint3 id : SV_DispatchThreadID)
+{
+    if (any(id.xy >= uint2(_MirrorResX, _MirrorResZ))) return;
+
+    int  b = _MirrorBlock;
+    int2 o = int2(id.xy) * b;
+
+    float sum = 0.0;
+    for (int y = 0; y < b; ++y)
+        for (int x = 0; x < b; ++x)
+            sum += _SrcTex[uint2(o + int2(x, y))];
+
+    _MirrorTex[id.xy] = sum / (float)(b * b);
+}
+
+// Crest of the WHOLE field into _Stats[9], for the raymarcher's top plane. Per-group reduction first,
+// then one atomic per group.
+groupshared int gHeightMax;
+
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void HeightMax(uint3 id : SV_DispatchThreadID, uint groupIndex : SV_GroupIndex)
+{
+    if (groupIndex == 0u) gHeightMax = 0;
+    GroupMemoryBarrierWithGroupSync();
+
+    if (all(id.xy < uint2(_ResX, _ResZ)))
+    {
+        // Truncated, not rounded: the consumer adds a margin on top, and a value that reads one quantum
+        // (10 um) low is harmless where one that reads high is wasted march.
+        InterlockedMax(gHeightMax, (int)(_SrcTex[id.xy] * kHeightScale));
+    }
+
+    GroupMemoryBarrierWithGroupSync();
+    if (groupIndex == 0u) InterlockedMax(_Stats[9], gHeightMax);
+}
+
+// RENDER ONLY. A small max filter at TWO radii in one texture, so the march takes one tap:
+//   R = the surface EXISTENCE test - covers a landlocked texel driven under the renderer's 5 mm
+//       threshold by the cut noise, which reads as a hole punched through the snow rather than as bare
+//       ground. The open lane still reads as open, because out there the dilation has nothing to pull
+//       from.
+//   G = the casual fat-edge fillet's source, at its own finer radius, because v7's coarse cell is a
+//       metre and pointing the fillet at that would round every shoulder over two metres of flat
+//       ground.
+// THE SIMULATION NEVER READS THIS TEXTURE.
+int _HeightDilateRadius;
+int _FilletDilateRadius;
+
+RWTexture2D<float2> _DilateDst;
+
+// The SAME texture as _DilateDst, bound as a read-only SRV, because LumpBake has to READ the fillet
+// dilation the marcher's relief term reads per pixel.
+Texture2D<float2> _DilateSrc;
+
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void HeightDilate(uint3 id : SV_DispatchThreadID)
+{
+    if (any(id.xy >= uint2(_ResX, _ResZ))) return;
+
+    int rE = max(0, _HeightDilateRadius);
+    int rF = max(0, _FilletDilateRadius);
+    int r  = max(rE, rF);
+
+    int2 hi = int2(_ResX - 1, _ResZ - 1);
+
+    float mE = 0.0;
+    float mF = 0.0;
+
+    for (int y = -r; y <= r; ++y)
+    {
+        for (int x = -r; x <= r; ++x)
+        {
+            float s = _SrcTex[uint2(clamp(int2(id.xy) + int2(x, y), int2(0, 0), hi))];
+            if (abs(x) <= rE && abs(y) <= rE) mE = max(mE, s);
+            if (abs(x) <= rF && abs(y) <= rF) mF = max(mF, s);
+        }
+    }
+
+    _DilateDst[id.xy] = float2(mE, mF);
+}
+
+// The raymarcher's empty-space skipping structure. CoarseMaxBlock reduces the field to one texel per
+// block taking the MAX (not the average - an average is not a bound); CoarseMaxDilate spreads each
+// texel over its neighbours, after which a POINT sample is an upper bound on the surface over a known
+// box, and the march can advance by that radius without provably skipping a crossing.
+Texture2D<float>   _CoarseSrc;
+RWTexture2D<float> _CoarseDst;
+int _CoarseResX;
+int _CoarseResZ;
+int _CoarseBlock;
+int _CoarseDilate;
+
+// THE BAKED LUMP LIFT, read here so the bound can be the ACTUAL lift instead of a blanket + r.
+Texture2D<float> _LumpBakeSrc;
+int _LumpBakeResX;
+int _LumpBakeResZ;
+
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void CoarseMaxBlock(uint3 id : SV_DispatchThreadID)
+{
+    if (any(id.xy >= uint2(_CoarseResX, _CoarseResZ))) return;
+
+    int  b = _CoarseBlock;
+    int2 o = int2(id.xy) * b;
+
+    float m = 0.0;
+    for (int y = 0; y < b; ++y)
+        for (int x = 0; x < b; ++x)
+            m = max(m, _SrcTex[uint2(o + int2(x, y))]);
+
+    // THE LUMP TERM'S OWN BOUND OVER THIS CELL, and WHY IT IS AN UPPER BOUND.
+    //
+    // The bake is exactly 2x the field resolution, so the 2b x 2b bake texels starting at 2*b*id are
+    // precisely the ones whose centres lie inside this coarse cell. The march samples the bake
+    // BILINEARLY, i.e. as a convex combination of four texels whose centres are within one bake texel
+    // of the sample point - which, for a point at the very edge of this cell, can include one texel
+    // from the next cell over. Hence the ONE-TEXEL RING: the loop runs -1 .. 2b, so every texel any
+    // bilinear tap inside this cell can reach is in the max. A convex combination never exceeds the max
+    // of its inputs, so max over the padded block >= the decoded lift at every point of the cell.
+    //
+    // OFF IS FREE. _LumpRadiusM is a uniform, so this branch is scalar for the whole dispatch and at
+    // radius 0 not one of the 324 loads is issued.
+    if (_LumpRadiusM > 1e-5)
+    {
+        int  bb = b * 2;
+        int2 ob = int2(id.xy) * bb;
+        int2 hb = int2(_LumpBakeResX - 1, _LumpBakeResZ - 1);
+
+        float lm = 0.0;
+        for (int by = -1; by <= bb; ++by)
+            for (int bx = -1; bx <= bb; ++bx)
+                lm = max(lm, _LumpBakeSrc[uint2(clamp(ob + int2(bx, by), int2(0, 0), hb))]);
+
+        m += SnowLumpDecodeM(lm);
+    }
+
+    _CoarseDst[id.xy] = m;
+}
+
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void CoarseMaxDilate(uint3 id : SV_DispatchThreadID)
+{
+    if (any(id.xy >= uint2(_CoarseResX, _CoarseResZ))) return;
+
+    int d  = _CoarseDilate;
+    int2 hi = int2(_CoarseResX - 1, _CoarseResZ - 1);
+
+    // Clamped, matching the height texture's own clamp addressing, so the bound stays valid for a ray
+    // whose safe box overhangs the patch edge.
+    float m = 0.0;
+    for (int y = -d; y <= d; ++y)
+        for (int x = -d; x <= d; ++x)
+            m = max(m, _CoarseSrc[uint2(clamp(int2(id.xy) + int2(x, y), int2(0, 0), hi))]);
+
+    _CoarseDst[id.xy] = m;
+}
+
+// ---------------------------------------------------------------------------------------------
+// THE LUMP BAKE. RENDER ONLY - THE SIMULATION NEVER READS OR WRITES THIS TEXTURE, and no kernel above
+// this line touches it, so nothing here can move one litre of snow.
+//
+// The lattice used to be evaluated inside the raymarcher's surface function, ~36 times per pixel:
+// measured 6.13 ms GPU / 23.70 mean steps with the term off against 15.44 ms with the per-step
+// nine-hash version, and 7.83 ms / 34.61 with this bake. Here the same formula runs ONCE PER TEXEL PER
+// SIMULATION STEP over the dirty window, and the marcher takes one bilinear tap.
+//
+// THE WINDOW is the relax window, expanded by the lump reach. It has to be expanded, because a texel of
+// field change moves the lift over a whole neighbourhood: the depth gate reads the field BILINEARLY
+// (+-1 field texel), the relief term reads the fillet dilation (+-_FilletDilateRadius) and a lobe whose
+// centre sits in a changed cell reaches out by its radius plus half a jittered cell. The C# side sums
+// all three - see SnowPileFieldV7.LumpBakePadTexels.
+//
+// STALENESS IS SAFE, NOT LUCKY. If a window ever failed to cover a change, the lobes there would be one
+// step out of date and would look it, but the march's bound would still hold, because CoarseMaxBlock
+// reduces the SAME texels this kernel wrote, every step, over the whole field, after this kernel has
+// run. See CoarseMaxYFrom in SnowMarchCoreV7.hlsl for the full argument.
+// ---------------------------------------------------------------------------------------------
+RWTexture2D<float> _LumpBakeDst;
+float4 _LumpBakeWindow;    // .xy = origin BAKE texel, .zw = size in BAKE texels
+float  _LumpMinSnowHeight; // the renderer's bare-ground threshold, so the depth gate matches it
+
+// The field, sampled the way the RAYMARCHER samples it: hardware bilinear with clamp addressing, texel
+// centres at (k + 0.5). Reproduced with explicit taps rather than a sampler because this file has no
+// SamplerState and no normalised UVs, and because the depth gate has to agree with the gate the marcher
+// computes at the same world point or the lobes would fade in at a different depth.
+//
+// Single exit.
+float LumpBakeFieldH(float2 world)
+{
+    float2 p  = (world - _PatchMin.xy) * _InvTexelSize - 0.5;
+    float2 i0 = floor(p);
+    float2 f  = p - i0;
+
+    int2 hi = int2(_ResX - 1, _ResZ - 1);
+    int2 a  = int2(i0);
+
+    float h00 = _SrcTex[uint2(clamp(a + int2(0, 0), int2(0, 0), hi))];
+    float h10 = _SrcTex[uint2(clamp(a + int2(1, 0), int2(0, 0), hi))];
+    float h01 = _SrcTex[uint2(clamp(a + int2(0, 1), int2(0, 0), hi))];
+    float h11 = _SrcTex[uint2(clamp(a + int2(1, 1), int2(0, 0), hi))];
+
+    return lerp(lerp(h00, h10, f.x), lerp(h01, h11, f.x), f.y);
+}
+
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void LumpBake(uint3 gid : SV_DispatchThreadID)
+{
+    if (any(gid.xy >= uint2(_LumpBakeWindow.zw))) return;
+
+    int2 t = int2(_LumpBakeWindow.xy) + int2(gid.xy);
+    if (any(t < int2(0, 0)) || any(t > int2(_LumpBakeResX - 1, _LumpBakeResZ - 1))) return;
+
+    // The bake texel is exactly half a field texel, so texel (i,j)'s centre is one quarter and three
+    // quarters of the way across field texel (i/2, j/2). Deriving it from _TexelSize rather than from a
+    // separate uniform means the two resolutions cannot fall out of step.
+    float2 world = _PatchMin.xy + (float2(t) + 0.5) * (_TexelSize * 0.5);
+
+    // The fillet dilation POINT sampled, which is what the marcher's SampleDilated does.
+    int2  dt   = clamp(t >> 1, int2(0, 0), int2(_ResX - 1, _ResZ - 1));
+    float dilY = _DilateSrc[uint2(dt)].y;
+
+    float h    = LumpBakeFieldH(world);
+    float lift = SnowLumpLiftM(world) * SnowLumpGate(h, dilY, _LumpMinSnowHeight);
+
+    _LumpBakeDst[uint2(t)] = SnowLumpEncode(lift);
+}

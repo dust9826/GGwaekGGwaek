@@ -1,0 +1,358 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../Shared/OutGameFlow.uss" />
+    <Style src="../HostGame/HostGame.uss" />
+    <Style src="../JoinGame/JoinGame.uss" />
+    <Style src="../Lobby/Lobby.uss" />
+    <Style src="../Singleplayer/Singleplayer.uss" />
+    <Style src="../StageSelect/StageSelect.uss" />
+    <Style src="../Tutorial/Tutorial.uss" />
+    <Style src="../Settings/Settings.uss" />
+    <Style src="../Shared/SnowRemovalTheme.uss" />
+    <Style src="MainMenu.uss" />
+
+    <ui:VisualElement name="main-menu" class="flow-screen single-menu-screen">
+        <ui:VisualElement class="menu-background-decor" picking-mode="Ignore">
+            <ui:VisualElement class="menu-bg-orb" />
+            <ui:VisualElement class="tree-cluster tree-cluster-left">
+                <ui:VisualElement class="float-shape winter-pine winter-pine-a">
+                    <ui:VisualElement class="pine-trunk" />
+                    <ui:VisualElement class="pine-tier pine-tier-bottom" />
+                    <ui:VisualElement class="pine-tier pine-tier-middle" />
+                    <ui:VisualElement class="pine-tier pine-tier-top" />
+                </ui:VisualElement>
+                <ui:VisualElement class="float-shape winter-pine winter-pine-b">
+                    <ui:VisualElement class="pine-trunk" />
+                    <ui:VisualElement class="pine-tier pine-tier-bottom" />
+                    <ui:VisualElement class="pine-tier pine-tier-middle" />
+                    <ui:VisualElement class="pine-tier pine-tier-top" />
+                </ui:VisualElement>
+                <ui:VisualElement class="float-shape winter-pine winter-pine-c">
+                    <ui:VisualElement class="pine-trunk" />
+                    <ui:VisualElement class="pine-tier pine-tier-bottom" />
+                    <ui:VisualElement class="pine-tier pine-tier-middle" />
+                    <ui:VisualElement class="pine-tier pine-tier-top" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="tree-cluster tree-cluster-right">
+                <ui:VisualElement class="float-shape winter-pine winter-pine-a">
+                    <ui:VisualElement class="pine-trunk" />
+                    <ui:VisualElement class="pine-tier pine-tier-bottom" />
+                    <ui:VisualElement class="pine-tier pine-tier-middle" />
+                    <ui:VisualElement class="pine-tier pine-tier-top" />
+                </ui:VisualElement>
+                <ui:VisualElement class="float-shape winter-pine winter-pine-b">
+                    <ui:VisualElement class="pine-trunk" />
+                    <ui:VisualElement class="pine-tier pine-tier-bottom" />
+                    <ui:VisualElement class="pine-tier pine-tier-middle" />
+                    <ui:VisualElement class="pine-tier pine-tier-top" />
+                </ui:VisualElement>
+                <ui:VisualElement class="float-shape winter-pine winter-pine-c">
+                    <ui:VisualElement class="pine-trunk" />
+                    <ui:VisualElement class="pine-tier pine-tier-bottom" />
+                    <ui:VisualElement class="pine-tier pine-tier-middle" />
+                    <ui:VisualElement class="pine-tier pine-tier-top" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="float-shape snowman-mascot snowman-mascot-left">
+                <ui:VisualElement class="snowman-arm snowman-arm-left" />
+                <ui:VisualElement class="snowman-arm snowman-arm-right" />
+                <ui:VisualElement class="snowman-body" />
+                <ui:VisualElement class="snowman-head">
+                    <ui:VisualElement class="snowman-eye snowman-eye-left" />
+                    <ui:VisualElement class="snowman-eye snowman-eye-right" />
+                    <ui:VisualElement class="snowman-carrot" />
+                    <ui:VisualElement class="snowman-smile snowman-smile-left" />
+                    <ui:VisualElement class="snowman-smile snowman-smile-middle" />
+                    <ui:VisualElement class="snowman-smile snowman-smile-right" />
+                </ui:VisualElement>
+                <ui:VisualElement class="snowman-scarf-band" />
+                <ui:VisualElement class="snowman-scarf-tail" />
+                <ui:VisualElement class="snowman-button snowman-button-top" />
+                <ui:VisualElement class="snowman-button snowman-button-middle" />
+                <ui:VisualElement class="snowman-button snowman-button-bottom" />
+            </ui:VisualElement>
+            <ui:VisualElement class="float-shape snowman-mascot snowman-mascot-right">
+                <ui:VisualElement class="snowman-arm snowman-arm-left" />
+                <ui:VisualElement class="snowman-arm snowman-arm-right" />
+                <ui:VisualElement class="snowman-body" />
+                <ui:VisualElement class="snowman-head">
+                    <ui:VisualElement class="snowman-eye snowman-eye-left" />
+                    <ui:VisualElement class="snowman-eye snowman-eye-right" />
+                    <ui:VisualElement class="snowman-carrot" />
+                    <ui:VisualElement class="snowman-smile snowman-smile-left" />
+                    <ui:VisualElement class="snowman-smile snowman-smile-middle" />
+                    <ui:VisualElement class="snowman-smile snowman-smile-right" />
+                </ui:VisualElement>
+                <ui:VisualElement class="snowman-scarf-band" />
+                <ui:VisualElement class="snowman-scarf-tail" />
+                <ui:VisualElement class="snowman-button snowman-button-top" />
+                <ui:VisualElement class="snowman-button snowman-button-middle" />
+                <ui:VisualElement class="snowman-button snowman-button-bottom" />
+            </ui:VisualElement>
+            <ui:VisualElement class="menu-bg-ring menu-bg-ring-a" />
+            <ui:VisualElement class="menu-bg-ring menu-bg-ring-b" />
+            <ui:VisualElement class="menu-bg-ring menu-bg-ring-c" />
+            <ui:VisualElement class="float-shape winter-twinkle menu-bg-sparkle menu-bg-sparkle-a" />
+            <ui:VisualElement class="float-shape winter-twinkle menu-bg-sparkle menu-bg-sparkle-b" />
+            <ui:VisualElement class="float-shape winter-twinkle menu-bg-sparkle menu-bg-sparkle-c" />
+            <ui:VisualElement class="float-shape winter-twinkle menu-bg-sparkle menu-bg-sparkle-d" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="view-home" class="menu-view menu-view-active">
+            <ui:VisualElement class="flow-card-shadow main-card">
+                <ui:VisualElement class="flow-card">
+                    <ui:VisualElement class="title-banner">
+                        <ui:Label text="GGWAEK GGWAEK" class="title-text" />
+                        <ui:Label text="PENGUIN SNOW CREW" class="title-kicker" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="mode-list">
+                        <ui:VisualElement class="mode-group online-group">
+                            <ui:Label text="WADDLE TOGETHER" class="mode-label" />
+                            <ui:Label text="BUILD A PENGUIN CREW AND TACKLE THE SNOW" class="mode-copy" />
+                            <ui:VisualElement class="button-row mode-buttons">
+                                <ui:Button name="view-host" text="HOST" class="flow-button mode-button" />
+                                <ui:Button name="view-join" text="JOIN" class="flow-button mode-button secondary" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="mode-group solo-group">
+                            <ui:Label text="SOLO SLIDE" class="mode-label" />
+                            <ui:Label text="PRACTICE YOUR WADDLE AT YOUR OWN PACE" class="mode-copy" />
+                            <ui:VisualElement class="button-row mode-buttons">
+                                <ui:Button name="view-stage-select" text="CHOOSE ROUTE" class="flow-button mode-button yellow" />
+                                <ui:Button name="view-tutorial" text="TUTORIAL" class="flow-button mode-button secondary" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="button-row utility-actions">
+                        <ui:Button name="view-settings" text="SETTINGS" class="flow-button compact-button secondary" />
+                        <ui:Button name="action-quit" text="EXIT" class="flow-button compact-button danger" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="view-host" class="menu-view menu-view-hidden">
+            <ui:VisualElement class="flow-card-shadow host-card">
+                <ui:VisualElement class="flow-card">
+                    <ui:VisualElement class="title-banner">
+                        <ui:Label text="START A WADDLE" class="title-text" />
+                        <ui:Label text="OPEN AN ICE CAMP FOR YOUR PENGUIN CREW" class="title-kicker" />
+                    </ui:VisualElement>
+                    <ui:Label text="YOUR ROOM CODE" class="screen-copy" />
+                    <ui:VisualElement class="paper-panel code-ticket">
+                        <ui:Label name="room-preview-label" text="------" class="big-value" />
+                        <ui:Label text="The code stays with this preview lobby." class="support-copy" />
+                    </ui:VisualElement>
+                    <ui:TextField name="host-nickname-input" label="NICKNAME" value="PENGUIN" max-length="16" class="field" />
+                    <ui:VisualElement class="button-row host-actions">
+                        <ui:Button name="action-host-room" text="CREATE ROOM" class="flow-button secondary wide-button" />
+                        <ui:Button name="view-home" text="BACK" class="flow-button compact-button danger" />
+                    </ui:VisualElement>
+                    <ui:Label text="READY TO OPEN THE DOORS" class="status-label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="view-join" class="menu-view menu-view-hidden">
+            <ui:VisualElement class="flow-card-shadow join-card">
+                <ui:VisualElement class="flow-card">
+                    <ui:VisualElement class="title-banner">
+                        <ui:Label text="JOIN THE WADDLE" class="title-text" />
+                        <ui:Label text="ENTER THE ICE CAMP CODE YOUR HOST SHARED" class="title-kicker" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="paper-panel join-form">
+                        <ui:Label text="CREW CHECK-IN" class="section-title" />
+                        <ui:TextField name="join-nickname-input" label="NICKNAME" value="PENGUIN" max-length="16" class="field" />
+                        <ui:TextField name="room-code-input" label="ROOM CODE" value="" max-length="8" class="field code-field" />
+                        <ui:Label text="Codes are checked locally for this UI preview." class="support-copy" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="button-row join-actions">
+                        <ui:Button name="action-join-room" text="JOIN ROOM" class="flow-button secondary wide-button" />
+                        <ui:Button name="view-home" text="BACK" class="flow-button compact-button danger" />
+                    </ui:VisualElement>
+                    <ui:Label text="ENTER A ROOM CODE" class="status-label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="view-connecting" class="menu-view menu-view-hidden">
+            <ui:VisualElement class="flow-card-shadow join-card">
+                <ui:VisualElement class="flow-card connecting-card">
+                    <ui:VisualElement class="title-banner">
+                        <ui:Label name="connecting-title" text="CREATING ROOM..." class="title-text" />
+                        <ui:Label name="connecting-kicker" text="HOLD ON WHILE THE ICE CAMP OPENS" class="title-kicker" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="connecting-spinner" class="loading-ring" />
+                    <ui:VisualElement class="button-row join-actions">
+                        <ui:Button name="action-connecting-back" text="BACK TO MENU" class="flow-button compact-button danger" />
+                    </ui:VisualElement>
+                    <ui:Label text="" class="status-label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="view-lobby" class="menu-view menu-view-hidden">
+            <ui:VisualElement class="flow-card-shadow lobby-card">
+                <ui:VisualElement class="flow-card">
+                    <ui:VisualElement class="title-banner">
+                        <ui:Label text="PENGUIN HUDDLE" class="title-text" />
+                        <ui:Label text="WAIT FOR EVERY PENGUIN TO WADDLE IN" class="title-kicker" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="content-row lobby-layout">
+                        <ui:VisualElement class="paper-panel code-panel">
+                            <ui:Label name="role-label" text="HOST" class="chip" />
+                            <ui:Label text="ROOM CODE" class="screen-copy code-caption" />
+                            <ui:Label name="room-code-label" text="PREVIEW" class="big-value lobby-code" />
+                            <ui:Button name="action-copy-code" text="COPY CODE" class="flow-button compact-button yellow" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="paper-panel player-panel">
+                            <ui:Label text="THE WADDLE" class="section-title" />
+                            <ui:Label name="player-slot-0" text="PENGUIN  /  HOST" class="player-row player-ready" />
+                            <ui:Label name="player-slot-1" text="WAITING FOR PENGUIN..." class="player-row" />
+                            <ui:Label name="player-slot-2" text="WAITING FOR PENGUIN..." class="player-row" />
+                            <ui:Label name="player-slot-3" text="WAITING FOR PENGUIN..." class="player-row" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="button-row lobby-actions">
+                        <ui:Button name="action-start-game" text="START GAME" class="flow-button wide-button secondary" />
+                        <ui:Button name="view-home" text="LEAVE" class="flow-button compact-button danger" />
+                    </ui:VisualElement>
+                    <ui:Label text="KEEP THE HUDDLE WARM" class="status-label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="view-stage-select" class="menu-view menu-view-hidden stage-world-view">
+            <ui:VisualElement class="stage-world-hud">
+                <ui:VisualElement class="stage-world-header">
+                    <ui:Label text="PENGUIN DISTRICT" class="stage-world-title" />
+                    <ui:Label text="SELECT A STAGE  ·  1 / 3 OPEN" class="stage-world-kicker" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="stage-world-prompt">
+                    <ui:Label text="CHOOSE YOUR NEXT SLIDE" class="stage-world-prompt-title" />
+                    <ui:Label text="Select a penguin beacon on the map" class="stage-world-prompt-copy" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="stage-world-pin stage-world-pin-01">
+                    <ui:Label text="READY" class="stage-world-pin-state stage-world-pin-state-ready" />
+                    <ui:Button name="stage-winter-village" text="01" tooltip="Winter Village" class="flow-button stage-world-node-button stage-node-selected" />
+                    <ui:Label text="WINTER VILLAGE" class="stage-world-pin-name" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="stage-world-pin stage-world-pin-02">
+                    <ui:Label text="LOCKED" class="stage-world-pin-state" />
+                    <ui:VisualElement class="stage-world-node-locked">
+                        <ui:Label text="02" class="stage-world-node-number" />
+                    </ui:VisualElement>
+                    <ui:Label text="MOUNTAIN PASS" class="stage-world-pin-name" />
+                    <ui:Label text="CLEAR 01" class="stage-world-lock-copy" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="stage-world-pin stage-world-pin-03">
+                    <ui:Label text="LOCKED" class="stage-world-pin-state" />
+                    <ui:VisualElement class="stage-world-node-locked">
+                        <ui:Label text="03" class="stage-world-node-number" />
+                    </ui:VisualElement>
+                    <ui:Label text="SUMMIT DEPOT" class="stage-world-pin-name" />
+                    <ui:Label text="COMING SOON" class="stage-world-lock-copy" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="stage-world-briefing">
+                    <ui:VisualElement class="stage-world-brief-topline">
+                        <ui:Label text="STAGE 01" class="stage-world-brief-index" />
+                        <ui:Label text="HEAVY SNOWFALL" class="stage-world-threat" />
+                    </ui:VisualElement>
+                    <ui:Label text="WINTER VILLAGE" class="stage-world-brief-title" />
+                    <ui:Label text="Keep the village open before the blizzard returns." class="stage-world-brief-copy" />
+                    <ui:VisualElement class="stage-world-chip-row">
+                        <ui:Label text="1–4 PENGUINS" class="stage-world-chip" />
+                        <ui:Label text="SNOWPLOW" class="stage-world-chip stage-world-chip-blue" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement class="stage-world-actions">
+                    <ui:Button name="view-home" text="BACK" class="flow-button stage-world-back danger" />
+                    <ui:Button name="action-stage-start" text="DEPLOY" class="flow-button stage-world-start secondary" />
+                </ui:VisualElement>
+
+                <ui:Label text="WINTER VILLAGE SELECTED" class="status-label stage-world-status" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="view-tutorial" class="menu-view menu-view-hidden">
+            <ui:VisualElement class="flow-card-shadow tutorial-card">
+                <ui:VisualElement class="flow-card">
+                    <ui:VisualElement class="title-banner">
+                        <ui:Label text="HOW TO WADDLE" class="title-text" />
+                        <ui:Label text="PUSH, SLIDE AND KEEP EVERY ROAD OPEN" class="title-kicker" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="content-row tutorial-steps">
+                        <ui:VisualElement class="paper-panel step-card step-one">
+                            <ui:Label text="1" class="step-number" />
+                            <ui:Label text="READ THE SNOW" class="section-title" />
+                            <ui:Label text="Check blocked roads, snowfall warnings and the safest order to clear them." class="step-copy" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="paper-panel step-card step-two">
+                            <ui:Label text="2" class="step-number" />
+                            <ui:Label text="PUSH TOGETHER" class="section-title" />
+                            <ui:Label text="Lean into the snow, keep waddling and leave a wide route behind your crew." class="step-copy" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="paper-panel step-card step-three">
+                            <ui:Label text="3" class="step-number" />
+                            <ui:Label text="WADDLE ON" class="section-title" />
+                            <ui:Label text="Fresh snow returns. Split the route and reopen every road before time runs out." class="step-copy" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="tutorial-actions">
+                        <ui:Button name="view-home" text="BACK" class="flow-button danger tutorial-action" />
+                        <ui:Button name="action-tutorial-start" text="START TRAINING" class="flow-button secondary tutorial-action" />
+                    </ui:VisualElement>
+                    <ui:Label text="WALK, RUN, SLIDE, ROLL SNOW AND CARRY A GIFT" class="status-label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="view-settings" class="menu-view menu-view-hidden">
+            <ui:VisualElement class="flow-card-shadow settings-card">
+                <ui:VisualElement class="flow-card">
+                    <ui:VisualElement class="title-banner">
+                        <ui:Label text="SETTINGS" class="title-text" />
+                        <ui:Label text="TUNE YOUR PENGUIN ADVENTURE" class="title-kicker" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="settings-list">
+                        <ui:VisualElement class="paper-panel setting-row">
+                            <ui:VisualElement class="setting-copy">
+                                <ui:Label text="UI SOUND" class="setting-title" />
+                                <ui:Label text="Hover and menu feedback" class="support-copy setting-help" />
+                            </ui:VisualElement>
+                            <ui:Label name="sound-value" text="ON" class="setting-value" />
+                            <ui:Button name="action-sound" text="TOGGLE" class="flow-button compact-button secondary" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="paper-panel setting-row">
+                            <ui:VisualElement class="setting-copy">
+                                <ui:Label text="QUALITY" class="setting-title" />
+                                <ui:Label text="Cycle available Unity quality levels" class="support-copy setting-help" />
+                            </ui:VisualElement>
+                            <ui:Label name="quality-value" text="DEFAULT" class="setting-value" />
+                            <ui:Button name="action-quality" text="CHANGE" class="flow-button compact-button yellow" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="paper-panel setting-row">
+                            <ui:VisualElement class="setting-copy">
+                                <ui:Label text="FULLSCREEN" class="setting-title" />
+                                <ui:Label text="Toggle the player window mode" class="support-copy setting-help" />
+                            </ui:VisualElement>
+                            <ui:Label name="fullscreen-value" text="OFF" class="setting-value" />
+                            <ui:Button name="action-fullscreen" text="TOGGLE" class="flow-button compact-button" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:Button name="view-home" text="BACK" class="flow-button secondary wide-button settings-back" />
+                    <ui:Label text="SETTINGS ARE APPLIED IMMEDIATELY" class="status-label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="ui-effect-layer" class="ui-effect-layer" picking-mode="Ignore" />
+        <ui:VisualElement name="transition-curtain" class="transition-curtain" />
+    </ui:VisualElement>
+</ui:UXML>

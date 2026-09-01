@@ -1,0 +1,32 @@
+/* 상단 중앙에 잠깐 뜨는 알림. 눈보라 경고와 같은 자리·같은 성격이라 조형을 맞춘다.
+   서체는 인게임 공통(LilitaOne) — StageHUD·StageOutro 와 같은 줄이다. */
+
+.world-message-root {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    align-items: center;
+    -unity-font-definition: url("../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+}
+
+/* HUD 의 시계가 가운데 위를 쓰므로 그 아래로 내려 앉힌다. */
+.world-message {
+    position: absolute;
+    top: 118px;
+    padding: 10px 26px;
+    background-color: rgba(16, 44, 65, 0.88);
+    border-radius: 12px;
+    border-width: 2px;
+    border-color: #f9ffff;
+    border-bottom-width: 5px;
+    border-bottom-color: #9fbfc6;
+}
+
+.world-message-label {
+    font-size: 22px;
+    color: #f9ffff;
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+}

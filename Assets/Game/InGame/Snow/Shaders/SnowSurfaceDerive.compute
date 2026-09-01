@@ -1,0 +1,212 @@
+// 눈 렌더링용 파생 텍스처 — GPU 절반(클라 전용)
+//
+// AnyTest 스파이크 v7 의 Resources/SnowPileFieldV7.compute 에서 **렌더링 커널 넷만** 떼어냈다.
+// 원본은 18개 커널을 갖고 있고 그중 14개(Init/HeapErase/Push/Settle/Deposit/Heap*/Relax/CopyRect/
+// Downsample/HeightMax)는 **GPU 시뮬 = 권위**다. 그것들은 가져오지 않는다 — 권위는 CPU 의 SnowField 에
+// 있고 데디 서버에는 GPU 가 없다(루트 AGENTS.md). 여기 있는 넷은 전부 **높이 텍스처의 함수**이므로
+// 판정과 무관하고, 클라에서만 돌아도 아무것도 어긋나지 않는다.
+//
+//   HeightDilate     : 높이의 팽창 상한 두 반경(존재 판정 · 필렛 소스)
+//   CoarseMaxBlock   : 블록 최대 → 빈 공간 건너뛰기의 근거
+//   CoarseMaxDilate  : 그 블록 최대를 팽창해 경계에서 상한이 깨지지 않게 한다
+//   LumpBake         : **구운 로브.** 눈이 각진 슬래브가 아니라 둥근 로브로 읽히게 만드는 항이고,
+//                      마처가 스텝마다 9개 해시를 돌리는 대신 텍셀당 한 번 굽는다(v7 실측: 15.44 → 7.83 ms)
+//
+// 입력 `_SrcTex` 는 **눈 높이(미터)** 다. 우리 쪽에서는 CPU SnowField 를 그대로 올린 결과이고,
+// v7 에서는 GPU 시뮬의 출력이었다 — 이 한 층만 갈아끼우면 아래는 원본 그대로 돈다.
+
+#pragma kernel HeightDilate
+#pragma kernel CoarseMaxBlock
+#pragma kernel CoarseMaxDilate
+#pragma kernel LumpBake
+
+#define SNOW_TG 8
+
+#include "SnowLumpLattice.hlsl"
+
+// ------------------------------------------------------------------ 리소스
+Texture2D<float>    _SrcTex;        // 눈 높이(미터). CPU 권위 격자의 업로드 결과다
+RWTexture2D<float2> _DilateDst;
+Texture2D<float2>   _DilateSrc;
+
+int    _ResX;
+int    _ResZ;
+int    _HeightDilateRadius;
+int    _FilletDilateRadius;
+float4 _PatchMin;
+float  _TexelSize;
+float  _InvTexelSize;
+
+// ------------------------------------------------------------------ 커널 (v7 원본)
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void HeightDilate(uint3 id : SV_DispatchThreadID)
+{
+    if (any(id.xy >= uint2(_ResX, _ResZ))) return;
+
+    int rE = max(0, _HeightDilateRadius);
+    int rF = max(0, _FilletDilateRadius);
+    int r  = max(rE, rF);
+
+    int2 hi = int2(_ResX - 1, _ResZ - 1);
+
+    float mE = 0.0;
+    float mF = 0.0;
+
+    for (int y = -r; y <= r; ++y)
+    {
+        for (int x = -r; x <= r; ++x)
+        {
+            float s = _SrcTex[uint2(clamp(int2(id.xy) + int2(x, y), int2(0, 0), hi))];
+            if (abs(x) <= rE && abs(y) <= rE) mE = max(mE, s);
+            if (abs(x) <= rF && abs(y) <= rF) mF = max(mF, s);
+        }
+    }
+
+    _DilateDst[id.xy] = float2(mE, mF);
+}
+
+// The raymarcher's empty-space skipping structure. CoarseMaxBlock reduces the field to one texel per
+// block taking the MAX (not the average - an average is not a bound); CoarseMaxDilate spreads each
+// texel over its neighbours, after which a POINT sample is an upper bound on the surface over a known
+// box, and the march can advance by that radius without provably skipping a crossing.
+Texture2D<float>   _CoarseSrc;
+RWTexture2D<float> _CoarseDst;
+int _CoarseResX;
+int _CoarseResZ;
+int _CoarseBlock;
+int _CoarseDilate;
+
+// THE BAKED LUMP LIFT, read here so the bound can be the ACTUAL lift instead of a blanket + r.
+Texture2D<float> _LumpBakeSrc;
+int _LumpBakeResX;
+int _LumpBakeResZ;
+
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void CoarseMaxBlock(uint3 id : SV_DispatchThreadID)
+{
+    if (any(id.xy >= uint2(_CoarseResX, _CoarseResZ))) return;
+
+    int  b = _CoarseBlock;
+    int2 o = int2(id.xy) * b;
+
+    float m = 0.0;
+    for (int y = 0; y < b; ++y)
+        for (int x = 0; x < b; ++x)
+            m = max(m, _SrcTex[uint2(o + int2(x, y))]);
+
+    // THE LUMP TERM'S OWN BOUND OVER THIS CELL, and WHY IT IS AN UPPER BOUND.
+    //
+    // The bake is exactly 2x the field resolution, so the 2b x 2b bake texels starting at 2*b*id are
+    // precisely the ones whose centres lie inside this coarse cell. The march samples the bake
+    // BILINEARLY, i.e. as a convex combination of four texels whose centres are within one bake texel
+    // of the sample point - which, for a point at the very edge of this cell, can include one texel
+    // from the next cell over. Hence the ONE-TEXEL RING: the loop runs -1 .. 2b, so every texel any
+    // bilinear tap inside this cell can reach is in the max. A convex combination never exceeds the max
+    // of its inputs, so max over the padded block >= the decoded lift at every point of the cell.
+    //
+    // OFF IS FREE. _LumpRadiusM is a uniform, so this branch is scalar for the whole dispatch and at
+    // radius 0 not one of the 324 loads is issued.
+    if (_LumpRadiusM > 1e-5)
+    {
+        int  bb = b * 2;
+        int2 ob = int2(id.xy) * bb;
+        int2 hb = int2(_LumpBakeResX - 1, _LumpBakeResZ - 1);
+
+        float lm = 0.0;
+        for (int by = -1; by <= bb; ++by)
+            for (int bx = -1; bx <= bb; ++bx)
+                lm = max(lm, _LumpBakeSrc[uint2(clamp(ob + int2(bx, by), int2(0, 0), hb))]);
+
+        m += SnowLumpDecodeM(lm);
+    }
+
+    _CoarseDst[id.xy] = m;
+}
+
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void CoarseMaxDilate(uint3 id : SV_DispatchThreadID)
+{
+    if (any(id.xy >= uint2(_CoarseResX, _CoarseResZ))) return;
+
+    int d  = _CoarseDilate;
+    int2 hi = int2(_CoarseResX - 1, _CoarseResZ - 1);
+
+    // Clamped, matching the height texture's own clamp addressing, so the bound stays valid for a ray
+    // whose safe box overhangs the patch edge.
+    float m = 0.0;
+    for (int y = -d; y <= d; ++y)
+        for (int x = -d; x <= d; ++x)
+            m = max(m, _CoarseSrc[uint2(clamp(int2(id.xy) + int2(x, y), int2(0, 0), hi))]);
+
+    _CoarseDst[id.xy] = m;
+}
+
+// ---------------------------------------------------------------------------------------------
+// THE LUMP BAKE. RENDER ONLY - THE SIMULATION NEVER READS OR WRITES THIS TEXTURE, and no kernel above
+// this line touches it, so nothing here can move one litre of snow.
+//
+// The lattice used to be evaluated inside the raymarcher's surface function, ~36 times per pixel:
+// measured 6.13 ms GPU / 23.70 mean steps with the term off against 15.44 ms with the per-step
+// nine-hash version, and 7.83 ms / 34.61 with this bake. Here the same formula runs ONCE PER TEXEL PER
+// SIMULATION STEP over the dirty window, and the marcher takes one bilinear tap.
+//
+// THE WINDOW is the relax window, expanded by the lump reach. It has to be expanded, because a texel of
+// field change moves the lift over a whole neighbourhood: the depth gate reads the field BILINEARLY
+// (+-1 field texel), the relief term reads the fillet dilation (+-_FilletDilateRadius) and a lobe whose
+// centre sits in a changed cell reaches out by its radius plus half a jittered cell. The C# side sums
+// all three - see SnowPileField.LumpBakePadTexels.
+//
+// STALENESS IS SAFE, NOT LUCKY. If a window ever failed to cover a change, the lobes there would be one
+// step out of date and would look it, but the march's bound would still hold, because CoarseMaxBlock
+// reduces the SAME texels this kernel wrote, every step, over the whole field, after this kernel has
+// run. See CoarseMaxYFrom in SnowMarchCore.hlsl for the full argument.
+// ---------------------------------------------------------------------------------------------
+RWTexture2D<float> _LumpBakeDst;
+float4 _LumpBakeWindow;    // .xy = origin BAKE texel, .zw = size in BAKE texels
+float  _LumpMinSnowHeight; // the renderer's bare-ground threshold, so the depth gate matches it
+
+// The field, sampled the way the RAYMARCHER samples it: hardware bilinear with clamp addressing, texel
+// centres at (k + 0.5). Reproduced with explicit taps rather than a sampler because this file has no
+// SamplerState and no normalised UVs, and because the depth gate has to agree with the gate the marcher
+// computes at the same world point or the lobes would fade in at a different depth.
+//
+// Single exit.
+float LumpBakeFieldH(float2 world)
+{
+    float2 p  = (world - _PatchMin.xy) * _InvTexelSize - 0.5;
+    float2 i0 = floor(p);
+    float2 f  = p - i0;
+
+    int2 hi = int2(_ResX - 1, _ResZ - 1);
+    int2 a  = int2(i0);
+
+    float h00 = _SrcTex[uint2(clamp(a + int2(0, 0), int2(0, 0), hi))];
+    float h10 = _SrcTex[uint2(clamp(a + int2(1, 0), int2(0, 0), hi))];
+    float h01 = _SrcTex[uint2(clamp(a + int2(0, 1), int2(0, 0), hi))];
+    float h11 = _SrcTex[uint2(clamp(a + int2(1, 1), int2(0, 0), hi))];
+
+    return lerp(lerp(h00, h10, f.x), lerp(h01, h11, f.x), f.y);
+}
+
+[numthreads(SNOW_TG, SNOW_TG, 1)]
+void LumpBake(uint3 gid : SV_DispatchThreadID)
+{
+    if (any(gid.xy >= uint2(_LumpBakeWindow.zw))) return;
+
+    int2 t = int2(_LumpBakeWindow.xy) + int2(gid.xy);
+    if (any(t < int2(0, 0)) || any(t > int2(_LumpBakeResX - 1, _LumpBakeResZ - 1))) return;
+
+    // The bake texel is exactly half a field texel, so texel (i,j)'s centre is one quarter and three
+    // quarters of the way across field texel (i/2, j/2). Deriving it from _TexelSize rather than from a
+    // separate uniform means the two resolutions cannot fall out of step.
+    float2 world = _PatchMin.xy + (float2(t) + 0.5) * (_TexelSize * 0.5);
+
+    // The fillet dilation POINT sampled, which is what the marcher's SampleDilated does.
+    int2  dt   = clamp(t >> 1, int2(0, 0), int2(_ResX - 1, _ResZ - 1));
+    float dilY = _DilateSrc[uint2(dt)].y;
+
+    float h    = LumpBakeFieldH(world);
+    float lift = SnowLumpLiftM(world) * SnowLumpGate(h, dilY, _LumpMinSnowHeight);
+
+    _LumpBakeDst[uint2(t)] = SnowLumpEncode(lift);
+}

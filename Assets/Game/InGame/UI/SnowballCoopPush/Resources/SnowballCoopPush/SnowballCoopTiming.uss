@@ -1,0 +1,453 @@
+.snowball-growth-hud {
+    position: absolute;
+    left: 24px;
+    top: 238px;
+    width: 430px;
+    height: 120px;
+    margin-left: 0;
+    -unity-font-definition: url("../../../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+}
+
+.growth-card-shadow {
+    position: absolute;
+    left: 7px;
+    right: -7px;
+    top: 8px;
+    bottom: -8px;
+    background-color: rgba(11, 38, 56, 0.88);
+    border-radius: 29px;
+}
+
+.growth-card-outline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 5px;
+    background-color: #ffffff;
+    border-width: 3px;
+    border-color: #153950;
+    border-radius: 29px;
+}
+
+.growth-card-face {
+    flex-grow: 1;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 17px 12px 14px;
+    background-color: #f8f5ea;
+    border-bottom-width: 7px;
+    border-bottom-color: #b9d5da;
+    border-radius: 22px;
+}
+
+.snowball-icon-wrap {
+    position: relative;
+    width: 82px;
+    height: 82px;
+    margin-right: 14px;
+    flex-shrink: 0;
+}
+
+.snowball-icon-shadow {
+    position: absolute;
+    left: 8px;
+    top: 10px;
+    width: 68px;
+    height: 68px;
+    background-color: rgba(11, 38, 56, 0.82);
+    border-radius: 999px;
+}
+
+.snowball-icon-outline {
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    width: 70px;
+    height: 70px;
+    padding: 4px;
+    background-color: #ffffff;
+    border-width: 3px;
+    border-color: #153950;
+    border-radius: 999px;
+    rotate: -7deg;
+}
+
+.snowball-icon-face {
+    position: relative;
+    flex-grow: 1;
+    background-color: #dff4f7;
+    border-bottom-width: 7px;
+    border-bottom-color: #9dcbd7;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.snowball-lump {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.72);
+    border-radius: 999px;
+}
+
+.snowball-lump-a {
+    left: 8px;
+    top: 8px;
+    width: 28px;
+    height: 18px;
+    rotate: -18deg;
+}
+
+.snowball-lump-b {
+    right: 5px;
+    top: 23px;
+    width: 21px;
+    height: 13px;
+    rotate: 22deg;
+}
+
+.snowball-speck {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: #79b9ca;
+    border-radius: 999px;
+}
+
+.snowball-speck-a { left: 20px; bottom: 12px; }
+.snowball-speck-b { right: 17px; bottom: 19px; width: 4px; height: 4px; }
+
+.growth-info {
+    flex-grow: 1;
+    height: 84px;
+    justify-content: center;
+}
+
+.growth-heading-row {
+    height: 31px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.growth-stage-label {
+    min-width: 104px;
+    height: 29px;
+    padding: 2px 10px 0 10px;
+    color: #ffffff;
+    background-color: #2f83cf;
+    border-width: 3px;
+    border-color: #153950;
+    border-radius: 10px;
+    font-size: 18px;
+    letter-spacing: 1px;
+    -unity-text-align: middle-center;
+}
+
+.growth-diameter-label {
+    color: #153950;
+    font-size: 24px;
+    letter-spacing: 1px;
+    -unity-text-align: middle-right;
+}
+
+.growth-segments {
+    height: 24px;
+    margin-top: 7px;
+    flex-direction: row;
+}
+
+.growth-segment {
+    position: relative;
+    flex-grow: 1;
+    height: 19px;
+    margin-right: 6px;
+    padding: 3px;
+    background-color: #ffffff;
+    border-width: 2px;
+    border-color: #153950;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.growth-segment-4 { margin-right: 0; }
+
+.growth-segment-fill {
+    height: 100%;
+    width: 0;
+    border-radius: 4px;
+}
+
+.growth-segment-1 .growth-segment-fill { background-color: #2f83cf; }
+.growth-segment-2 .growth-segment-fill { background-color: #31b478; }
+.growth-segment-3 .growth-segment-fill { background-color: #ffd35a; }
+.growth-segment-4 .growth-segment-fill { background-color: #f15b62; }
+
+.growth-remaining-label {
+    height: 22px;
+    color: #577082;
+    font-size: 16px;
+    letter-spacing: 0.6px;
+    -unity-text-align: middle-right;
+}
+
+.growth-stage-2 .growth-stage-label { background-color: #31b478; }
+.growth-stage-3 .growth-stage-label { color: #153950; background-color: #ffd35a; }
+.growth-stage-4 .growth-stage-label { background-color: #f15b62; }
+.growth-complete .growth-remaining-label { color: #208457; }
+
+.coop-shove-hud {
+    position: absolute;
+    left: 50%;
+    bottom: 142px;
+    width: 540px;
+    height: 176px;
+    margin-left: -270px;
+    -unity-font-definition: url("../../../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+}
+
+.hud-card-shadow {
+    position: absolute;
+    left: 8px;
+    right: -8px;
+    top: 10px;
+    bottom: -10px;
+    background-color: rgba(11, 38, 56, 0.88);
+    border-radius: 34px;
+}
+
+.hud-card-outline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 6px;
+    background-color: #ffffff;
+    border-width: 3px;
+    border-color: #153950;
+    border-radius: 34px;
+}
+
+.hud-card-face {
+    flex-grow: 1;
+    padding: 14px 20px 12px 20px;
+    background-color: #eef5f4;
+    border-bottom-width: 8px;
+    border-bottom-color: #b9d5da;
+    border-radius: 27px;
+}
+
+.heading-row,
+.prompt-row {
+    flex-direction: row;
+    align-items: center;
+}
+
+.heading-row {
+    justify-content: space-between;
+    height: 34px;
+}
+
+.heading {
+    color: #153950;
+    font-size: 27px;
+    letter-spacing: 1px;
+}
+
+.crew-label {
+    padding: 4px 10px 3px 10px;
+    color: #ffffff;
+    background-color: #2f7c66;
+    border-radius: 10px;
+    font-size: 17px;
+}
+
+.timing-rail-outline {
+    height: 48px;
+    margin-top: 6px;
+    padding: 4px;
+    background-color: #ffffff;
+    border-width: 3px;
+    border-color: #153950;
+    border-radius: 24px;
+}
+
+.timing-rail {
+    position: relative;
+    flex-grow: 1;
+    background-color: #cfe5e8;
+    border-radius: 17px;
+    overflow: visible;
+}
+
+.success-zone {
+    position: absolute;
+    left: 42%;
+    top: 0;
+    bottom: 0;
+    width: 20%;
+    background-color: #63d6c1;
+    border-left-width: 3px;
+    border-right-width: 3px;
+    border-color: #2f7c66;
+}
+
+.success-notch {
+    position: absolute;
+    top: -7px;
+    width: 6px;
+    height: 8px;
+    background-color: #ffd35a;
+    border-width: 2px;
+    border-color: #153950;
+    border-radius: 3px;
+}
+
+.success-notch-left { left: -5px; }
+.success-notch-right { right: -5px; }
+
+.timing-marker {
+    position: absolute;
+    top: -6px;
+    width: 25px;
+    height: 42px;
+    margin-left: -12px;
+    padding: 4px;
+    background-color: #ffffff;
+    border-width: 3px;
+    border-color: #153950;
+    border-radius: 13px;
+}
+
+.marker-face {
+    flex-grow: 1;
+    background-color: #f15b62;
+    border-bottom-width: 5px;
+    border-bottom-color: #a93845;
+    border-radius: 7px;
+}
+
+.coop-in-window .marker-face,
+.coop-submitted .marker-face {
+    background-color: #ffd35a;
+    border-bottom-color: #d89522;
+}
+
+.prompt-row {
+    height: 43px;
+    margin-top: 5px;
+    justify-content: center;
+}
+
+.mouse-icon {
+    width: 34px;
+    height: 40px;
+    margin-right: 10px;
+    padding: 3px;
+    background-color: #ffffff;
+    border-width: 3px;
+    border-color: #153950;
+    border-radius: 15px;
+}
+
+.mouse-face {
+    position: relative;
+    flex-grow: 1;
+    background-color: #eef5f4;
+    border-radius: 9px;
+    overflow: hidden;
+}
+
+.mouse-divider {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 2px;
+    height: 15px;
+    background-color: #153950;
+}
+
+.mouse-right-button {
+    position: absolute;
+    left: 50%;
+    right: 0;
+    top: 0;
+    height: 15px;
+    background-color: #f15b62;
+    border-top-right-radius: 7px;
+}
+
+.status-label {
+    color: #153950;
+    font-size: 22px;
+    letter-spacing: 1px;
+}
+
+.coop-submitted .status-label {
+    color: #2f7c66;
+}
+
+.snowball-select-prompt {
+    position: absolute;
+    left: 50%;
+    bottom: 64px;
+    width: 340px;
+    height: 68px;
+    margin-left: -170px;
+    -unity-font-definition: url("../../../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+}
+
+.select-prompt-shadow {
+    position: absolute;
+    left: 6px;
+    right: -6px;
+    top: 7px;
+    bottom: -7px;
+    background-color: rgba(11, 38, 56, 0.88);
+    border-radius: 25px;
+}
+
+.select-prompt-outline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 4px;
+    background-color: #ffffff;
+    border-width: 3px;
+    border-color: #153950;
+    border-radius: 25px;
+}
+
+.select-prompt-face {
+    flex-grow: 1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: #eef5f4;
+    border-bottom-width: 5px;
+    border-bottom-color: #b9d5da;
+    border-radius: 18px;
+}
+
+.select-keycap {
+    width: 58px;
+    height: 38px;
+    margin-right: 12px;
+    padding-top: 2px;
+    color: #153950;
+    background-color: #ffd35a;
+    border-width: 3px;
+    border-color: #153950;
+    border-radius: 10px;
+    font-size: 24px;
+    -unity-text-align: middle-center;
+}
+
+.select-label {
+    color: #153950;
+    font-size: 22px;
+    letter-spacing: 1px;
+}

@@ -1,0 +1,73 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="PenguinTutorial.uss" />
+    <ui:VisualElement name="screen" class="screen" picking-mode="Ignore">
+        <ui:VisualElement class="top-strip" picking-mode="Ignore">
+            <ui:VisualElement class="top-strip-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="top-strip-paper" picking-mode="Ignore">
+                <ui:VisualElement name="step-dot-0" class="step-dot" picking-mode="Ignore" />
+                <ui:VisualElement class="step-line" picking-mode="Ignore" />
+                <ui:VisualElement name="step-dot-1" class="step-dot" picking-mode="Ignore" />
+                <ui:VisualElement class="step-line" picking-mode="Ignore" />
+                <ui:VisualElement name="step-dot-2" class="step-dot" picking-mode="Ignore" />
+                <ui:VisualElement class="step-line" picking-mode="Ignore" />
+                <ui:VisualElement name="step-dot-3" class="step-dot" picking-mode="Ignore" />
+                <ui:VisualElement class="step-line" picking-mode="Ignore" />
+                <ui:VisualElement name="step-dot-4" class="step-dot" picking-mode="Ignore" />
+                <ui:VisualElement class="step-line" picking-mode="Ignore" />
+                <ui:VisualElement name="step-dot-5" class="step-dot" picking-mode="Ignore" />
+                <ui:VisualElement class="step-line" picking-mode="Ignore" />
+                <ui:VisualElement name="step-dot-6" class="step-dot" picking-mode="Ignore" />
+                <ui:VisualElement class="step-line" picking-mode="Ignore" />
+                <ui:VisualElement name="step-dot-7" class="step-dot" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="tutorial-card" class="tutorial-card" picking-mode="Ignore">
+            <ui:VisualElement class="ticket-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="ticket-paper" picking-mode="Ignore">
+                <ui:VisualElement class="ticket-accent" picking-mode="Ignore" />
+                <ui:VisualElement class="ticket-header" picking-mode="Ignore">
+                    <ui:Label class="ticket-stamp" text="SNOW CREW" picking-mode="Ignore" />
+                    <ui:Label name="step-counter" class="step-counter" text="TRAINING  1 / 8" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement class="ticket-rule" picking-mode="Ignore" />
+                <ui:Label name="step-title" class="step-title" text="걸어 보기" picking-mode="Ignore" />
+                <ui:VisualElement class="instruction-row" picking-mode="Ignore">
+                    <ui:VisualElement name="key-shadow" class="key-shadow" picking-mode="Ignore">
+                        <ui:Label name="key-badge" class="key-badge" text="WASD" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:Label name="instruction" class="instruction" text="WASD로 눈길을 걸어 보세요." picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement class="progress-track" picking-mode="Ignore">
+                    <ui:VisualElement name="progress-fill" class="progress-fill" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Label name="progress-text" class="progress-text" text="0.0 / 5 m" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement name="clear-badge" class="clear-badge" picking-mode="Ignore">
+                <ui:Label class="clear-badge-check" text="✓" picking-mode="Ignore" />
+                <ui:Label class="clear-badge-text" text="QUEST CLEAR" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="complete-card" class="complete-card" picking-mode="Ignore">
+            <ui:VisualElement class="complete-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="complete-paper" picking-mode="Ignore">
+                <ui:VisualElement class="complete-accent" picking-mode="Ignore" />
+                <ui:Label class="complete-kicker" text="TRAINING COMPLETE" picking-mode="Ignore" />
+                <ui:Label class="complete-title" text="준비 완료!" picking-mode="Ignore" />
+                <ui:VisualElement class="ticket-rule complete-rule" picking-mode="Ignore" />
+                <ui:Label class="complete-copy" text="눈을 굴려 선물로 만들고, 보내고, 다시 꺼내 이웃에게 배달하는 한 사이클을 익혔어요." picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement class="control-legend" picking-mode="Ignore">
+            <ui:VisualElement class="legend-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="legend-paper" picking-mode="Ignore">
+                <ui:Label class="legend-title" text="CONTROLS" picking-mode="Ignore" />
+                <ui:Label class="legend-row" text="WASD  이동     SHIFT  달리기" picking-mode="Ignore" />
+                <ui:Label class="legend-row" text="SHIFT + SPACE  미끄러지기" picking-mode="Ignore" />
+                <ui:Label class="legend-row" text="E  눈덩이 밀기     F  등에 얹기" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

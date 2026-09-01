@@ -1,0 +1,23 @@
+{
+    "name": "PPack.SnowballGrowthPrototype.PlayModeTests",
+    "rootNamespace": "PPack",
+    "references": [
+        "PPack.InGame",
+        "MoreMountains.Tools",
+        "UnityEngine.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "Fusion.Runtime.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

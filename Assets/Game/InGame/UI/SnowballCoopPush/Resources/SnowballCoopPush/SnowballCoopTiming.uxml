@@ -1,0 +1,89 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="SnowballCoopTiming.uss" />
+    <ui:VisualElement name="snowball-growth-hud" class="snowball-growth-hud growth-stage-1" picking-mode="Ignore">
+        <ui:VisualElement class="growth-card-shadow" picking-mode="Ignore" />
+        <ui:VisualElement class="growth-card-outline" picking-mode="Ignore">
+            <ui:VisualElement class="growth-card-face" picking-mode="Ignore">
+                <ui:VisualElement class="snowball-icon-wrap" picking-mode="Ignore">
+                    <ui:VisualElement class="snowball-icon-shadow" picking-mode="Ignore" />
+                    <ui:VisualElement class="snowball-icon-outline" picking-mode="Ignore">
+                        <ui:VisualElement class="snowball-icon-face" picking-mode="Ignore">
+                            <ui:VisualElement class="snowball-lump snowball-lump-a" picking-mode="Ignore" />
+                            <ui:VisualElement class="snowball-lump snowball-lump-b" picking-mode="Ignore" />
+                            <ui:VisualElement class="snowball-speck snowball-speck-a" picking-mode="Ignore" />
+                            <ui:VisualElement class="snowball-speck snowball-speck-b" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement class="growth-info" picking-mode="Ignore">
+                    <ui:VisualElement class="growth-heading-row" picking-mode="Ignore">
+                        <ui:Label name="growth-stage-label" text="STAGE 1" class="growth-stage-label" picking-mode="Ignore" />
+                        <ui:Label name="growth-diameter-label" text="Ø 0.48 m" class="growth-diameter-label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="growth-segments" picking-mode="Ignore">
+                        <ui:VisualElement class="growth-segment growth-segment-1" picking-mode="Ignore">
+                            <ui:VisualElement name="growth-segment-1-fill" class="growth-segment-fill" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="growth-segment growth-segment-2" picking-mode="Ignore">
+                            <ui:VisualElement name="growth-segment-2-fill" class="growth-segment-fill" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="growth-segment growth-segment-3" picking-mode="Ignore">
+                            <ui:VisualElement name="growth-segment-3-fill" class="growth-segment-fill" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="growth-segment growth-segment-4" picking-mode="Ignore">
+                            <ui:VisualElement name="growth-segment-4-fill" class="growth-segment-fill" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <ui:Label name="growth-remaining-label" text="0.22 m TO NEXT" class="growth-remaining-label" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+
+    <ui:VisualElement name="coop-shove-hud" class="coop-shove-hud" picking-mode="Ignore">
+        <ui:VisualElement class="hud-card-shadow" picking-mode="Ignore" />
+        <ui:VisualElement class="hud-card-outline" picking-mode="Ignore">
+            <ui:VisualElement class="hud-card-face" picking-mode="Ignore">
+                <ui:VisualElement class="heading-row" picking-mode="Ignore">
+                    <ui:Label text="HEAVE TOGETHER!" class="heading" picking-mode="Ignore" />
+                    <ui:Label name="crew-label" text="2 PUSHERS" class="crew-label" picking-mode="Ignore" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="timing-rail-outline" picking-mode="Ignore">
+                    <ui:VisualElement class="timing-rail" picking-mode="Ignore">
+                        <ui:VisualElement class="success-zone" picking-mode="Ignore">
+                            <ui:VisualElement class="success-notch success-notch-left" picking-mode="Ignore" />
+                            <ui:VisualElement class="success-notch success-notch-right" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="timing-marker" class="timing-marker" picking-mode="Ignore">
+                            <ui:VisualElement class="marker-face" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement class="prompt-row" picking-mode="Ignore">
+                    <ui:VisualElement class="mouse-icon" picking-mode="Ignore">
+                        <ui:VisualElement class="mouse-face" picking-mode="Ignore">
+                            <ui:VisualElement class="mouse-divider" picking-mode="Ignore" />
+                            <ui:VisualElement class="mouse-right-button" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:Label name="status-label" text="RIGHT CLICK" class="status-label" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+
+    <ui:VisualElement name="snowball-select-prompt" class="snowball-select-prompt" picking-mode="Ignore">
+        <ui:VisualElement class="select-prompt-shadow" picking-mode="Ignore" />
+        <ui:VisualElement class="select-prompt-outline" picking-mode="Ignore">
+            <ui:VisualElement class="select-prompt-face" picking-mode="Ignore">
+                <ui:Label name="interaction-key" text="E" class="select-keycap" picking-mode="Ignore" />
+                <ui:Label name="interaction-label" text="PUSH" class="select-label" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,61 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="StageOutro.uss" />
+    <ui:VisualElement name="stage-outro-root" class="stage-outro-root">
+        <ui:VisualElement name="backdrop" class="backdrop" picking-mode="Ignore">
+            <ui:VisualElement class="snow-glow snow-glow-left" picking-mode="Ignore" />
+            <ui:VisualElement class="snow-glow snow-glow-right" picking-mode="Ignore" />
+            <ui:VisualElement class="snow-mark snow-mark-a" picking-mode="Ignore" />
+            <ui:VisualElement class="snow-mark snow-mark-b" picking-mode="Ignore" />
+            <ui:VisualElement class="snow-mark snow-mark-c" picking-mode="Ignore" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="result-card" class="result-card">
+            <ui:VisualElement class="card-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="card-outline">
+                <ui:VisualElement class="card-face">
+                    <ui:VisualElement class="card-accent" picking-mode="Ignore" />
+                    <ui:VisualElement class="result-tab-shadow" picking-mode="Ignore" />
+                    <ui:VisualElement class="result-tab" picking-mode="Ignore">
+                        <ui:Label text="ROUTE COMPLETE" class="result-tab-label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+
+                    <ui:Label name="stage-label" text="STAGE 01" class="stage-label" picking-mode="Ignore" />
+                    <ui:Label name="stage-title" text="WINTER VILLAGE" class="stage-title" picking-mode="Ignore" />
+                    <ui:Label name="result-subtitle" text="SNOW ROUTE SERVICE REPORT" class="result-subtitle" picking-mode="Ignore" />
+                    <ui:VisualElement class="divider" picking-mode="Ignore" />
+
+                    <ui:VisualElement name="score-block" class="score-block" picking-mode="Ignore">
+                        <ui:Label text="ROUTE SCORE" class="score-title" picking-mode="Ignore" />
+                        <ui:Label name="score-value" text="0" class="score-value" picking-mode="Ignore" />
+                    </ui:VisualElement>
+
+                    <ui:Label name="high-score" text="BEST  0" class="high-score" picking-mode="Ignore" />
+                    <ui:VisualElement name="new-record" class="new-record" picking-mode="Ignore">
+                        <ui:Label text="NEW RECORD!" class="new-record-label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement name="stats-row" class="stats-row" picking-mode="Ignore">
+                        <ui:VisualElement class="stat-chip stat-chip-clear" picking-mode="Ignore">
+                            <ui:Label text="SNOW CLEARED" class="stat-title" picking-mode="Ignore" />
+                            <ui:Label name="clear-value" text="92%" class="stat-value" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-chip stat-chip-time" picking-mode="Ignore">
+                            <ui:Label text="SERVICE TIME" class="stat-title" picking-mode="Ignore" />
+                            <ui:Label name="time-value" text="03:42" class="stat-value" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <ui:VisualElement name="action-row" class="action-row">
+                        <ui:Button name="retry-button" text="RETRY ROUTE" class="result-button result-button-secondary" />
+                        <ui:Button name="continue-button" text="CONTINUE" class="result-button result-button-primary" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="preview-hint" class="preview-hint" picking-mode="Ignore">
+            <ui:Label text="1  2" class="preview-key" picking-mode="Ignore" />
+            <ui:Label text="PREVIEW RESULT" class="preview-hint-label" picking-mode="Ignore" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

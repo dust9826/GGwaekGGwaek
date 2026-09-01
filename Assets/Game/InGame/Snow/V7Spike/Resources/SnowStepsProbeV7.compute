@@ -1,0 +1,118 @@
+// CARRIED OVER FROM v6 UNCHANGED IN SUBSTANCE. Only identifiers were renamed V6 -> V7 (and the
+// _Cs6 shader-global prefix -> _Cs7). Prose below that says "v6", "v5", "v4" or "v3" is the
+// LINEAGE talking, not a claim about v7: v7 is v6 with the ball replaced by an accumulating pile
+// written into the height field, and this file is one of the parts that did not have to change.
+// THE RAYMARCH STEPS-PER-PIXEL INSTRUMENT.
+//
+// WHAT THIS REPLACES, AND WHY. The first version of this probe drew an extra pass of the raymarch
+// SHADER into a small offscreen RGBA-float target with a CommandBuffer - SetRenderTarget,
+// SetViewProjectionMatrices, DrawRenderer, ExecuteCommandBuffer - and reduced that target here. It
+// compiled, it ran every sixth frame, and it produced nothing: the target came back empty on every
+// frame of a whole course, so the console printed `probe=waiting` from t=0 to the end and the one
+// number that closes the ray-chord risk at 120 m was never produced.
+//
+// Rather than keep guessing which of those five render-state calls was the one that silently did
+// nothing, the march moved into SnowMarchCoreV7.hlsl and the probe became a plain compute kernel -
+// the same machinery the twenty simulation kernels in SnowHeightFieldV7.compute already use without
+// trouble. There is no render target, no command buffer, no renderer, and no view-projection matrix
+// left to get wrong.
+//
+// IT IS STILL NOT A REIMPLEMENTATION. SnowMarchCoreV7.hlsl is included by the fragment shader and by
+// this file. Same text, same surface function, same MarchSnow, same skip bound. The uniforms are
+// forwarded onto this kernel from the cached values the renderer pushed to its material in the same
+// frame (SnowRaymarchRendererV7.PushMarchUniforms), so the inputs cannot drift either.
+//
+// THE ONLY THING THIS DOES ITSELF is generate the ray, and it does that from camera basis vectors
+// rather than from an inverse projection, which reproduces SetupRay's perspective branch exactly with
+// nothing to get backwards:
+//     dir = normalize(fwd + right * ndc.x + up * ndc.y)     right and up pre-scaled by tan(fov/2)
+//
+// WHY A HISTOGRAM AND NOT A MEAN. The question is whether the flat dilated coarse-max skip still works
+// when the proxy box goes from 8 m to 120 m, and the failure mode is a TAIL - grazing rays that cross
+// the whole box - which is invisible in an average dominated by pixels pointing at the ground two
+// metres ahead. 512 buckets indexed directly by step count makes the p95 exact rather than
+// interpolated, and the three scalars beside it give the tail its meaning.
+//
+// RAYS THAT NEVER ENTER THE VOLUME ARE EXCLUDED, not counted as zero-step rays. Those are pixels the
+// proxy box does not cover, where the real forward pass would not run a fragment at all; folding them
+// in would report a cost that scales with how much of the screen happens to be sky.
+//
+// Every non-void function here has exactly ONE return: the project convention for this variant.
+#pragma kernel ClearHisto
+#pragma kernel ProbeMarch
+
+#include "../Shaders/SnowMarchCoreV7.hlsl"
+
+#define SNOW_PROBE_BUCKETS 512
+#define SNOW_PROBE_TG 8
+
+// [0 .. 511] one bucket per step count, clamped at the top
+// [512] rays that marched      [513] rays that exhausted the budget
+// [514] sum of steps           [515] max steps seen
+// [516] rays tested            [517] rays that missed the proxy volume entirely
+RWStructuredBuffer<int> _Histo;
+
+float4 _ProbeCamPos;     // .xyz world camera position
+float4 _ProbeCamFwd;     // .xyz unit forward
+float4 _ProbeCamRight;   // .xyz right, PRE-SCALED by tan(fovV/2) * aspect
+float4 _ProbeCamUp;      // .xyz up,    PRE-SCALED by tan(fovV/2)
+float  _ProbeNear;       // camera near plane, matching SetupRay's _ProjectionParams.y clamp
+int    _ProbeW;
+int    _ProbeH;
+
+[numthreads(64, 1, 1)]
+void ClearHisto(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x < (uint)(SNOW_PROBE_BUCKETS + 6)) _Histo[id.x] = 0;
+}
+
+[numthreads(SNOW_PROBE_TG, SNOW_PROBE_TG, 1)]
+void ProbeMarch(uint3 id : SV_DispatchThreadID)
+{
+    if (any(id.xy >= uint2(_ProbeW, _ProbeH))) return;
+
+    // [516] counts every ray this kernel looked at, so the CPU can tell "the dispatch never ran" from
+    // "the dispatch ran and every ray missed the box". Those are completely different bugs and the
+    // first version of this probe could not distinguish them, which is most of why it took a whole
+    // session to notice it was dead.
+    InterlockedAdd(_Histo[SNOW_PROBE_BUCKETS + 4], 1);
+
+    float2 ndc = ((float2(id.xy) + 0.5) / float2(_ProbeW, _ProbeH)) * 2.0 - 1.0;
+
+    float3 ro = _ProbeCamPos.xyz;
+    float3 rd = normalize(_ProbeCamFwd.xyz + _ProbeCamRight.xyz * ndc.x + _ProbeCamUp.xyz * ndc.y);
+
+    // Identical to SetupRay's perspective branch: the march volume is the proxy box with its top
+    // pulled down to _MarchTopY and its floor a hair above the ground plane. tEnd is the box exit,
+    // which is exactly what the fragment path's min(t1, len) resolves to, because there the fragment's
+    // own world position IS the box exit.
+    float3 bmin = float3(_BoxMin.x, _MarchFloorY, _BoxMin.z);
+    float3 bmax = float3(_BoxMax.x, min(_MarchTopY, _BoxMax.y), _BoxMax.z);
+
+    float t0, t1;
+    bool ok = IntersectBox(ro, rd, bmin, bmax, t0, t1);
+
+    float tStart = max(t0, _ProbeNear);
+    float tEnd   = t1;
+
+    if (!ok || tEnd <= tStart)
+    {
+        InterlockedAdd(_Histo[SNOW_PROBE_BUCKETS + 5], 1);
+        return;
+    }
+
+    float2 lodFade = MarchLodFades(max(0.0, tStart));
+
+    float tHit;
+    int   steps;
+    float exhausted;
+    MarchSnow(ro, rd, tStart, tEnd, lodFade, tHit, steps, exhausted);
+
+    int bucket = clamp(steps, 0, SNOW_PROBE_BUCKETS - 1);
+
+    InterlockedAdd(_Histo[bucket], 1);
+    InterlockedAdd(_Histo[SNOW_PROBE_BUCKETS + 0], 1);
+    if (exhausted > 0.5) InterlockedAdd(_Histo[SNOW_PROBE_BUCKETS + 1], 1);
+    InterlockedAdd(_Histo[SNOW_PROBE_BUCKETS + 2], steps);
+    InterlockedMax(_Histo[SNOW_PROBE_BUCKETS + 3], steps);
+}

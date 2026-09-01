@@ -1,0 +1,14 @@
+{
+    "name": "PPack.Core",
+    "rootNamespace": "PPack.Core",
+    "references": ["Unity.InputSystem", "Fusion.Unity", "Fusion.Addons.Physics"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

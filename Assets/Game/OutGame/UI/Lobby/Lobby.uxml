@@ -1,0 +1,46 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../Shared/OutGameFlow.uss" />
+    <Style src="Lobby.uss" />
+    <Style src="../Shared/SnowRemovalTheme.uss" />
+    <ui:VisualElement name="lobby" class="flow-screen">
+        <ui:VisualElement class="float-shape decor-coral" />
+        <ui:VisualElement class="float-shape decor-yellow" />
+        <ui:VisualElement class="float-shape decor-ring" />
+        <ui:VisualElement class="stripe" />
+        <ui:VisualElement class="float-shape clean-gleam-cluster">
+            <ui:VisualElement class="clean-gleam gleam-large" />
+            <ui:VisualElement class="clean-gleam gleam-small-a" />
+            <ui:VisualElement class="clean-gleam gleam-small-b" />
+        </ui:VisualElement>
+        <ui:VisualElement class="float-shape lower-clean-sparkle" />
+        <ui:VisualElement name="flow-card-shadow" class="flow-card-shadow lobby-card">
+            <ui:VisualElement class="flow-card">
+                <ui:VisualElement name="title-banner" class="title-banner">
+                    <ui:Label text="CREW LOBBY" class="title-text" />
+                    <ui:Label text="WAIT FOR EVERY DRIVER TO CHECK IN" class="title-kicker" />
+                </ui:VisualElement>
+                <ui:VisualElement class="content-row lobby-layout">
+                    <ui:VisualElement class="paper-panel code-panel">
+                        <ui:Label name="role-label" text="HOST" class="chip" />
+                        <ui:Label text="ROOM CODE" class="screen-copy code-caption" />
+                        <ui:Label name="room-code-label" text="PREVIEW" class="big-value lobby-code" />
+                        <ui:Button name="action-copy-code" text="COPY CODE" class="flow-button compact-button yellow tilt-left" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="paper-panel player-panel">
+                        <ui:Label text="SNOW CREW" class="section-title" />
+                        <ui:Label name="player-slot-0" text="WAITING FOR CLEANER..." class="player-row" />
+                        <ui:Label name="player-slot-1" text="WAITING FOR CLEANER..." class="player-row" />
+                        <ui:Label name="player-slot-2" text="WAITING FOR CLEANER..." class="player-row" />
+                        <ui:Label name="player-slot-3" text="WAITING FOR CLEANER..." class="player-row" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement class="button-row lobby-actions">
+                    <ui:Button name="action-start-game" text="START GAME" class="flow-button wide-button secondary tilt-left" />
+                    <ui:Button name="scene-MainMenu" text="LEAVE" class="flow-button compact-button danger tilt-right" />
+                </ui:VisualElement>
+                <ui:Label name="status-label" text="WAITING FOR THE CREW" class="status-label" />
+                <ui:Label text="GAMEPLAY START DELIBERATELY DISCONNECTED" class="footer-note" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="SnowballGrowthArcHud.uss" />
+    <ui:VisualElement name="snowball-growth-root" class="snowball-growth-root" picking-mode="Ignore">
+    </ui:VisualElement>
+</ui:UXML>

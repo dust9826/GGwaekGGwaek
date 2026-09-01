@@ -1,0 +1,43 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="StageHUD.uss" />
+    <ui:VisualElement name="stage-hud-root" class="stage-hud-root" picking-mode="Ignore">
+        <ui:VisualElement name="stage-clock" class="stage-clock" picking-mode="Ignore">
+            <ui:VisualElement class="stage-clock-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="stage-clock-face" picking-mode="Ignore">
+                <ui:Label name="stage-clock-time" text="0:00" class="stage-clock-time" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:Label name="stage-clock-gain" text="" class="stage-clock-gain" picking-mode="Ignore" />
+        </ui:VisualElement>
+        <ui:VisualElement name="score-chip" class="score-chip" picking-mode="Ignore">
+            <ui:VisualElement class="score-chip-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="score-chip-face" picking-mode="Ignore">
+                <ui:Label text="SCORE" class="score-chip-title" picking-mode="Ignore" />
+                <ui:Label name="score-chip-value" text="0" class="score-chip-value" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="blizzard-alert" class="blizzard-alert" picking-mode="Ignore">
+            <ui:VisualElement class="blizzard-alert-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="blizzard-alert-face" picking-mode="Ignore">
+                <ui:Label text="마을 어딘가에 눈폭풍이 생깁니다" class="blizzard-alert-label" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="quest-board" class="quest-board" picking-mode="Ignore">
+            <ui:VisualElement class="quest-board-heading" picking-mode="Ignore">
+                <ui:Label text="ORDERS" class="quest-board-title" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement name="order-stack" class="order-stack" picking-mode="Ignore" />
+            <ui:VisualElement name="waiting-ticket" class="waiting-ticket" picking-mode="Ignore">
+                <ui:VisualElement class="waiting-ticket-shadow" picking-mode="Ignore" />
+                <ui:VisualElement class="waiting-ticket-face" picking-mode="Ignore">
+                    <ui:Label text="NEXT REQUEST..." class="waiting-ticket-label" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="stamina-bar" class="stamina-bar" picking-mode="Ignore">
+            <ui:VisualElement class="stamina-bar-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="stamina-bar-face" picking-mode="Ignore">
+                <ui:VisualElement name="stamina-fill" class="stamina-fill" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

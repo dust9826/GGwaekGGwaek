@@ -1,0 +1,38 @@
+.snowball-growth-root {
+    flex-grow: 1;
+    position: relative;
+    picking-mode: ignore;
+    -unity-font-definition: url("../../../../Core/UI/Fonts/LilitaOne-Regular.ttf");
+}
+
+.snowball-growth-arc {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    picking-mode: ignore;
+}
+
+.snowball-stage-badge {
+    position: absolute;
+    width: 42px;
+    height: 42px;
+    border-left-width: 4px;
+    border-right-width: 4px;
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+    border-left-color: #ffffff;
+    border-right-color: #ffffff;
+    border-top-color: #ffffff;
+    border-bottom-color: #ffffff;
+    border-top-left-radius: 21px;
+    border-top-right-radius: 21px;
+    border-bottom-left-radius: 21px;
+    border-bottom-right-radius: 21px;
+    color: #ffffff;
+    font-size: 24px;
+    -unity-text-align: middle-center;
+    -unity-font-style: bold;
+    picking-mode: ignore;
+}

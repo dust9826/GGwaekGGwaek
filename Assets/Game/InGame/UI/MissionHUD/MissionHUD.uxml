@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="MissionHUD.uss" />
+    <ui:VisualElement name="mission-hud-root" class="mission-hud-root" picking-mode="Ignore">
+        <ui:VisualElement name="mission-card" class="mission-card" picking-mode="Ignore">
+            <ui:VisualElement class="mission-card-shadow" picking-mode="Ignore" />
+            <ui:VisualElement class="mission-card-outline" picking-mode="Ignore">
+                <ui:VisualElement class="mission-card-face" picking-mode="Ignore">
+                    <ui:VisualElement class="mission-header" picking-mode="Ignore">
+                        <ui:VisualElement class="required-chip" picking-mode="Ignore">
+                            <ui:Label text="REQUIRED" class="required-label" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:Label text="필수 미션" class="mission-title" picking-mode="Ignore" />
+                        <ui:Label name="overall-progress" text="0 / 0" class="overall-progress" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="mission-list" class="mission-list" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
